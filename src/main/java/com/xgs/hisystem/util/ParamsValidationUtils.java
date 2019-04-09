@@ -36,6 +36,10 @@ public class ParamsValidationUtils {
             Map<String, String> errorMsg = new HashMap<String, String>();
             for (ConstraintViolation<T> cv : set) {
                 errorMsg.put(cv.getPropertyPath().toString(), cv.getMessage());
+
+                if (errorMsg.size() > 0) {
+                    break;
+                }
             }
             result.setErrorMsg(errorMsg);
         }

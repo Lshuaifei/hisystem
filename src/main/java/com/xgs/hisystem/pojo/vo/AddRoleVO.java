@@ -1,7 +1,7 @@
 package com.xgs.hisystem.pojo.vo;
 
-import com.xgs.hisystem.pojo.entity.RoleEntity;
-
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -11,6 +11,8 @@ import java.util.List;
  */
 public class AddRoleVO {
 
+    @Email(message = "邮箱格式错误")
+    @NotBlank(message = "邮箱不能为空")
     private String email;
 
     private List<String> roleList;

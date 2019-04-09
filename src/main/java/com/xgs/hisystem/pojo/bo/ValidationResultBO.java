@@ -46,7 +46,7 @@ public class ValidationResultBO {
 	public void setErrorMsg(Map<String, String> errorMsg) {
 		this.errorMsg = errorMsg;
 	}
-    
-    
-    
+
+
+
 }

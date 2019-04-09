@@ -21,8 +21,7 @@ public class RoleEntity extends BaseEntity{
     @Column(name = "desrciption")
     private String desrciption;
 
-    @ManyToMany
-    @JoinTable(name = "his_user_role", joinColumns = { @JoinColumn(name = "role_id") }, inverseJoinColumns ={@JoinColumn(name = "uid") })
+    @ManyToMany(mappedBy = "roleList")
     private List<UserEntity> userList;
 
     public String getRole() {

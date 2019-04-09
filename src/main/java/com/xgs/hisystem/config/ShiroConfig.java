@@ -1,5 +1,6 @@
 package com.xgs.hisystem.config;
 
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import com.xgs.hisystem.realm.MyRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
@@ -11,8 +12,6 @@ import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreato
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-
-import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,28 +36,26 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
-        filterChainDefinitionMap.put("/css/*", "anon"); // 静态资源匿名访问
+        filterChainDefinitionMap.put("/css/**", "anon"); // 静态资源匿名访问
         filterChainDefinitionMap.put("/images/*", "anon");
-        filterChainDefinitionMap.put("/js/*", "anon");
+        filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/sb-admin-2/**", "anon");
         filterChainDefinitionMap.put("/error/css/*", "anon");
         filterChainDefinitionMap.put("/error/images/*", "anon");
 
-        filterChainDefinitionMap.put("/login", "anon");
-        filterChainDefinitionMap.put("/getCode", "anon");
-        filterChainDefinitionMap.put("/dologin", "anon");
-        filterChainDefinitionMap.put("/doregister", "anon");
-        filterChainDefinitionMap.put("/activation", "anon");
+        filterChainDefinitionMap.put("/user/dologin", "anon");
+        filterChainDefinitionMap.put("/user/doregister", "anon");
+        filterChainDefinitionMap.put("/user/activation", "anon");
         filterChainDefinitionMap.put("/logout", "logout"); // 用户退出
+        filterChainDefinitionMap.put("/fmail", "anon");
 
-        filterChainDefinitionMap.put("/createRole", "anon");
-        filterChainDefinitionMap.put("/addRole", "anon");
+        filterChainDefinitionMap.put("/user/getCode", "anon");
 
         filterChainDefinitionMap.put("/**", "authc"); // 其他路径均需要身份认证，一般位于最下面，优先级最低
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-        shiroFilterFactoryBean.setLoginUrl("/login"); //登录路径
-        shiroFilterFactoryBean.setSuccessUrl("/main");// 主页
+        shiroFilterFactoryBean.setLoginUrl("/"); //登录路径
+        shiroFilterFactoryBean.setSuccessUrl("/user/main");// 主页
         // shiroFilterFactoryBean.setUnauthorizedUrl("/error");//验证失败跳转的路径
         return shiroFilterFactoryBean;
     }

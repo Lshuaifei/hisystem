@@ -1,0 +1,154 @@
+/*初始化登录注册js*/
+Auth.init({});
+
+/*浏览器信息*/
+function getBroswer() {
+    var Sys = {};
+    var ua = navigator.userAgent.toLowerCase();
+    var s;
+    (s = ua.match(/edge\/([\d.]+)/)) ? Sys.edge = s[1] :
+        (s = ua.match(/rv:([\d.]+)\) like gecko/)) ? Sys.ie = s[1] :
+            (s = ua.match(/msie ([\d.]+)/)) ? Sys.ie = s[1] :
+                (s = ua.match(/firefox\/([\d.]+)/)) ? Sys.firefox = s[1] :
+                    (s = ua.match(/chrome\/([\d.]+)/)) ? Sys.chrome = s[1] :
+                        (s = ua.match(/opera.([\d.]+)/)) ? Sys.opera = s[1] :
+                            (s = ua.match(/version\/([\d.]+).*safari/)) ? Sys.safari = s[1] : 0;
+
+    if (Sys.edge) return {broswer: "Edge", version: Sys.edge};
+    if (Sys.ie) return {broswer: "IE", version: Sys.ie};
+    if (Sys.firefox) return {broswer: "Firefox", version: Sys.firefox};
+    if (Sys.chrome) return {broswer: "Chrome", version: Sys.chrome};
+    if (Sys.opera) return {broswer: "Opera", version: Sys.opera};
+    if (Sys.safari) return {broswer: "Safari", version: Sys.safari};
+
+    return {broswer: "", version: "0"};
+}
+
+/*当前浏览器*/
+var broswer = getBroswer();
+
+/*当前ip*/
+var ip = returnCitySN["cip"];
+
+
+function dologin() {
+
+    var user = {
+        email: $("#LoginEmail").val(),
+        password: $("#LoginPassword").val(),
+        broswer: broswer.broswer,
+        ip: ip
+    };
+
+    $.ajax({
+        url: "/user/dologin",
+        type: "post",
+        dataType: "text",
+        contentType: 'application/json',
+        data: JSON.stringify(user),
+        success: function (data) {
+
+            if (data == "SUCCESS") {
+                window.location.href = "/main"
+            } else {
+
+                $('.modalxa').html(data);
+                $('.modalx').fadeIn();
+                setTimeout(function () {
+                    $('.modalx').fadeOut();
+                }, 3000);
+            }
+
+        }
+    })
+
+    setCookie();
+}
+
+var roleValue = "";
+
+/* 注册选择角色*/
+$(function () {
+    $("#chooseRole li").click(function () {
+
+        var temp = $(this).val();
+        roleValue = temp;
+    })
+});
+
+
+function register() {
+
+    var email = $("#RegisterEmail").val();
+    var register = {
+        username: $("#username").val(),
+        email: email,
+        password: $("#RegisterPassword").val(),
+        roleValue: roleValue
+    };
+
+    $.ajax({
+        url: "/user/doregister",
+        type: "post",
+        datatype: "text",
+        contentType: 'application/json',
+        data: JSON.stringify(register),
+
+        success: function (data) {
+
+            if (data == "SUCCESS") {
+
+                window.location.href = "/fmail?email=" + email
+
+            } else {
+
+                $('.modalxa').html(data);
+                $('.modalx').fadeIn();
+                setTimeout(function () {
+                    $('.modalx').fadeOut();
+                }, 3000);
+            }
+        }
+    })
+}
+
+/*记住密码，cookie相关*/
+function setCookie() {
+    var checked = $("#checkbox").prop("checked");
+
+
+    if (checked) {
+        var loginCode = $("#LoginEmail").val();
+        var pwd = $("#LoginPassword").val();
+        var flag = true;
+
+        $.cookie("login_code", loginCode);
+        $.cookie("pwd", $.base64.encode(pwd), {expires: 2});
+
+        $.cookie("flag", flag)
+
+    } else {
+        $.cookie("flag", false);
+    }
+}
+
+function getCookie() {
+    var loginCode = $.cookie("login_code");
+    var pwd = $.cookie("pwd");
+
+    var flag = $.cookie("flag");
+
+    $("#LoginEmail").val(loginCode);
+
+    if (flag == "true") {
+        $("#checkbox").prop("checked", true);
+        $("#LoginPassword").val($.base64.decode(pwd));
+
+    } else if (flag == "false") {
+        $("#checkbox").prop("checked", false);
+        $("#LoginPassword").val();
+    }
+
+}
+
+

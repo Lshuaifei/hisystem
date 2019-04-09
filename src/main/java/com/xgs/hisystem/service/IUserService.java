@@ -1,17 +1,27 @@
 package com.xgs.hisystem.service;
 
-import com.xgs.hisystem.pojo.vo.AddRoleVO;
-import com.xgs.hisystem.pojo.vo.BaseResponse;
-import com.xgs.hisystem.pojo.vo.RoleVO;
-import com.xgs.hisystem.pojo.vo.UserVO;
+import com.xgs.hisystem.pojo.bo.BasePageReqBO;
+import com.xgs.hisystem.pojo.bo.PageRspBO;
+import com.xgs.hisystem.pojo.vo.*;
 
 import java.text.ParseException;
+import java.util.List;
 
 public interface IUserService {
 
-    BaseResponse<?> saveUserAndSendEmail(UserVO userVO);
+    BaseResponse<?> doLogin(UserLoginReqVO reqVO);
+
+    BaseResponse<?> saveUserAndSendEmail(UserRegisterReqVO reqVO);
 
     BaseResponse<?> activation(String email, String validateCode) throws ParseException;
 
     BaseResponse<?> addRole(AddRoleVO addRoleVO);
+
+    PageRspBO<LoginInforRspVO> getLoginfor(BasePageReqBO reqBO);
+
+    BaseResponse<?> changePassword(ChangePasswordReqVO reqVO);
+
+    List<UserInfoRspVO> getUserInfo();
+
+    BaseResponse<?> changeUserInfo(UserInfoReqVO reqVO);
 }

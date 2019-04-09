@@ -13,6 +13,13 @@ public class BaseResponse<T> {
     public static final Integer RESPONSE_SUCCESS=1;//成功
     public static final Integer RESPONSE_FAIL=0;//失败
 
+    public static <T> BaseResponse<T> errormsg() {
+        BaseResponse<T> res = new BaseResponse<T>();
+        res.setStatus(RESPONSE_FAIL);
+        res.setMessage("操作异常");
+        return res;
+    }
+
     public static <T> BaseResponse<T> errormsg(String msg){
         BaseResponse<T> res = new BaseResponse<T>();
         res.setStatus(RESPONSE_FAIL);
@@ -20,6 +27,13 @@ public class BaseResponse<T> {
         return res;
     }
 
+    public static <T> BaseResponse<T> errormsg(T data) {
+        BaseResponse<T> res = new BaseResponse<T>();
+        res.setStatus(RESPONSE_FAIL);
+        res.setMessage("操作异常");
+        res.setData(data);
+        return res;
+    }
     /**
      * @param
      * @return
@@ -41,8 +55,13 @@ public class BaseResponse<T> {
         res.setData(data);
         return res;
     }
-    
-    
+
+    public static <T> BaseResponse<T> success(String msg) {
+        BaseResponse<T> res = new BaseResponse<T>();
+        res.setStatus(RESPONSE_SUCCESS);
+        res.setMessage(msg);
+        return res;
+    }
     
     public static <T> BaseResponse<T> success(T data, String msg){
         BaseResponse<T> res = new BaseResponse<T>();

@@ -2,9 +2,12 @@ package com.xgs.hisystem.realm;
 
 import com.xgs.hisystem.pojo.entity.UserEntity;
 import com.xgs.hisystem.repository.IUserRepository;
-import com.xgs.hisystem.service.IUserService;
-import netscape.security.Principal;
-import org.apache.shiro.authc.*;
+
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -20,8 +23,8 @@ public class MyRealm extends AuthorizingRealm {
     //授权
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        String email= (String) principalCollection.getPrimaryPrincipal();
-        UserEntity user= iUserRepository.findByEmail(email);
+        UserEntity userEntity= (UserEntity) principalCollection.getPrimaryPrincipal();
+        UserEntity user= iUserRepository.findByEmail(userEntity.getEmail());
         if (user==null){
             return null;
         }
@@ -46,7 +49,7 @@ public class MyRealm extends AuthorizingRealm {
         String realmName = getName();//当前realm对象的唯一名字，调用父类的getName()方法
         ByteSource credentialsSalt = ByteSource.Util.bytes(user.getSalt()); //加密的盐值
 
-        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user.getEmail(), user.getPassword(), credentialsSalt, realmName);
+        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, user.getPassword(), credentialsSalt, realmName);
         return info;
     }
 

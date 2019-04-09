@@ -65,29 +65,29 @@ var Auth = {
 //
 // 		e.preventDefault();
 // 	},
-	loginback(e) {
-		Auth.vars.password_group.classList.remove('lowin-animated');
-		Auth.vars.password_group.classList += ' lowin-animated-back';
-		Auth.vars.password_group.style.display = 'block';
+    /*	loginback(e) {
+            Auth.vars.password_group.classList.remove('lowin-animated');
+            Auth.vars.password_group.classList += ' lowin-animated-back';
+            Auth.vars.password_group.style.display = 'block';
 
-		setTimeout(() => {
-			Auth.vars.login_back_link.style.opacity = 0;
-			Auth.vars.password_group.style.height = Auth.vars.password_group_height + 'px';
-			Auth.vars.password_group.style.marginBottom = 30 + 'px';
-		}, 100);
+            setTimeout(() => {
+                Auth.vars.login_back_link.style.opacity = 0;
+                Auth.vars.password_group.style.height = Auth.vars.password_group_height + 'px';
+                Auth.vars.password_group.style.marginBottom = 30 + 'px';
+            }, 100);
 
-		setTimeout(() => {
-			Auth.vars.login_back_link.style.display = 'none';
-			Auth.vars.password_group.classList.remove('lowin-animated-back');
-		}, 1000);
+            setTimeout(() => {
+                Auth.vars.login_back_link.style.display = 'none';
+                Auth.vars.password_group.classList.remove('lowin-animated-back');
+            }, 1000);
 
-		Auth.vars.login_btn.innerText = 'Sign In';
-		Auth.vars.lowin_login.querySelector('form').setAttribute('action', Auth.vars.option.login_url);
+            Auth.vars.login_btn.innerText = 'Sign In';
+            Auth.vars.lowin_login.querySelector('form').setAttribute('action', Auth.vars.option.login_url);
 
-		Auth.setHeight(Auth.vars.lowin_wrapper_height);
-		
-		e.preventDefault();
-	},
+            Auth.setHeight(Auth.vars.lowin_wrapper_height);
+
+            e.preventDefault();
+        },*/
 	setHeight(height) {
 		Auth.vars.lowin_wrapper.style.minHeight = height + 'px';
 	},
@@ -97,15 +97,15 @@ var Auth = {
 			Auth.vars.lowin_brand.classList.remove('lowin-animated');
 		}, 1000);
 	},
-	init(option) {
+    init() {
 		Auth.setHeight(Auth.vars.box[0].offsetHeight + Auth.vars.lowin_footer.offsetHeight);
 
 		Auth.vars.password_group.style.height = Auth.vars.password_group.offsetHeight + 'px';
 		Auth.vars.password_group_height = Auth.vars.password_group.offsetHeight;
 		Auth.vars.lowin_wrapper_height = Auth.vars.lowin_wrapper.offsetHeight;
 
-		Auth.vars.option = option;
-		Auth.vars.lowin_login.querySelector('form').setAttribute('action', option.login_url);
+        /*		Auth.vars.option = option;
+                Auth.vars.lowin_login.querySelector('form').setAttribute('action', option.login_url);*/
 
 		var len = Auth.vars.box.length - 1;
 
@@ -129,9 +129,9 @@ var Auth = {
 			Auth.login(e);
 		});
 
-		Auth.vars.login_back_link.addEventListener("click", (e) => {
-			Auth.loginback(e);
-		});
+        /*		Auth.vars.login_back_link.addEventListener("click", (e) => {
+                    Auth.loginback(e);
+                });*/
 	}
 }
 

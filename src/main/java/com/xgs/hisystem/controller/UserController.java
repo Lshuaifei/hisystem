@@ -1,115 +1,70 @@
 package com.xgs.hisystem.controller;
 
-import com.xgs.hisystem.pojo.entity.UserEntity;
-import com.xgs.hisystem.pojo.vo.AddRoleVO;
-import com.xgs.hisystem.repository.IUserRepository;
+import com.xgs.hisystem.pojo.bo.BasePageReqBO;
+import com.xgs.hisystem.pojo.bo.PageRspBO;
+import com.xgs.hisystem.pojo.bo.ValidationResultBO;
+import com.xgs.hisystem.pojo.vo.*;
+import com.xgs.hisystem.repository.ILoginInforRepository;
 import com.xgs.hisystem.service.IUserService;
-import com.xgs.hisystem.pojo.vo.BaseResponse;
-import com.xgs.hisystem.pojo.vo.UserVO;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
+import com.xgs.hisystem.util.ParamsValidationUtils;
+import com.xgs.hisystem.util.QRcodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import com.xgs.hisystem.util.GoEasyUtil;
-import com.xgs.hisystem.util.QRcodeUtil;
-
 import java.io.IOException;
-import java.text.ParseException;
+import java.util.List;
 
 @Controller
+@ResponseBody
+@RequestMapping(value = "/user")
 public class UserController {
-    @Autowired
-    IUserRepository iUserRepository;
 
     @Autowired
-    IUserService iUserService;
+    private IUserService iUserService;
 
-    @RequestMapping(value = "/login")
-    public String login() {
-        return "login";
-    }
+    @Autowired
+    private ILoginInforRepository iLoginInforRepository;
+
 
     /**
      * 登录验证
      *
-     * @param email
-     * @param password
-     * @param rememberMe
+     * @param reqVO
      * @param model
      * @return
      */
     @RequestMapping(value = "/dologin", method = RequestMethod.POST)
-    public String doLogin(@RequestParam(value = "email", required = false) String email,
-                          @RequestParam(value = "password", required = false) String password,
-                          @RequestParam(value = "rememberMe", required = false) String rememberMe, Model model) {
-        UsernamePasswordToken token = new UsernamePasswordToken(email, password);
-        if (rememberMe != null) {
-            if (rememberMe.equals("on")) {
-                token.setRememberMe(true);
-            } else {
-                token.setRememberMe(false);
-            }
-        }
-        Subject subject = SecurityUtils.getSubject();
-        subject.login(token);
-        boolean subjects = subject.isAuthenticated();
-        UserEntity userEntity = iUserRepository.findByEmail(email);
-        int status = userEntity.getStatus();
-        if (subjects && status == 1) {
-            GoEasyUtil.PushMessage("hello", "hello");
-            model.addAttribute("username", userEntity.getUsername());
-            return "test";
-        } else {
-            BaseResponse baseResponse = new BaseResponse();
-            baseResponse.setMessage("该账户未激活！");
-            model.addAttribute("errorMessage", baseResponse.getMessage());
-            return "error";
-        }
+    public String doLogin(@RequestBody UserLoginReqVO reqVO, Model model) {
 
+        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
+        if (validateBo.isHasErrors()) {
+            return validateBo.getErrorMsg().values().toString();
+        }
+        BaseResponse baseResponse = iUserService.doLogin(reqVO);
+
+        return baseResponse.getMessage();
     }
 
     /**
      * 保存用户注册信息，向用户发送激活链接
      *
-     * @param userVO
+     * @param reqVO
      * @return
      */
     @RequestMapping(value = "/doregister", method = RequestMethod.POST)
-    public String registered(UserVO userVO, Model model) {
+    public String registered(@RequestBody UserRegisterReqVO reqVO, Model model) {
 
-        BaseResponse baseResponse = iUserService.saveUserAndSendEmail(userVO);
-        if (baseResponse.getStatus().equals(1)) {
-            model.addAttribute("email", userVO.getEmail());
-            return "email/fmail";
-        } else {
-            model.addAttribute("errorMessage", baseResponse.getMessage());
-            return "error";
+        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
+        if (validateBo.isHasErrors()) {
+            return validateBo.getErrorMsg().values().toString();
         }
+        BaseResponse baseResponse = iUserService.saveUserAndSendEmail(reqVO);
+
+        return baseResponse.getMessage();
     }
 
-    /**
-     * 激活用户状态
-     *
-     * @param email
-     * @param validateCode
-     * @return
-     * @throws ParseException
-     */
-    @RequestMapping(value = "/activation", method = RequestMethod.GET)
-    public String activation(String email, String validateCode, Model model) throws ParseException {
-
-        BaseResponse baseResponse = iUserService.activation(email, validateCode);
-        if (baseResponse.getStatus().equals(1)) {
-            return "email/dmail";
-        } else {
-            model.addAttribute("errorMessage", baseResponse.getMessage());
-            return "error";
-        }
-    }
 
     /**
      * 生成二维码
@@ -126,12 +81,53 @@ public class UserController {
     }
 
 
-    @RequestMapping(value = "/addRole", method = RequestMethod.POST)
-    @ResponseBody
-    public String addRole(@RequestBody AddRoleVO addRoleVO) {
+    /**
+     * 获取登录日志
+     *
+     * @param reqBO
+     * @return
+     */
+    @RequestMapping(value = "/getLoginfor")
+    public PageRspBO<LoginInforRspVO> getLoginfor(BasePageReqBO reqBO) {
 
-        BaseResponse baseResponse = iUserService.addRole(addRoleVO);
+        return iUserService.getLoginfor(reqBO);
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param reqVO
+     * @return
+     */
+    @PostMapping(value = "/changePassword")
+    public String changePassword(@RequestBody ChangePasswordReqVO reqVO) {
+
+        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
+        if (validateBo.isHasErrors()) {
+            return validateBo.getErrorMsg().values().toString();
+        }
+        BaseResponse baseResponse = iUserService.changePassword(reqVO);
+
         return baseResponse.getMessage();
     }
 
+    /**
+     * 个人资料设置
+     *
+     * @param model
+     * @return
+     */
+    @PostMapping(value = "/getUserInfo")
+    public List<UserInfoRspVO> getUserInfo(Model model) {
+
+        return iUserService.getUserInfo();
+    }
+
+    @PostMapping(value = "/changeUserInfo")
+    public String changeUserInfo(@RequestBody UserInfoReqVO reqVO) {
+
+        BaseResponse baseResponse = iUserService.changeUserInfo(reqVO);
+
+        return baseResponse.getMessage();
+    }
 }

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="common/common_css :: css(~{::link})">
+    </head>
+    <title>角色审核</title>
+</head>
+<body>
+
+<div id="wrapper">
+    <div th:replace="common/common_left :: left"></div>
+
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <div th:replace="common/common_head :: head"></div>
+
+            <!--正文-->
+            <div>
+                <div class="card shadow mb-4" style="margin-left: 2.5%">
+                    <div class="card-body">
+                        <div style=" margin-left: 1%;margin-right: 1%">
+                            <table id="roleApplyTable">
+                            </table>
+                            <div class="modal fade" id="ModalInfo" tabindex="-1" role="dialog"
+                                 aria-labelledby="myModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            请确认您的操作！
+                                            <input type="hidden" name="email" id="email" class="form-control">
+                                            <input type="hidden" name="status" id="status" class="form-control">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default"
+                                                    data-dismiss="modal"><span
+                                                    class=""
+                                                    aria-hidden="true"></span>取消
+                                            </button>
+                                            <button type="button" id="btn_submit" class="btn btn-primary"
+                                                    data-dismiss="modal" onclick="changeRoleStatus()">
+                                                <span class="" aria-hidden="true"></span>确认
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div th:replace="common/common_js :: js(~{::script})"></div>
+    <script th:src="@{/sb-admin-2/bootstrap/bootstrap-table.js}"></script>
+    <script th:src="@{/sb-admin-2/bootstrap/bootstrap-table-zh-CN.js}"></script>
+    <script type="text/javascript" th:src="@{/js/mjs/mjs_role_apply.js}"></script>
+</div>
+</body>
+</html>

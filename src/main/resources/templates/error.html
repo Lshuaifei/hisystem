@@ -20,7 +20,7 @@
         <div class="row">
             <div>
                 <h1>Error!</h1>
-                <h2 th:text="${errorMessage}"></h2>
+                <!-- <h2 th:text="${errorMessage}"></h2>-->
                 <p>It looks like you're lost...</p>
             </div>
         </div>
@@ -48,7 +48,9 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                <a th:href="@{http://localhost:8080/login}"><div class="btn btn-action">返回登录界面</div></a>
+                <a th:href="@{http://localhost:8080}">
+                    <div class="btn btn-action">返回登录界面</div>
+                </a>
             </div>
         </div>
     </div>

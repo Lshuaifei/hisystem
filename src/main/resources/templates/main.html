@@ -1,8 +1,28 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="default">
-<div th:fragment="content">
-    <h1>main</h1>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="common/common_css :: css(~{::link})">
+    </head>
+    <title>主页</title>
+</head>
+<body>
 
+<div id="wrapper">
+    <div th:replace="common/common_left :: left"></div>
+
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <div th:replace="common/common_head :: head"></div>
+
+            <!--正文-->
+            <div id="helloooo">
+                <h1>hello</h1>
+            </div>
+            <h2 th:text="${email}"></h2>
+        </div>
+    </div>
 </div>
+<div th:replace="common/common_js :: js(~{::script})">
+</div>
+</body>
 </html>
