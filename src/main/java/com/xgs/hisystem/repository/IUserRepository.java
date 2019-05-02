@@ -10,6 +10,5 @@ public interface IUserRepository extends BaseRepository<UserEntity> {
 
     UserEntity findByEmail(String email);
 
-    List<UserEntity> findByRoleStatus(int roleStatus);
-
+    List<UserEntity> findByDepartmentAndDepartmentType(String department, String departmentType);
 }

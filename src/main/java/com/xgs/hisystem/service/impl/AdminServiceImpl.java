@@ -1,14 +1,19 @@
 package com.xgs.hisystem.service.impl;
 
+import com.xgs.hisystem.config.Contants;
 import com.xgs.hisystem.pojo.bo.BasePageReqBO;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
+import com.xgs.hisystem.pojo.entity.AnnouncementEntity;
 import com.xgs.hisystem.pojo.entity.RoleEntity;
 import com.xgs.hisystem.pojo.entity.UserEntity;
+import com.xgs.hisystem.pojo.entity.UserRoleEntity;
 import com.xgs.hisystem.pojo.vo.*;
+import com.xgs.hisystem.repository.IAnnouncementRepository;
 import com.xgs.hisystem.repository.IRoleRespository;
 import com.xgs.hisystem.repository.IUserRepository;
+import com.xgs.hisystem.repository.IUserRoleRepository;
 import com.xgs.hisystem.service.IAdminService;
-import com.xgs.hisystem.service.IUserService;
+import com.xgs.hisystem.util.DateUtil;
 import com.xgs.hisystem.util.MD5Util;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
@@ -25,8 +30,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author xgs
@@ -43,7 +50,10 @@ public class AdminServiceImpl implements IAdminService {
     private IRoleRespository iRoleRespository;
 
     @Autowired
-    private IUserService iUserService;
+    private IUserRoleRepository iUserRoleRepository;
+
+    @Autowired
+    private IAnnouncementRepository iAnnouncementRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -58,7 +68,7 @@ public class AdminServiceImpl implements IAdminService {
 
         RoleEntity roleEntity = new RoleEntity();
         roleEntity.setRole(roleVO.getRolename());
-        roleEntity.setValue(roleVO.getRoleValue());
+        roleEntity.setRoleValue(roleVO.getRoleValue());
         roleEntity.setDesrciption(roleVO.getDesciption());
 
         try {
@@ -70,12 +80,50 @@ public class AdminServiceImpl implements IAdminService {
 
     }
 
+    /**
+     * 用户添加角色
+     *
+     * @param addRoleVO
+     * @return
+     */
+    @Transactional
+    @Override
+    public BaseResponse<?> addRole(AddRoleVO addRoleVO) {
+
+        UserEntity user = iUserRepository.findByEmail(addRoleVO.getEmail());
+
+        String uId = user.getId();
+        try {
+            addRoleVO.getRoleList().forEach(role -> {
+
+                RoleEntity roleEntity = iRoleRespository.findByRoleValue(role);
+                String roleId = roleEntity.getId();
+                UserRoleEntity checkUserRole = iUserRoleRepository.findByUIdAndRoleId(uId, roleId);
+                if (checkUserRole != null) {
+                    logger.info("--**--账户：{} 已拥有 {} 角色--**--", user.getEmail(), roleEntity.getRole());
+                    return;
+                }
+
+                UserRoleEntity userRoleEntity = new UserRoleEntity();
+                userRoleEntity.setuId(uId);
+                userRoleEntity.setRoleId(roleId);
+                String desciption = user.getEmail() + "#" + roleEntity.getRole();
+                userRoleEntity.setDesciption(desciption);
+                iUserRoleRepository.saveAndFlush(userRoleEntity);
+            });
+            return BaseResponse.success();
+        } catch (Exception e) {
+            return BaseResponse.errormsg(e.getMessage());
+        }
+
+    }
+
     @Override
     public PageRspBO<applyRspVO> getRoleApply(BasePageReqBO reqBO) {
 
-        Page<UserEntity> page = iUserRepository.findAll(new Specification<UserEntity>() {
+        Page<UserRoleEntity> page = iUserRoleRepository.findAll(new Specification<UserRoleEntity>() {
             @Override
-            public Predicate toPredicate(Root<UserEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+            public Predicate toPredicate(Root<UserRoleEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicateList = new ArrayList<>();
 
                 Predicate userRole = criteriaBuilder.equal(root.get("roleStatus"), 0);
@@ -87,19 +135,21 @@ public class AdminServiceImpl implements IAdminService {
         if (page == null) {
             return null;
         }
-        List<UserEntity> userEntityList = page.getContent();
+        List<UserRoleEntity> UserRoleEntityList = page.getContent();
 
         List<applyRspVO> applyRspVOList = new ArrayList<>();
 
-        userEntityList.forEach(user -> {
-            applyRspVO applyRspVO = new applyRspVO();
-            applyRspVO.setEmail(user.getEmail());
-            applyRspVO.setUsername(user.getUsername());
-            applyRspVO.setDateTime(user.getCreateDatetime());
+        UserRoleEntityList.forEach(userRole -> {
+            Optional<UserEntity> user = iUserRepository.findById(userRole.getuId());
 
-            user.getRoleList().forEach(role -> {
-                applyRspVO.setRole(role.getDesrciption());
-            });
+            applyRspVO applyRspVO = new applyRspVO();
+            applyRspVO.setEmail(user.get().getEmail());
+            applyRspVO.setUsername(user.get().getUsername());
+            applyRspVO.setDateTime(userRole.getCreateDatetime());
+
+            Optional<RoleEntity> role = iRoleRespository.findById(userRole.getRoleId());
+            applyRspVO.setRole(role.get().getDesrciption());
+
             applyRspVOList.add(applyRspVO);
         });
 
@@ -118,18 +168,17 @@ public class AdminServiceImpl implements IAdminService {
     @Override
     public BaseResponse<?> saveUserAndSendEmailTemp(UserRegisterReqVO reqVO) {
         String email = reqVO.getEmail();
+        int roleValue = reqVO.getRoleValue();
 
         UserEntity checkUser = iUserRepository.findByEmail(email);
+
         if (checkUser != null) {
-            if (checkUser.getEmailStatus().equals(0)) {
-                logger.info("--**--账户：{} 已注册，但未激活！--**--", email);
-                return BaseResponse.errormsg("该账户已注册，但未激活！");
-            } else {
-                logger.info("--**--账户：{} 已存在！--**--", email);
-                return BaseResponse.errormsg("该账户已存在！");
-            }
+
+            return BaseResponse.errormsg(Contants.user.ACCOUNT_EXIST);
         }
+
         UserEntity userEntity = new UserEntity();
+
         userEntity.setEmail(email);
         userEntity.setUsername(reqVO.getUsername());
         userEntity.setPlainPassword(reqVO.getPassword());
@@ -142,24 +191,32 @@ public class AdminServiceImpl implements IAdminService {
         //生成激活码
         String validateCode = MD5Util.md5Encrypt32Upper(reqVO.getEmail());
         userEntity.setValidateCode(validateCode);
-
-        //组装角色参数
-        List<String> roleList = new ArrayList<>();
-        roleList.add(reqVO.getRoleValue());
-        AddRoleVO addRoleVO = new AddRoleVO();
-        addRoleVO.setEmail(email);
-        addRoleVO.setRoleList(roleList);
+        userEntity.setEmailStatus(0);
 
         try {
             iUserRepository.saveAndFlush(userEntity);
             //保存角色
-            iUserService.addRole(addRoleVO);
+            UserEntity user = iUserRepository.findByEmail(email);
+            String uId = user.getId();
 
-            return BaseResponse.success();
+            RoleEntity role = iRoleRespository.findByRoleValue(roleValue);
+            String roleId = role.getId();
+
+            UserRoleEntity userRole = new UserRoleEntity();
+            userRole.setuId(uId);
+            userRole.setRoleId(roleId);
+            String desciption = user.getEmail() + "#" + role.getRole();
+            userRole.setDesciption(desciption);
+            userRole.setRoleStatus(0);
+
+            iUserRoleRepository.saveAndFlush(userRole);
+            return BaseResponse.success(Contants.user.SUCCESS);
         } catch (Exception e) {
             e.printStackTrace();
-            return BaseResponse.errormsg("保存用户信息或邮件发送异常!");
+            return BaseResponse.errormsg("保存用户信息发送异常!");
         }
+
+
     }
 
     /**
@@ -179,18 +236,20 @@ public class AdminServiceImpl implements IAdminService {
                 .stream().filter(roleEntity -> roleEntity.getRole().equals("admin")).count();
 
         if (checkCount > 0) {
-            List<UserEntity> userList = iUserRepository.findByRoleStatus(0);
+            List<UserRoleEntity> userRoleList = iUserRoleRepository.findByRoleStatus(0);
 
-            if (userList != null && userList.size() > 0) {
-                userList.forEach(user -> {
+            if (userRoleList != null && userRoleList.size() > 0) {
+                userRoleList.forEach(userRole -> {
+                    Optional<UserEntity> user = iUserRepository.findById(userRole.getuId());
+
                     applyRspVO applyRspVO = new applyRspVO();
-                    applyRspVO.setEmail(user.getEmail());
-                    applyRspVO.setUsername(user.getUsername());
-                    applyRspVO.setDateTime(user.getCreateDatetime());
+                    applyRspVO.setEmail(user.get().getEmail());
+                    applyRspVO.setUsername(user.get().getUsername());
+                    applyRspVO.setDateTime(userRole.getCreateDatetime());
 
-                    user.getRoleList().forEach(role -> {
-                        applyRspVO.setRole(role.getDesrciption());
-                    });
+                    Optional<RoleEntity> role = iRoleRespository.findById(userRole.getRoleId());
+                    applyRspVO.setRole(role.get().getDesrciption());
+
                     applyRspList.add(applyRspVO);
                 });
             }
@@ -210,9 +269,136 @@ public class AdminServiceImpl implements IAdminService {
 
         if (!StringUtils.isEmpty(status)) {
             UserEntity user = iUserRepository.findByEmail(email);
-            user.setRoleStatus(status);
-            iUserRepository.saveAndFlush(user);
+
+            UserRoleEntity userRole = iUserRoleRepository.findByUIdAndRoleStatus(user.getId(), 0);
+
+            userRole.setRoleStatus(status);
+
+            iUserRoleRepository.saveAndFlush(userRole);
         }
         return BaseResponse.success();
+    }
+
+    /**
+     * 公告相关
+     *
+     * @param reqVO
+     * @return
+     */
+
+    @Override
+    public BaseResponse<?> addAnnouncement(AnnouncementVO reqVO) {
+
+        AnnouncementEntity announcementTemp = iAnnouncementRepository.findByTitle(reqVO.getTitle());
+        if (announcementTemp != null && reqVO.getContents().equals(announcementTemp.getContents())) {
+
+            return BaseResponse.errormsg(Contants.user.ANN_EQUALS);
+        }
+
+        AnnouncementEntity announcement = new AnnouncementEntity();
+        announcement.setTitle(reqVO.getTitle());
+        announcement.setContents(reqVO.getContents());
+
+        announcement.setAnnStatus(0);
+        announcement.setAnnDate(DateUtil.getCurrentDateSimpleToString());
+        try {
+            iAnnouncementRepository.saveAndFlush(announcement);
+
+            return BaseResponse.success(Contants.user.ADD_OK);
+        } catch (Exception e) {
+            return BaseResponse.errormsg(Contants.user.FAIL);
+        }
+    }
+
+    @Override
+    public PageRspBO<AnnouncementVO> getAnnouncement(BasePageReqBO reqBO) {
+        Page<AnnouncementEntity> page = iAnnouncementRepository.findAll(new Specification<AnnouncementEntity>() {
+            @Override
+            public Predicate toPredicate(Root<AnnouncementEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicateList = new ArrayList<>();
+
+                Predicate Announcement = criteriaBuilder.isNotNull(root.get("title"));
+                predicateList.add(Announcement);
+                query.where(predicateList.toArray(new Predicate[predicateList.size()]));
+
+                return null;
+            }
+        }, PageRequest.of(reqBO.getPageNumber(), reqBO.getPageSize()));
+
+        if (page == null) {
+            return null;
+        }
+        List<AnnouncementEntity> announcementList = page.getContent();
+        List<AnnouncementVO> announcementVOList = new ArrayList<>();
+        announcementList.forEach(announcement -> {
+            AnnouncementVO announcementVO = new AnnouncementVO();
+            announcementVO.setId(announcement.getId());
+            announcementVO.setTitle(announcement.getTitle());
+            announcementVO.setContents(announcement.getContents());
+
+            announcementVO.setAnnStatus(announcement.getAnnStatus());
+            announcementVOList.add(announcementVO);
+        });
+
+        PageRspBO pageRspBO = new PageRspBO();
+        pageRspBO.setTotal((int) page.getTotalElements());
+        pageRspBO.setRows(announcementVOList);
+        return pageRspBO;
+    }
+
+    @Override
+    public BaseResponse<?> changeAnnouncement(AnnouncementVO announcementVO) {
+
+
+        Optional<AnnouncementEntity> announcement = iAnnouncementRepository.findById(announcementVO.getId());
+        announcement.get().setTitle(announcementVO.getTitle());
+        announcement.get().setContents(announcementVO.getContents());
+        announcement.get().setAnnDate(DateUtil.getCurrentDateSimpleToString());
+        try {
+            iAnnouncementRepository.saveAndFlush(announcement.get());
+            return BaseResponse.success(Contants.user.SUCCESS);
+        } catch (Exception e) {
+            return BaseResponse.errormsg(Contants.user.FAIL);
+        }
+
+
+    }
+
+    @Override
+    public BaseResponse<?> deleteAnnouncement(String id) {
+
+        try {
+            iAnnouncementRepository.deleteById(id);
+            return BaseResponse.success(Contants.user.SUCCESS);
+        } catch (Exception e) {
+            return BaseResponse.errormsg(Contants.user.FAIL);
+        }
+
+    }
+
+    @Override
+    public BaseResponse<?> add_Announcement(String id) {
+
+        Optional<AnnouncementEntity> announcement = iAnnouncementRepository.findById(id);
+        announcement.get().setAnnStatus(1);
+        try {
+            iAnnouncementRepository.saveAndFlush(announcement.get());
+            return BaseResponse.success(Contants.user.SUCCESS);
+        } catch (Exception e) {
+            return BaseResponse.success(Contants.user.FAIL);
+        }
+    }
+
+    @Override
+    public BaseResponse<?> sub_Announcement(String id) {
+
+        Optional<AnnouncementEntity> announcement = iAnnouncementRepository.findById(id);
+        announcement.get().setAnnStatus(0);
+        try {
+            iAnnouncementRepository.saveAndFlush(announcement.get());
+            return BaseResponse.success(Contants.user.SUCCESS);
+        } catch (Exception e) {
+            return BaseResponse.success(Contants.user.FAIL);
+        }
     }
 }

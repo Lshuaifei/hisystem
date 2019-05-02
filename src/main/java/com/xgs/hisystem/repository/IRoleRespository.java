@@ -11,5 +11,5 @@ public interface IRoleRespository extends BaseRepository<RoleEntity> {
 
     RoleEntity findByRole(String role);
 
-    RoleEntity findByValue(String value);
+    RoleEntity findByRoleValue(Integer value);
 }

@@ -4,25 +4,12 @@
 <!--导航栏-->
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow" th:fragment="head">
 
-    <!-- Sidebar Toggle (Topbar) -->
-    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-        <i class="fa fa-bars"></i>
-    </button>
 
-    <!-- 页内搜索 -->
-    <form
-            class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-        <div class="input-group">
-            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                   aria-label="Search" aria-describedby="basic-addon2" id="key-word">
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="button" onclick="searchThis()">
-                    <i class="fas fa-search fa-sm"></i>
-                </button>
-            </div>
-        </div>
-    </form>
-
+    <!-- 天气 -->
+    <div style="padding-left: 40px;padding-top: 25px">
+        <iframe id="tianqi" scrolling="no" src="" frameborder="0" width="470"
+                height="60" allowtransparency="true"></iframe>
+    </div>
     <!-- 通知 -->
     <ul class="navbar-nav ml-auto">
 
@@ -67,8 +54,7 @@
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <!--用户名-->
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small" id="head_username">
-                                    <shiro:principal property="username"></shiro:principal>
-                                </span>
+                    <shiro:principal property="username"></shiro:principal></span>
 
                 <img class="img-profile rounded-circle" th:src="@{/sb-admin-2/img/doctorLogo.png}">
             </a>
@@ -102,25 +88,14 @@
             $("#notice").load('/getRoleNotice');
 
         });
+        //天气预报
+        window.onload = function () {
+            setTimeout("loadweather()", 500);
+        };
 
-        function searchThis() {
-            var content = $("#helloooo").html();
-            var keyWord = $("#key-word").val();
-            content = search_do(content, keyWord);
-            $("#helloooo").innerHTML = content;
-            alert(content)
-        }
-
-
-        function search_do(content, keyWord) {
-            var keyWordArr = keyWord.replace(/[\s]+/g, ' ').split(' ');
-            var re;
-            for (var n = 0; n < keyWordArr.length; n++) {
-//re = new RegExp(">[\s\S]*?"+keyWordArr[n]+"[\s\S]*?<\S","gmi");
-                re = new RegExp("" + keyWordArr[n] + "", "gmi");
-                content = content.replace(re, '<h1 style="color:#0f0;background-color:#ff0">' + keyWordArr[n] + '</h1>');
-            }
-            return content;
+        function loadweather(url) {
+            var url = "https://tianqiapi.com/api.php?style=tg&skin=orange";
+            $("#tianqi").attr("src", url);
         }
     </script>
 

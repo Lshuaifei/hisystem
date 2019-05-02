@@ -49,6 +49,8 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/logout", "logout"); // 用户退出
         filterChainDefinitionMap.put("/fmail", "anon");
 
+        filterChainDefinitionMap.put("/admin/createRole", "anon");
+        filterChainDefinitionMap.put("/admin/adduser", "anon");
         filterChainDefinitionMap.put("/user/getCode", "anon");
 
         filterChainDefinitionMap.put("/**", "authc"); // 其他路径均需要身份认证，一般位于最下面，优先级最低

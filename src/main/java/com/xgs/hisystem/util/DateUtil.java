@@ -154,8 +154,9 @@ public class DateUtil {
             e.printStackTrace();
         }
         int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
-        if (w < 0)
+        if (w < 0) {
             w = 0;
+        }
         return weekDays[w];
     }
 
@@ -274,5 +275,38 @@ public class DateUtil {
         return result;
     }
 
+    //由出生日期获得年龄
+    public static int getAge(String str) throws Exception {
+
+        SimpleDateFormat df = new SimpleDateFormat(SIMPLE_FORMAT);
+        Date birthDay = df.parse(str);
+        Calendar cal = Calendar.getInstance();
+
+        if (cal.before(birthDay)) {
+            throw new IllegalArgumentException(
+                    "The birthDay is before Now.It's unbelievable!");
+        }
+        int yearNow = cal.get(Calendar.YEAR);
+        int monthNow = cal.get(Calendar.MONTH);
+        int dayOfMonthNow = cal.get(Calendar.DAY_OF_MONTH);
+        cal.setTime(birthDay);
+
+        int yearBirth = cal.get(Calendar.YEAR);
+        int monthBirth = cal.get(Calendar.MONTH);
+        int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
+
+        int age = yearNow - yearBirth;
+
+        if (monthNow <= monthBirth) {
+            if (monthNow == monthBirth) {
+                if (dayOfMonthNow < dayOfMonthBirth) {
+                    age--;
+                }
+            } else {
+                age--;
+            }
+        }
+        return age;
+    }
 
 }

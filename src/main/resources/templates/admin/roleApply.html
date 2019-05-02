@@ -4,13 +4,14 @@
     <head th:replace="common/common_css :: css(~{::link})">
     </head>
     <title>角色审核</title>
+    <link rel="stylesheet" type="text/css" th:href="@{css/mcss/model/component.css}"/>
 </head>
 <body>
 
 <div id="wrapper">
     <div th:replace="common/common_left :: left"></div>
 
-    <div id="content-wrapper" class="d-flex flex-column">
+    <div id="content-wrapper" class="d-flex flex-column content-wrapper">
         <div id="content">
             <div th:replace="common/common_head :: head"></div>
 
@@ -21,31 +22,57 @@
                         <div style=" margin-left: 1%;margin-right: 1%">
                             <table id="roleApplyTable">
                             </table>
-                            <div class="modal fade" id="ModalInfo" tabindex="-1" role="dialog"
-                                 aria-labelledby="myModalLabel"
-                                 aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-body">
-                                            请确认您的操作！
-                                            <input type="hidden" name="email" id="email" class="form-control">
-                                            <input type="hidden" name="status" id="status" class="form-control">
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default"
-                                                    data-dismiss="modal"><span
-                                                    class=""
-                                                    aria-hidden="true"></span>取消
+
+                            <!--模态框_通过-->
+                            <div id="mymodal_1" class="mymodal_overlay">
+                                <div class="mymodal_modal modal1">
+                                    <!--<img class="png" th:src="@{/images/icon/pass.png}">-->
+                                    <div class="modal-body">
+                                        请确认您的操作！
+                                        <input type="hidden" name="email" id="email" class="form-control">
+                                        <input type="hidden" name="status" id="status" class="form-control">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a style="text-decoration: none" href="#">
+                                            <button type="button" class="btn btn-primary"
+                                                    href="#">取消
                                             </button>
-                                            <button type="button" id="btn_submit" class="btn btn-primary"
-                                                    data-dismiss="modal" onclick="changeRoleStatus()">
-                                                <span class="" aria-hidden="true"></span>确认
+                                        </a>
+                                        <a style="text-decoration: none" href="#">
+                                            <button type="button" class="btn btn-primary"
+                                                    onclick="changeRoleStatus()">确认
                                             </button>
-                                        </div>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
+                            <!--模态框_不通过-->
+                            <!--                      <div id="mymodal_2" class="mymodal_overlay">
+                                                      <div class="mymodal_modal modal1">
+                                                          <img class="png" th:src="@{/images/icon/nopass.png}">
+                                                          <div class="modal-body">
+                                                              请确认您的操作！
+                                                              <input type="hidden" name="email" id="nopass_email" class="form-control">
+                                                              <input type="hidden" name="status" id="nopass_status" class="form-control">
+                                                          </div>
+                                                          <div class="modal-footer">
+                                                              <a style="text-decoration: none" href="#">
+                                                                  <button type="button" class="btn btn-primary"
+                                                                          href="#">取消
+                                                                  </button>
+                                                              </a>
+                                                              <a style="text-decoration: none" href="#">
+                                                                  <button type="button" class="btn btn-primary"
+                                                                          onclick="changeRoleStatus()">确认
+                                                                  </button>
+                                                              </a>
+                                                          </div>
+                                                      </div>
+                                                  </div>-->
+
                         </div>
+
+                    </div>
                     </div>
                 </div>
             </div>

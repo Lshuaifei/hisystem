@@ -27,12 +27,17 @@ public class AdminController {
     @Autowired
     private IAdminService iadminService;
 
-
+    /**
+     * 新建角色
+     *
+     * @param roleVO
+     * @return
+     */
     @RequestMapping(value = "/createRole", method = RequestMethod.POST)
     public String createRole(@RequestBody RoleVO roleVO) {
         ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(roleVO);
         if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().toString();
+            return validateBo.getErrorMsg().values().toString();
         }
         BaseResponse baseResponse = iadminService.createRole(roleVO);
         return baseResponse.getMessage();
@@ -49,7 +54,8 @@ public class AdminController {
     public String saveUserAndSendEmailTemp(@RequestBody UserRegisterReqVO reqVO) {
         ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
         if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().toString();
+            String result = validateBo.getErrorMsg().values().toString();
+            return result;
         }
         BaseResponse baseResponse = iadminService.saveUserAndSendEmailTemp(reqVO);
         return baseResponse.getMessage();
@@ -68,7 +74,7 @@ public class AdminController {
         if (validateBo.isHasErrors()) {
             return BaseResponse.errormsg(validateBo.getErrorMsg().toString());
         }
-        BaseResponse baseResponse = iUserService.addRole(addRoleVO);
+        BaseResponse baseResponse = iadminService.addRole(addRoleVO);
         return baseResponse;
     }
 
@@ -100,4 +106,73 @@ public class AdminController {
         iadminService.changeRoleStatus(status, email);
     }
 
+    /**
+     * 公告
+     *
+     * @param reqVO
+     * @return
+     */
+    @PostMapping(value = "/addAnnouncement")
+    public String AddAnnouncement(@RequestBody AnnouncementVO reqVO) {
+        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
+        if (validateBo.isHasErrors()) {
+            return validateBo.getErrorMsg().values().toString();
+        }
+        BaseResponse baseResponse = iadminService.addAnnouncement(reqVO);
+        return baseResponse.getMessage();
+    }
+
+    @RequestMapping(value = "/getAnnouncement")
+    public PageRspBO<AnnouncementVO> getAnnouncement(BasePageReqBO reqBO) {
+
+
+        return iadminService.getAnnouncement(reqBO);
+    }
+
+    @PostMapping(value = "/changeAnnouncement")
+    public String changeAnnouncement(@RequestBody AnnouncementVO announcementVO) {
+        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(announcementVO);
+        if (validateBo.isHasErrors()) {
+            return validateBo.getErrorMsg().values().toString();
+        }
+
+        BaseResponse baseResponse = iadminService.changeAnnouncement(announcementVO);
+        return baseResponse.getMessage();
+    }
+
+    @PostMapping(value = "/deleteAnnouncement")
+    public String deleteAnnouncement(@RequestParam String id) {
+        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(id);
+        if (validateBo.isHasErrors()) {
+            return validateBo.getErrorMsg().values().toString();
+        }
+
+        BaseResponse baseResponse = iadminService.deleteAnnouncement(id);
+
+        return baseResponse.getMessage();
+    }
+
+    @PostMapping(value = "/add_Announcement")
+    public String add_Announcement(@RequestParam String id) {
+        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(id);
+        if (validateBo.isHasErrors()) {
+            return validateBo.getErrorMsg().values().toString();
+        }
+
+        BaseResponse baseResponse = iadminService.add_Announcement(id);
+
+        return baseResponse.getMessage();
+    }
+
+    @PostMapping(value = "/sub_Announcement")
+    public String sub_Announcement(@RequestParam String id) {
+        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(id);
+        if (validateBo.isHasErrors()) {
+            return validateBo.getErrorMsg().values().toString();
+        }
+
+        BaseResponse baseResponse = iadminService.sub_Announcement(id);
+
+        return baseResponse.getMessage();
+    }
 }

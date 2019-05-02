@@ -1,6 +1,7 @@
 package com.xgs.hisystem.pojo.vo;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author xgs
@@ -12,8 +13,8 @@ public class RoleVO {
     @NotBlank(message = "角色名不能为空")
     private String rolename;
 
-    @NotBlank(message = "角色编码不能为空")
-    private String roleValue;
+    @NotNull(message = "角色编码不能为空")
+    private Integer roleValue;
 
     @NotBlank(message = "描述不能为空")
     private String desciption;
@@ -26,11 +27,11 @@ public class RoleVO {
         this.rolename = rolename;
     }
 
-    public String getRoleValue() {
+    public Integer getRoleValue() {
         return roleValue;
     }
 
-    public void setRoleValue(String roleValue) {
+    public void setRoleValue(Integer roleValue) {
         this.roleValue = roleValue;
     }
 

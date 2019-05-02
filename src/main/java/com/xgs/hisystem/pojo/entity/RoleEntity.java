@@ -3,7 +3,10 @@ package com.xgs.hisystem.pojo.entity;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.util.List;
 
 @Entity
@@ -15,8 +18,8 @@ public class RoleEntity extends BaseEntity{
     @Column(name = "role")
     private String role;
 
-    @Column(name = "value")
-    private String value;
+    @Column(name = "role_value")
+    private Integer roleValue;
 
     @Column(name = "desrciption")
     private String desrciption;
@@ -48,17 +51,11 @@ public class RoleEntity extends BaseEntity{
         this.userList = userList;
     }
 
-    /**
-     * @return the value
-     */
-    public String getValue() {
-        return value;
+    public Integer getRoleValue() {
+        return roleValue;
     }
 
-    /**
-     * @param value the value to set
-     */
-    public void setValue(String value) {
-        this.value = value;
+    public void setRoleValue(Integer roleValue) {
+        this.roleValue = roleValue;
     }
 }

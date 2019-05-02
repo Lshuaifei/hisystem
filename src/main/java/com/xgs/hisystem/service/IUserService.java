@@ -15,13 +15,19 @@ public interface IUserService {
 
     BaseResponse<?> activation(String email, String validateCode) throws ParseException;
 
-    BaseResponse<?> addRole(AddRoleVO addRoleVO);
-
     PageRspBO<LoginInforRspVO> getLoginfor(BasePageReqBO reqBO);
 
     BaseResponse<?> changePassword(ChangePasswordReqVO reqVO);
 
-    List<UserInfoRspVO> getUserInfo();
+    List<UserInfoVO> getUserInfo();
 
-    BaseResponse<?> changeUserInfo(UserInfoReqVO reqVO);
+    BaseResponse<?> changeUserInfo(UserInfoVO reqVO);
+
+    List<AnnouncementVO> annDisplay();
+
+    String getAnnContent(String id);
+
+    List<AccountRoleVO> getAccountRole();
+
+    BaseResponse<?> addAnotherRole(AccountRoleVO reqVO);
 }

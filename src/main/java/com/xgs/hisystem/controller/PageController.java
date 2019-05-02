@@ -1,5 +1,7 @@
 package com.xgs.hisystem.controller;
 
+import com.xgs.hisystem.pojo.vo.AccountRoleVO;
+import com.xgs.hisystem.pojo.vo.AnnouncementVO;
 import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.applyRspVO;
 import com.xgs.hisystem.service.IAdminService;
@@ -97,6 +99,16 @@ public class PageController {
     }
 
     /**
+     * 获取身份证信息
+     *
+     * @return
+     */
+    @RequestMapping(value = "/register")
+    public String getUserID() {
+        return "register/register";
+    }
+
+    /**
      * 导航栏通知数量显示，角色审核
      *
      * @param model
@@ -118,4 +130,32 @@ public class PageController {
     }
 
 
+    @RequestMapping(value = "/announcement")
+    public String announcement() {
+        return "admin/announcement";
+    }
+
+    @RequestMapping(value = "/annDisplay")
+    public String annDisplay(Model model) {
+
+        List<AnnouncementVO> annList = iUserService.annDisplay();
+        model.addAttribute("annList", annList);
+
+        return "main::ann";
+    }
+
+    @RequestMapping(value = "/getAccountRole")
+    public String getAccountRole(Model model) {
+
+        List<AccountRoleVO> accountRoleList = iUserService.getAccountRole();
+        model.addAttribute("accountRole", accountRoleList);
+
+        return "accountset::accountRole";
+    }
+
+    @RequestMapping(value = "/registerRecord")
+    public String registerRecord() {
+        return "/register/registerRecord";
+    }
 }
+

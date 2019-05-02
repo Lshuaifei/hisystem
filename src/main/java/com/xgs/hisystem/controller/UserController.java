@@ -11,6 +11,7 @@ import com.xgs.hisystem.util.QRcodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -114,20 +115,40 @@ public class UserController {
     /**
      * 个人资料设置
      *
-     * @param model
      * @return
      */
     @PostMapping(value = "/getUserInfo")
-    public List<UserInfoRspVO> getUserInfo(Model model) {
+    public List<UserInfoVO> getUserInfo() {
 
         return iUserService.getUserInfo();
     }
 
     @PostMapping(value = "/changeUserInfo")
-    public String changeUserInfo(@RequestBody UserInfoReqVO reqVO) {
+    public String changeUserInfo(@RequestBody UserInfoVO reqVO) {
+        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
+        if (validateBo.isHasErrors()) {
+            return validateBo.getErrorMsg().values().toString();
+        }
 
         BaseResponse baseResponse = iUserService.changeUserInfo(reqVO);
 
         return baseResponse.getMessage();
     }
+
+    @PostMapping(value = "/getAnnContent")
+    public String getAnnContent(@RequestParam String id) {
+        if (StringUtils.isEmpty(id)) {
+            return null;
+        }
+
+        return iUserService.getAnnContent(id);
+    }
+
+    @PostMapping(value = "/addAnotherRole")
+    public String addAnotherRole(@RequestBody AccountRoleVO reqVO) {
+
+        BaseResponse baseResponse = iUserService.addAnotherRole(reqVO);
+        return baseResponse.getMessage();
+    }
+
 }

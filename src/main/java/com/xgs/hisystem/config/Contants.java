@@ -19,25 +19,43 @@ public final class Contants {
 
     public class user {
 
-        public static final String USER_OR_PASSWORD_ERROR = "密码错误或用户不存在";
+        public static final String USER_not_EXIST = "该账户不存在";
+
+        public static final String PASSWORD_ERROR = "密码错误";
 
         public static final String EMAIL_STATUS_0 = "账户未激活";
 
-        public static final String ROLE_STATUS_0 = "管理员未审核角色,请等待或联系管理员";
+        public static final String ROLE_STATUS_0 = "角色暂未审核,请等待或联系管理员";
 
-        public static final String ROLE_STATUS_0_BAD = "角色未通过审核";
+        public static final String ROLE_STATUS_0_BAD = "角色未审核通过，请联系管理员";
 
         public static final String SUCCESS = "SUCCESS";
 
-        public static final String ACCOUNT_EXIST = "账户已存在";
+        public static final String ACCOUNT_EXIST = "该账户已存在，若要添加角色登录后账户设置";
 
         public static final String PLAIN_PASSWORD_ERROR = "旧密码错误";
+
+        public static final String OLD_EQUALS_NEW_PASSWORD = "新密码与旧密码一致";
 
         public static final String CHANGE_OK = "修改成功";
 
         public static final String FAIL = "FAIL";
 
         public static final String OLD_NO_NEW = "密码确认输入不一致！";
+
+        public static final String ADD_OK = "添加成功";
+
+        public static final String ANN_EQUALS = "该公告已存在";
+    }
+
+    public class register {
+
+        public static final String NONE = "NONE";
+
+        public static final String COVER = "COVER";         //补办就诊卡
+
+        public static final String ACTIVATED = "ACTIVATED"; //就诊卡已被激活
+
     }
 
 }

@@ -118,7 +118,8 @@ var ButtonInit = function () {
 //操作
 function addFunctionAlty() {
     return [
-        '<button type="button" id="btn_pass" class="btn btn-outline-primary" data-toggle="modal" data-target="#ModalInfo">通过</button>  ',
+
+        '<button id="btn_pass" class="btn btn-outline-primary" >通过</button>  ',
         '<button id="btn_nopass" class="btn btn-outline-danger">不通过</button>'
     ].join('');
 }
@@ -129,13 +130,13 @@ window.operateEvents = {
     "click #btn_pass": function (e, value, row, index) {
 
         //弹出模态框
-        $("#ModalInfo").modal();
+        window.location.hash = "#mymodal_1";
         $("#email").val(row.email);
-        $("#status").val(1);
+        $("#tatus").val(1);
     },
     // 不通过
     'click #btn_nopass': function (e, value, row, index) {
-        $("#ModalInfo").modal();
+        window.location.hash = "#mymodal_1";
         $("#email").val(row.email);
         $("#status").val(-1);
     }

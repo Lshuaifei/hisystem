@@ -52,15 +52,11 @@ function dologin() {
                 window.location.href = "/main"
             } else {
 
-                $('.modalxa').html(data);
-                $('.modalx').fadeIn();
-                setTimeout(function () {
-                    $('.modalx').fadeOut();
-                }, 3000);
+                swal(data, "", "error")
             }
 
         }
-    })
+    });
 
     setCookie();
 }
@@ -102,11 +98,7 @@ function register() {
 
             } else {
 
-                $('.modalxa').html(data);
-                $('.modalx').fadeIn();
-                setTimeout(function () {
-                    $('.modalx').fadeOut();
-                }, 3000);
+                swal(data, "", "error")
             }
         }
     })
@@ -123,7 +115,7 @@ function setCookie() {
         var flag = true;
 
         $.cookie("login_code", loginCode);
-        $.cookie("pwd", $.base64.encode(pwd), {expires: 2});
+        $.cookie("pwd", $.base64.encode(pwd), {expires: 7});
 
         $.cookie("flag", flag)
 

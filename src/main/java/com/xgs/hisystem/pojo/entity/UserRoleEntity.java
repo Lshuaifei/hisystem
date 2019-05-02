@@ -22,6 +22,9 @@ public class UserRoleEntity extends BaseEntity {
     @Column(name = "desciption")
     private String desciption;
 
+    @Column(name = "role_status")
+    private Integer roleStatus;         //管理员审核状态
+
     public String getuId() {
         return uId;
     }
@@ -44,5 +47,13 @@ public class UserRoleEntity extends BaseEntity {
 
     public void setDesciption(String desciption) {
         this.desciption = desciption;
+    }
+
+    public Integer getRoleStatus() {
+        return roleStatus;
+    }
+
+    public void setRoleStatus(Integer roleStatus) {
+        this.roleStatus = roleStatus;
     }
 }

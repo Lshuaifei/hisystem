@@ -6,6 +6,9 @@ $(function () {
     //2.初始化Button的点击事件
     var oButtonInit = new ButtonInit();
     oButtonInit.Init();
+
+
+    $("#getAccountRole").load("/getAccountRole")
 });
 
 var TableInit = function () {
@@ -31,7 +34,7 @@ var TableInit = function () {
             search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
             strictSearch: true,
             showColumns: false,                  //是否显示所有的列
-            showRefresh: true,                  //是否显示刷新按钮
+            showRefresh: false,                  //是否显示刷新按钮
             minimumCountColumns: 2,             //最少允许的列数
             clickToSelect: false,                //是否启用点击选中行
             // height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
@@ -121,17 +124,50 @@ function changePassword() {
 
         success: function (data) {
 
-            $('.modalxa').html(data);
-            $('.modalx').fadeIn();
-            setTimeout(function () {
-                $('.modalx').fadeOut();
-            }, 3000);
-
             if (data == "修改成功") {
+
+                swal(data, "", "success");
                 /*防止重复提交*/
                 $("#changePassword").attr("disabled", true);
 
                 setTimeout("$('#changePassword').removeAttr('disabled')", 6000);
+            } else {
+                swal(data, "", "error")
+            }
+
+        }
+    })
+}
+
+var role = '';
+$('.roleSelect').chosen({
+
+    allow_single_deselect: false, //单选下拉框是否允许取消选择。如果允许，选中选项会有一个x号可以删除选项
+    disable_search: true, //禁用搜索。设置为true，则无法搜索选项。
+    disable_search_threshold: 0, //当选项少等于于指定个数时禁用搜索。
+    inherit_select_classes: true, //是否继承原下拉框的样式类，此处设为继承
+    max_shown_results: 5, //下拉框最大显示选项数量
+    width: '150px'
+}).change(function () {
+
+    role = $(".roleSelect option:selected").val();
+});
+
+function addAnotherRole() {
+    var AccountRoleVO = {
+        role: role
+    };
+
+    $.ajax({
+        url: "user/addAnotherRole",
+        type: "post",
+        contentType: 'application/json',
+        data: JSON.stringify(AccountRoleVO),
+        success: function (data) {
+            if (data == "SUCCESS") {
+                swal("角色添加成功，请等待管理员审核！", "", "success")
+            } else {
+                swal(data, "", "error")
             }
 
         }
