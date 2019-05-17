@@ -1,11 +1,11 @@
-package com.xgs.hisystem.pojo.bo;
+package com.xgs.hisystem.pojo.vo;
 
 /**
  * @author xgs
  * @date 2019/4/3
  * @description:
  */
-public class BasePageReqBO {
+public class BasePageReqVO {
 
     private int pageSize;
 

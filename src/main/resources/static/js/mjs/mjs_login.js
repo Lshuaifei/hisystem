@@ -30,6 +30,11 @@ var broswer = getBroswer();
 /*当前ip*/
 var ip = returnCitySN["cip"];
 
+$(document).keypress(function (e) {
+    if ((e.keyCode || e.which) == 13) {
+        $("#loginId").click(dologin());
+    }
+});
 
 function dologin() {
 

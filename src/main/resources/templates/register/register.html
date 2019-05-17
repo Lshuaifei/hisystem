@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="common/common_css :: css(~{::link})">
+    </head>
+    <title>挂号收费</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/chosen.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{css/mcss/mcss_register.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{css/mcss/model/component-1.css}"/>
+
+</head>
+<body>
+
+<div id="wrapper">
+    <div th:replace="common/common_left :: left"></div>
+
+    <div id="content-wrapper" class="d-flex flex-column content-wrapper">
+        <div id="content">
+            <div th:replace="common/common_head :: head"></div>
+
+            <!--正文-->
+            <div>
+                <div class="card shadow mb-4" style="margin-left: 2.5%;height: 818px">
+
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">挂号收费</h6>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div style=" margin-left: 8%;margin-right: 1%;margin-top: 1%">
+
+                            <div>
+
+                                <div class="textbox">
+                                    卡号<input type="text" readonly="readonly" id="cardId">
+                                    <div class="mybtn1">
+                                        <button class="btn btn-info" onclick="getCardIdInfor()">读取就诊卡信息</button>
+                                    </div>
+                                    <div class="mybtn">
+                                        <a href="#mymodal_1">
+                                            <button class="btn btn-info">新办就诊卡</button>
+                                        </a>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="textbox_2">
+
+                                    姓名<input type="text" id="name" style="width: 120px" readonly="readonly">&emsp;
+                                    性别<input type="text" id="sex" style="width: 90px" readonly="readonly">&emsp;
+                                    民族<input type="text" id="nationality" style="width: 90px" readonly="readonly">&emsp;
+                                    年龄<input type="text" id="age" style="width:100px" readonly="readonly">
+
+                                </div>
+
+
+                                <div class="textbox_3">
+                                    <div>
+                                        选择科室
+                                        <select class='chosen select' data-placeholder=' '>
+                                            <option value=""></option>
+                                            <optgroup label="内科">
+                                                <option value="内科">内科</option>
+                                                <option value="呼吸内科">呼吸内科</option>
+                                                <option value="消化内科">消化内科</option>
+                                                <option value="心脏内科">心脏内科</option>
+                                            </optgroup>
+                                            <optgroup label="外科">
+                                                <option value="外科">外科</option>
+                                                <option value="泌尿外科">泌尿外科</option>
+                                                <option value="神经外科">神经外科</option>
+                                                <option value="血管外科">血管外科</option>
+                                                <option value="肛肠外科">肛肠外科</option>
+                                            </optgroup>
+                                            <optgroup label="妇产科"> 
+                                                <option value="妇产科">妇产科</option>
+                                            </optgroup>
+                                            <optgroup label="皮肤科">
+                                                <option value="皮肤科">皮肤科</option>
+                                            </optgroup>
+                                            <optgroup label="五官科">
+                                                <option value="五官科">五官科</option>
+                                            </optgroup>
+                                            <optgroup label="口腔科">
+                                                <option value="口腔科">口腔科</option>
+                                            </optgroup>
+                                            <optgroup label="急诊科">
+                                                <option value="急诊科">急诊科</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+
+                                    <div style="margin-left: 25px">
+                                        挂号类型
+                                        <select class='select_1' data-placeholder=' '>
+                                            <option value=""></option>
+                                            <option value="普通门诊">普通门诊</option>
+                                            <option value="急诊">急诊</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="department-search">
+                                        <button class="btn btn-info" onclick="getRegisterDoctor()">
+                                            <img class="png" th:src="@{/images/icon/search.png}">
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="register_table">
+                                    <table id="RegisterDoctor"></table>
+                                </div>
+
+                                <div class="textbox_2">
+
+                                    挂号费<input type="text" id="registerPriice" style="width: 120px" value="1.0"
+                                              readonly="readonly">元&emsp;
+
+                                    诊查费<input type="text" id="treatmentPrice" style="width: 120px;color: red"
+                                              readonly="readonly">元&emsp;
+
+                                    付款方式<select class='payType' data-placeholder=' '>
+                                     
+                                    <option value=""></option>
+
+                                    <option value="现金">现金</option>
+                                       
+                                    <option value="支付宝">支付宝</option>
+                                     
+                                </select>
+                                </div>
+                                <div class="textbox_2" style="display: flex">
+                                    <div style="width: 36%">
+                                        <div id="money" style="display: none">
+                                            实付<input type="text" id="payMoney" style="width: 120px"
+                                                     oninput="getChange()">元&emsp;&emsp;&emsp;
+                                            找零<input type="text" id="Change" style="width: 100px;color: red"
+                                                     readonly="readonly">元
+
+                                        </div>
+
+                                        <div id="apay" style="display: none;margin-left: 55%">
+                                            <img style="width: 100px;height: 100px;"
+                                                 th:src="@{/images/icon/apay.jpg}">
+                                        </div>
+                                    </div>
+                                    <div class="mybtn3">
+
+                                        <button class="btn btn-info" onclick="addRegisterInfor()">提交信息</button>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <!--模态框_-->
+                    <div id="mymodal_1" class="mymodal_overlay">
+                        <div class="mymodal_modal modal1">
+                            <div style="font-size: 1.1rem">
+                                <img class="png" th:src="@{/images/icon/change.png}">&emsp;办理就诊卡
+                            </div>
+
+                            <div class="textbox_1">
+
+                                姓名<input type="text" id="IDname" style="width: 120px" readonly="readonly">&emsp;&emsp;&emsp;&emsp;&emsp;
+                                身份证号<input type="text" id="IDcard" style="width: 320px" readonly="readonly">
+                                <br>
+                                <br>
+                                性别<input type="text" id="IDsex" style="width: 90px" readonly="readonly">&emsp;&emsp;
+                                民族<input type="text" id="IDnationality" style="width: 90px" readonly="readonly">&emsp;&emsp;
+                                出生日期<input type="text" id="IDbirthday" style="width:220px" readonly="readonly">
+                                <br>
+                                <br>
+                                <div style="display: flex">
+                                    <div style="margin-right: 100px">
+                                        住址<input type="text" id="IDaddress" style="width: 330px"
+                                                 readonly="readonly">&emsp;&emsp;&emsp;
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-outline-primary" onclick="getIDcardInfor()">
+                                            二代身份证阅读
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="display: flex" class="cardid">
+                                    <div style="margin-right: 230px">
+                                        卡号<input type="text" id="cardId_1" style="width: 220px"
+                                                 readonly="readonly">&emsp;&emsp;&emsp;
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-outline-primary" onclick="getDefaultGetCardId()">
+                                            读取新就诊卡
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 22px">
+                                    手机<input type="text" id="IDtelphone" style="width:220px">(非必填)
+                                </div>
+                            </div>
+                            <div class=" modal-footer
+                                    ">
+                                <a style="text-decoration: none" href="#">
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="cancel()">取消
+                                    </button>
+                                </a>
+                                <button type="button" class="btn btn-primary"
+                                        onclick="addPatientInfor()">确认
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+</div>
+<div>
+    <div th:replace="common/common_js :: js(~{::script})"></div>
+    <script type="text/javascript" th:src="@{/js/chosen.jquery.min.js}"></script>
+    <script th:src="@{/sb-admin-2/bootstrap/bootstrap-table.js}"></script>
+    <script th:src="@{/sb-admin-2/bootstrap/bootstrap-table-zh-CN.js}"></script>
+    <script type="text/javascript" th:src="@{/js/mjs/mjs_register.js}"></script>
+</div>
+</body>
+</html>

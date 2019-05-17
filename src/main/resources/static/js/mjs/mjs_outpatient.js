@@ -1,0 +1,373 @@
+Split(['#outpatient-one', '#outpatient-two', '#outpatient-three'], {
+    sizes: [25, 48, 27],
+    minSize: [380, 760, 410]
+});
+
+
+$(".showbar").on('click', function () {
+    $('.widget-bar').toggleClass('on1');
+    $('.showbar').toggleClass('on2');
+});
+
+function getCardIdInfor() {
+    $.ajax({
+        url: "/outpatient/getCardIdInfor",
+        type: "post",
+        success: function (data) {
+            if (null == data.message) {
+                $("#cardId").val(data.cardId);
+                $("#name").val(data.name);
+                $("#sex").val(data.sex);
+                $("#nationality").val(data.nationality);
+                $("#age").val(data.age);
+                $("#prescriptionNum").val((new Date()).getTime());
+                $("#date").val(data.date);
+                $("#department").val(data.department);
+
+                if (data.maritalStatus == null || data.career == null || data.personalHistory == null || data.pastHistory == null || data.familyHistory == null) {
+                    $("#new-img").css("visibility", "visible");
+
+                }
+                $("#maritalStatus").val(data.maritalStatus);
+                $("#career").val(data.career);
+                $("#personalHistory").val(data.personalHistory);
+                $("#pastHistory").val(data.pastHistory);
+                $("#familyHistory").val(data.familyHistory);
+            } else {
+                swal(data.message, "", "error")
+            }
+        }
+    })
+}
+
+function changePatientInfor() {
+
+    var cardId = $("#cardId").val();
+
+    if (cardId == null || cardId == '') {
+        swal("请先读取就诊卡！", "", "error");
+
+        return false;
+    }
+
+    var OtherPatientInforReqVO = {
+
+        cardId: cardId,
+        maritalStatus: $("#maritalStatus").val(),
+        career: $("#career").val(),
+        personalHistory: $("#personalHistory").val(),
+        pastHistory: $("#pastHistory").val(),
+        familyHistory: $("#familyHistory").val()
+    };
+    $.ajax({
+        url: "/outpatient/changePatientInfor",
+        type: "post",
+        contentType: "application/json",
+        data: JSON.stringify(OtherPatientInforReqVO),
+        success: function (data) {
+            if (data == "SUCCESS") {
+                swal("信息提交成功！", "", "success")
+            } else {
+                swal("信息提交异常！请稍后重试", "", "error")
+            }
+        }
+    })
+}
+
+var drug = '';
+
+$(function () {
+    $("#allPatientNormal").load('/getAllPatientNormal');
+
+    $("#allPatientLater").load('/getAllPatientLater');
+
+
+    $.ajax({
+        url: "/outpatient/getAllDrug",
+        type: "post",
+        dataType: "json",
+        success: function (data) {
+            var optionHtml = '<option value=""></option>';
+            $.each(data, function (i) {
+                optionHtml += '<option value="' + data[i] + '" >' + data[i] + '</option>';
+            });
+            $('.drugSelect').html(optionHtml);
+            $('.drugSelect').trigger("chosen:updated");
+
+            $('.drugSelect').chosen({
+                no_results_text: "没有找到结果！",//搜索无结果时显示的提示
+                search_contains: true,   //关键字模糊搜索。设置为true，只要选项包含搜索词就会显示；设置为false，则要求从选项开头开始匹配
+                allow_single_deselect: true, //单选下拉框是否允许取消选择。如果允许，选中选项会有一个x号可以删除选项
+                disable_search: false, //禁用搜索。设置为true，则无法搜索选项。
+                disable_search_threshold: 0, //当选项少等于于指定个数时禁用搜索。
+                inherit_select_classes: true, //是否继承原下拉框的样式类，此处设为继承
+                /*placeholder_text_single: '',*/ //单选选择框的默认提示信息，当选项为空时会显示。如果原下拉框设置了data-placeholder，会覆盖这里的值。
+
+                /*max_shown_results: 7,*/ //下拉框最大显示选项数量
+                display_disabled_options: false,
+                single_backstroke_delete: false, //false表示按两次删除键才能删除选项，true表示按一次删除键即可删除
+                case_sensitive_search: false, //搜索大小写敏感。此处设为不敏感
+                group_search: false, //选项组是否可搜。此处搜索不可搜
+                include_group_label_in_selected: true //选中选项是否显示选项分组。false不显示，true显示。默认false。
+            }).change(function () {
+
+                drug = $(".drugSelect option:selected").val();
+
+                $.ajax({
+                    url: "/outpatient/getDrugInfor",
+                    type: "post",
+                    data: {
+                        drug: drug
+                    },
+                    success: function (data) {
+                        $("#specification").val(data.specification);
+                        $("#price").val(data.price)
+                    }
+                })
+            });
+        }
+    })
+
+});
+
+function refreshQueue() {
+    $("#allPatientNormal").load('/getAllPatientNormal');
+
+    $("#allPatientLater").load('/getAllPatientLater');
+}
+
+var drugMethod = '';
+
+$('.drugMethod').chosen({disable_search: true, allow_single_deselect: true,}).change(function () {
+
+    drugMethod = $(".drugMethod option:selected").val();
+});
+
+
+var drugNum = '';
+
+$('.drugNum').chosen({disable_search: true, allow_single_deselect: true,}).change(function () {
+
+    drugNum = $(".drugNum option:selected").val();
+});
+
+function ProcessLater() {
+
+    var cardId = $("#cardId").val();
+
+    if (cardId == null || cardId == '') {
+        swal("请先读取就诊卡！", "", "error");
+        return false;
+    }
+
+
+    var MedicalRecordReqVO = {
+        cardId: cardId,
+        conditionDescription: $("#conditionDescr").val(),
+        prescriptionNum: $("#prescriptionNum").val()
+    };
+
+    swal({
+            title: "稍后处理只会保存病历主诉信息，请确认您的操作！",
+            type: "info",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true
+        }, function () {
+            $.ajax({
+                url: "/outpatient/ProcessLaterMedicalRecord",
+                type: "post",
+                contentType: "application/json",
+                data: JSON.stringify(MedicalRecordReqVO),
+                success: function (data) {
+
+                    if (data == "SUCCESS") {
+
+                        setTimeout(function () {
+
+
+                            swal({
+                                title: "操作成功，如要恢复，请点击右侧栏进行操作",
+                                type: "success",
+                            }, function () {
+
+                                setTimeout(function () {
+                                    window.location.reload()
+                                }, 500)
+                            });
+
+                        }, 1000)
+
+                    } else {
+                        swal("系统异常，请稍后重试！", "", "error")
+                    }
+                }
+            });
+
+
+        }
+    );
+
+}
+
+function restorePatientInfor(registerId) {
+    $.ajax({
+        url: "/outpatient/restorePatientInfor",
+        type: "post",
+        data: {
+            "registerId": registerId
+        },
+        success: function (data) {
+
+            if (null == data.message) {
+                $("#cardId").val(data.cardId);
+                $("#name").val(data.name);
+                $("#sex").val(data.sex);
+                $("#nationality").val(data.nationality);
+                $("#age").val(data.age);
+                $("#maritalStatus").val(data.maritalStatus);
+                $("#career").val(data.career);
+                $("#personalHistory").val(data.personalHistory);
+                $("#pastHistory").val(data.pastHistory);
+                $("#familyHistory").val(data.familyHistory);
+
+                $("#prescriptionNum").val(data.prescriptionNum);
+                $("#date").val(data.date);
+                $("#department").val(data.department);
+
+                $("#conditionDescr").val(data.conditionDescription);
+
+                $("#allPatientNormal").load('/getAllPatientNormal');
+
+                $("#allPatientLater").load('/getAllPatientLater');
+            } else {
+                swal(data.message, "", "error")
+            }
+        }
+    })
+}
+
+
+function selectTemplate() {
+
+    alert(drug)
+}
+
+/*处方药总价*/
+var allPrice = 0;
+
+function addDrugs() {
+    var usage = $("#usage").val();
+    var price = parseInt($("#price").val());
+    var specification = $("#specification").val();
+
+    if (drug == null || drug == '') {
+        swal("请先选择药品！", "", "error");
+        return false;
+    }
+    if (usage == null || usage == '') {
+        swal("请填写药品每次剂量！", "", "error");
+        return false;
+    }
+
+    if (drugMethod == null || drugMethod == '') {
+        swal("请选择药品服用方式！", "", "error");
+        return false;
+    }
+
+    if (drugNum == null || drugNum == '') {
+        swal("请选择药品每日服用次数！", "", "error");
+        return false;
+    }
+
+
+    $("#drugs ol").append('<li>' + drug + '<span style="margin-left:100px">'
+        + specification + '</span></li><div style="margin: 10px 0 10px 5px;">用法：<sapn>'
+        + usage + '</sapn><sapn  style="margin-left:40px">' + drugMethod
+        + '</sapn><sapn  style="margin-left:60px">' + drugNum + '</sapn></div>');
+
+    allPrice = allPrice + price;
+
+}
+
+function emptyDrugs() {
+
+    swal({
+        title: "添加的药品将全部清空，请确认操作！",
+        type: "info",
+        showCancelButton: true,
+        closeOnConfirm: true,
+    }, function () {
+        $("#drugs ol").empty();
+        allPrice = 0;
+    })
+
+}
+
+function addMedicalRecord() {
+    var cardId = $("#cardId").val();
+    var diagnosisResult = $("#diagnosisResult").val();
+    var medicalOrder = $("#medicalOrder").val();
+
+    if (cardId == null || cardId == '') {
+        swal("请先读取就诊卡！", "", "error");
+        return false;
+    }
+    if (drug == null || drug == '') {
+        swal("请选择药品！", "", "error");
+        return false;
+    }
+    if (diagnosisResult == null || diagnosisResult == '') {
+        swal("请填写初步诊断！", "", "error");
+        return false;
+    }
+    if (medicalOrder == null || medicalOrder == '') {
+        swal("请填写医嘱！", "", "error");
+        return false;
+    }
+
+    var MedicalRecordReqVO = {
+        cardId: cardId,
+        conditionDescription: $("#conditionDescr").val(),
+        prescriptionNum: $("#prescriptionNum").val(),
+        prescription: $("#drugs").html().trim(),
+        medicalOrder: medicalOrder,
+        drugCost: allPrice,
+        diagnosisResult: diagnosisResult
+    };
+    swal({
+
+        title: "请确认患者基本信息是否提交修改",
+        type: "info",
+        showCancelButton: true,
+        closeOnConfirm: false,
+        showLoaderOnConfirm: true
+
+    }, function () {
+        setTimeout(function () {
+
+            $.ajax({
+                url: "/outpatient/addMedicalRecord",
+                type: "post",
+                contentType: "application/json",
+                data: JSON.stringify(MedicalRecordReqVO),
+                success: function (data) {
+                    if (data == "SUCCESS") {
+                        swal({
+                            title: "病历信息提交成功,本次就诊完成！",
+                            type: "success",
+                        }, function () {
+
+                            window.location.reload()
+                        });
+                    } else {
+                        swal("系统异常,请稍后重试！", "", "error")
+                    }
+                }
+            })
+
+        }, 1000)
+    })
+
+
+}

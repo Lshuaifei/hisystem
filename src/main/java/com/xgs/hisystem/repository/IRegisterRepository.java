@@ -2,6 +2,8 @@ package com.xgs.hisystem.repository;
 
 import com.xgs.hisystem.pojo.entity.RegisterEntity;
 
+import java.util.List;
+
 /**
  * @author xgs
  * @date 2019/4/26
@@ -9,4 +11,12 @@ import com.xgs.hisystem.pojo.entity.RegisterEntity;
  */
 public interface IRegisterRepository extends BaseRepository<RegisterEntity> {
 
+    List<RegisterEntity> findByPatientId(String id);
+
+    RegisterEntity findByRegisteredNum(String registerNum);
+
+    List<RegisterEntity> findByPatientIdAndChargeStatusAndRegisterStatusAndTreatmentStatus(String patientId,
+                                                                                           int chargeStatus,
+                                                                                           int registerStatus,
+                                                                                           int treatmentStatus);
 }

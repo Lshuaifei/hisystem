@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="common/common_css :: css(~{::link})">
+    </head>
+    <title>体检</title>
+    <link rel="stylesheet" type="text/css" th:href="@{css/mcss/mcss_medicalExamination.css}"/>
+</head>
+<body>
+
+<div id="wrapper">
+    <div th:replace="common/common_left :: left"></div>
+
+    <div id="content-wrapper" class="d-flex flex-column content-wrapper">
+        <div id="content">
+            <div th:replace="common/common_head :: head"></div>
+
+            <!--正文-->
+            <div>
+                <div class="card shadow mb-4" style="margin-left: 2.5%;height: 818px;">
+
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">体检</h6>
+                    </div>
+
+                    <div class="card-body">
+                        <div style=" margin-left: 1%;margin-right: 1%">
+
+                            <div class="card mycard">
+
+                                <div style="margin-left: 5%">
+                                    <div class="textbox">
+                                        卡号<input type="text" style="width: 140px" readonly="readonly" id="cardId">
+                                        <div class="mybtn1">
+                                            <button class="btn btn-info" onclick="getCardIdInfor()">读取就诊卡</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="textbox_2">
+
+                                    姓名<input type="text" id="name" style="width: 120px" readonly="readonly">&emsp;
+                                    性别<input type="text" id="sex" style="width: 90px" readonly="readonly">&emsp;
+                                    民族<input type="text" id="nationality" style="width: 90px" readonly="readonly">&emsp;
+                                    年龄<input type="text" id="age" style="width:100px" readonly="readonly">
+
+                                </div>
+
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">检查结果</h6>
+                                </div>
+
+                                <div class="textbox_2">
+                                    体温<input type="text" id="bodyTemperature" style="width: 70px">℃&emsp;
+                                    脉搏<input type="text" id="pulse" style="width: 70px">次/分&emsp;
+                                    心率<input type="text" id="heartRate" style="width: 70px">次/分&emsp;
+                                    血压<input type="text" id="bloodPressure" style="width: 70px">mmHg
+                                    <br>
+                                    <br><br>
+                                    费用<input type="text" id="examinationCost" style="width: 70px">元
+                                </div>
+
+
+                                <div style="margin-left: 75%;">
+                                    <button class="btn btn-info mybutton2" onclick="ProcessLater()">提交信息
+                                    </button>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div>
+    <div th:replace="common/common_js :: js(~{::script})"></div>
+    <script th:src="@{/sb-admin-2/bootstrap/bootstrap-table.js}"></script>
+    <script th:src="@{/sb-admin-2/bootstrap/bootstrap-table-zh-CN.js}"></script>
+    <script type="text/javascript" th:src="@{/js/mjs/mjs_medicalExamination.js}"></script>
+</div>
+</body>
+</html>

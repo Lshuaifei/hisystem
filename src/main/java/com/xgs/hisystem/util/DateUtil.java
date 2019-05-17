@@ -161,6 +161,23 @@ public class DateUtil {
     }
 
     /**
+     * FULL转SIMPLE
+     *
+     * @param str
+     * @return
+     */
+    public static String DateTimeToDate(String str) {
+        SimpleDateFormat df1 = new SimpleDateFormat(SIMPLE_FORMAT);
+        try {
+            SimpleDateFormat df2 = new SimpleDateFormat(SIMPLE_FORMAT);
+            return df2.format(df1.parse(str));
+        } catch (ParseException e) {
+            return null;
+        }
+
+    }
+
+    /**
      * 判断两个时间的大小
      * 是否后面那个大小前面那个 格式 yyyy-MM-dd
      *

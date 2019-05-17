@@ -6,6 +6,7 @@
     <title>系统维护</title>
     <link th:href="@{/css/mcss/mcss_announcement.css}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" th:href="@{css/mcss/model/component.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{css/tooltipify.min.css}"/>
 </head>
 <body>
 
@@ -196,6 +197,7 @@
 
 <div>
     <div th:replace="common/common_js :: js(~{::script})"></div>
+    <script type="text/javascript" th:src="@{/js/jquery-tooltipify.min.js}"></script>
     <script th:src="@{/sb-admin-2/bootstrap/bootstrap-table.js}"></script>
     <script th:src="@{/sb-admin-2/bootstrap/bootstrap-table-zh-CN.js}"></script>
     <script type="text/javascript" th:src="@{/js/mjs/mjs_announcement.js}"></script>

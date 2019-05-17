@@ -1,7 +1,6 @@
 package com.xgs.hisystem.service.impl;
 
 import com.xgs.hisystem.config.Contants;
-import com.xgs.hisystem.pojo.bo.BasePageReqBO;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
 import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.*;
@@ -37,7 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -82,7 +80,9 @@ public class UserServiceImpl implements IUserService {
         UsernamePasswordToken token = new UsernamePasswordToken(email, password);
 
         Subject subject = SecurityUtils.getSubject();
-
+        if (StringUtils.isEmpty(user)) {
+            return null;
+        }
         try {
             subject.login(token);
         } catch (AuthenticationException e) {
@@ -230,15 +230,17 @@ public class UserServiceImpl implements IUserService {
     /**
      * 获取登录信息
      *
-     * @param reqBO
+     * @param reqVO
      * @return
      */
 
     @Override
-    public PageRspBO<LoginInforRspVO> getLoginfor(BasePageReqBO reqBO) {
+    public PageRspBO<LoginInforRspVO> getLoginfor(BasePageReqVO reqVO) {
 
         UserEntity userEntity = (UserEntity) SecurityUtils.getSubject().getPrincipal();
-
+        if (StringUtils.isEmpty(userEntity)) {
+            return null;
+        }
         Page<LoginInforEntity> page = iLoginInforRepository.findAll(new Specification<LoginInforEntity>() {
             @Override
             public Predicate toPredicate(Root<LoginInforEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -250,7 +252,7 @@ public class UserServiceImpl implements IUserService {
                 query.where(predicateList.toArray(new Predicate[predicateList.size()]));
                 return null;
             }
-        }, PageRequest.of(reqBO.getPageNumber(), reqBO.getPageSize()));
+        }, PageRequest.of(reqVO.getPageNumber(), reqVO.getPageSize()));
         if (page == null) {
             return null;
         }
@@ -266,7 +268,7 @@ public class UserServiceImpl implements IUserService {
         });
 
         PageRspBO pageRspBO = new PageRspBO();
-        pageRspBO.setTotal((int) page.getTotalElements());
+        pageRspBO.setTotal(page.getTotalElements());
 
         pageRspBO.setRows(loginInforList);
 
@@ -282,7 +284,9 @@ public class UserServiceImpl implements IUserService {
 
 
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
-
+        if (StringUtils.isEmpty(user)) {
+            return null;
+        }
         if (!user.getPlainPassword().equals(oldPassword)) {
             logger.info("原始密码错误！");
             return BaseResponse.errormsg(Contants.user.PLAIN_PASSWORD_ERROR);
@@ -315,7 +319,9 @@ public class UserServiceImpl implements IUserService {
     public List<UserInfoVO> getUserInfo() {
 
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
-
+        if (StringUtils.isEmpty(user)) {
+            return null;
+        }
         List<UserInfoVO> userInfoList = new ArrayList<>();
         UserInfoVO userInfo = new UserInfoVO();
 
@@ -340,7 +346,9 @@ public class UserServiceImpl implements IUserService {
     public BaseResponse<?> changeUserInfo(UserInfoVO reqVO) {
 
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
-
+        if (StringUtils.isEmpty(user)) {
+            return null;
+        }
         user.setUsername(reqVO.getUsername());
         user.setSex(reqVO.getSex());
         user.setBirthday(reqVO.getBirthday());
@@ -378,13 +386,22 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public String getAnnContent(String id) {
-        Optional<AnnouncementEntity> announcement = iAnnouncementRepository.findById(id);
-        if (announcement.get() == null) {
+    public AnnRspVO getAnnContent(String id) {
+
+        if (StringUtils.isEmpty(id)) {
             return null;
         }
 
-        return announcement.get().getContents();
+        AnnouncementEntity announcement = iAnnouncementRepository.findById(id).get();
+        if (announcement == null) {
+            return null;
+        }
+        AnnRspVO annRspVO = new AnnRspVO();
+
+        annRspVO.setTitle(announcement.getTitle());
+        annRspVO.setContent(announcement.getContents());
+
+        return annRspVO;
     }
 
     @Override
@@ -392,6 +409,9 @@ public class UserServiceImpl implements IUserService {
 
         List<AccountRoleVO> accountRoleList = new ArrayList<>();
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
+        if (StringUtils.isEmpty(user)) {
+            return null;
+        }
         user.getRoleList().forEach(role -> {
 
             UserRoleEntity userRole = iUserRoleRepository.findByUIdAndRoleId(user.getId(), role.getId());
@@ -416,7 +436,9 @@ public class UserServiceImpl implements IUserService {
     public BaseResponse<?> addAnotherRole(AccountRoleVO reqVO) {
 
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
-
+        if (StringUtils.isEmpty(user)) {
+            return null;
+        }
         List<UserRoleEntity> userRoleList = iUserRoleRepository.findByUId(user.getId());
 
         long statusCount_0 = userRoleList.stream()

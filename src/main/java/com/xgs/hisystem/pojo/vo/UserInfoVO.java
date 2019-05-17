@@ -3,7 +3,6 @@ package com.xgs.hisystem.pojo.vo;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 /**
  * @author xgs
@@ -23,7 +22,7 @@ public class UserInfoVO {
     private String birthday;
 
     @Length(max = 11, message = "电话号码不超过11个字符")
-    @Pattern(regexp = "/^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\\d{8}$/", message = "电话号码格式错误")
+    /* @Pattern(regexp = "/^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\\d{8}$/", message = "电话号码格式错误")*/
     private String phone;
 
     @Length(max = 20, message = "政治面貌不超过20个字符")

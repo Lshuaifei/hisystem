@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head th:replace="common/common_css :: css(~{::link})">
+    </head>
+    <title>入库管理</title>
+    <link rel="stylesheet" type="text/css" th:href="@{css/mcss/mcss_storageManage.css}"/>
+</head>
+<body>
+
+<div id="wrapper">
+    <div th:replace="common/common_left :: left"></div>
+
+    <div id="content-wrapper" class="d-flex flex-column content-wrapper">
+        <div id="content">
+            <div th:replace="common/common_head :: head"></div>
+
+            <!--正文-->
+            <div>
+                <div class="card shadow mb-4" style="margin-left: 2.5%">
+
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">demo</h6>
+                    </div>
+
+                    <div class="card-body">
+                        <div style=" margin-left: 1%;margin-right: 1%">
+
+                            <div style="width: 40%;">
+                                <ul class="nav nav-pills " role="tablist">
+                                    <li class="nav-item" style="text-align: center">
+                                        <a class="nav-link active" data-toggle="pill" href="#drugStorage">药品入库</a>
+                                    </li>
+                                    <li class="nav-item" style="text-align: center">
+                                        <a class="nav-link" data-toggle="pill" href="#newDrugs">新增药品</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="tab-content">
+                                <div id="drugStorage" class=" tab-pane active"><br>
+                                    药品入库
+                                </div>
+
+                                <div id="newDrugs" class=" tab-pane fade"><br>
+
+                                    <div class="textbox_1">
+
+                                        药品名<input type="text" id="name" style="width: 120px">&emsp;&emsp;&emsp;&emsp;&emsp;
+                                        剂型<input type="text" id="drug_type" style="width: 320px">
+                                        <br>
+                                        <br>
+                                        制剂规格<input type="text" id="specification" style="width: 90px">&emsp;&emsp;
+                                        制剂单位<input type="text" id="unit" style="width: 90px">&emsp;&emsp;
+                                        是否限制药<input type="text" id="limitStatus" style="width:220px">
+                                        <br>
+                                        <br>
+                                        <div style="display: flex">
+                                            <div style="margin-right: 100px">
+                                                功效分类<input type="text" id="efficacyClassification" style="width: 330px"
+                                            >&emsp;&emsp;&emsp;
+                                            </div>
+                                        </div>
+                                        <div style="display: flex" class="cardid">
+                                            <div style="margin-right: 230px">
+                                                批发价<input type="text" id="wholesalePrice" style="width: 220px">&emsp;&emsp;&emsp;
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 22px">
+                                            售价<input type="text" id="price" style="width:220px">
+                                        </div>
+                                        <div style="margin-bottom: 22px">
+                                            生成厂家<input type="text" id="manufacturer" style="width:220px">
+                                        </div>
+                                        <button type="button" class="btn btn-primary"
+                                                onclick="addNewDrug()">新增
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div>
+    <div th:replace="common/common_js :: js(~{::script})"></div>
+    <script th:src="@{/sb-admin-2/bootstrap/bootstrap-table.js}"></script>
+    <script th:src="@{/sb-admin-2/bootstrap/bootstrap-table-zh-CN.js}"></script>
+    <script type="text/javascript" th:src="@{/js/mjs/mjs_storageManage.js}"></script>
+</div>
+</body>
+</html>

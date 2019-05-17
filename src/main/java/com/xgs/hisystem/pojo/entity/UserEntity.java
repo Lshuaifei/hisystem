@@ -55,6 +55,9 @@ public class UserEntity extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<LoginInforEntity> loginInforList;  //用户登录信息
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<OutpatientQueueEntity> outpatientQueueList;  //门诊病人队列
+
     @Column(name = "department", nullable = true, length = 30)
     private String department;  //所属科室
 
@@ -264,5 +267,13 @@ public class UserEntity extends BaseEntity {
 
     public void setDepartmentType(String departmentType) {
         this.departmentType = departmentType;
+    }
+
+    public List<OutpatientQueueEntity> getOutpatientQueueList() {
+        return outpatientQueueList;
+    }
+
+    public void setOutpatientQueueList(List<OutpatientQueueEntity> outpatientQueueList) {
+        this.outpatientQueueList = outpatientQueueList;
     }
 }

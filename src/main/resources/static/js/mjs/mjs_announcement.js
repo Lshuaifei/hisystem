@@ -1,4 +1,6 @@
 $(function () {
+
+
     //1.初始化Table
     var oTable = new TableInit();
     oTable.Init();
@@ -7,7 +9,6 @@ $(function () {
     var oButtonInit = new ButtonInit();
     oButtonInit.Init();
 
-    $("[data-toggle='tooltip']").tooltip();
 });
 
 var TableInit = function () {
@@ -110,14 +111,14 @@ function addFunctionAlty(value, row, index) {
 
             '<button id="btn_pass" class="btn btn-outline-primary" >修改</button>&emsp;',
             '<button id="btn_nopass" class="btn btn-outline-danger">删除</button>&emsp;',
-            '<button id="btn_addpass" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="添加到主页">+</button>'
+            '<button id="btn_addpass" class="btn btn-outline-primary"  title="添加到主页">+</button>'
         ].join('');
     } else {
         return [
 
             '<button id="btn_pass" class="btn btn-outline-primary" >修改</button>&emsp;',
             '<button id="btn_nopass" class="btn btn-outline-danger">删除</button>&emsp;',
-            '<button id="btn_subpass"  style="width: 35.61px;text-align: center" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="从主页移除">-</button>'
+            '<button id="btn_subpass"  style="width: 35.61px;text-align: center" class="btn btn-outline-primary" title="从主页移除">-</button>'
         ].join('');
     }
 }

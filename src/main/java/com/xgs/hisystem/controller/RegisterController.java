@@ -1,12 +1,16 @@
 package com.xgs.hisystem.controller;
 
+import com.xgs.hisystem.pojo.bo.PageRspBO;
 import com.xgs.hisystem.pojo.bo.ValidationResultBO;
 import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.register.*;
 import com.xgs.hisystem.service.IRegisterService;
 import com.xgs.hisystem.util.ParamsValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -28,7 +32,7 @@ public class RegisterController {
      * @return
      */
     @PostMapping(value = "/getCardIdInfor")
-    public PatientInforRspVO getCardIdInfor() {
+    public PatientInforRspVO getCardIdInfor() throws Exception {
         PatientInforRspVO patientInforRspVO = iRegisterService.getCardIdInfor();
         return patientInforRspVO;
     }
@@ -98,20 +102,6 @@ public class RegisterController {
 
     }
 
-    /**
-     * 修改实时挂号人数
-     *
-     * @param id
-     * @return
-     */
-
-    @PostMapping(value = "/changeRegisterNum")
-    public String changeRegisterNum(@RequestParam String id, @RequestParam String cardId) {
-
-        BaseResponse baseResponse = iRegisterService.changeRegisterNum(id, cardId);
-        return baseResponse.getMessage();
-    }
-
 
     @PostMapping(value = "/addRegisterInfor")
     public String addRegisterInfor(@RequestBody RegisterInforReqVO reqVO) {
@@ -122,5 +112,17 @@ public class RegisterController {
 
         BaseResponse baseResponse = iRegisterService.addRegisterInfor(reqVO);
         return baseResponse.getMessage();
+    }
+
+    /**
+     * 挂号记录查询
+     *
+     * @param reqVO
+     * @return
+     */
+    @RequestMapping(value = "/getRegisterRecord")
+    public PageRspBO<RegisterRecordRspVO> getRegisterRecord(RegisterRecordSearchReqVO reqVO) {
+
+        return iRegisterService.getRegisterRecord(reqVO);
     }
 }

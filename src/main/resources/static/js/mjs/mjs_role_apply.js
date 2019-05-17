@@ -132,7 +132,7 @@ window.operateEvents = {
         //弹出模态框
         window.location.hash = "#mymodal_1";
         $("#email").val(row.email);
-        $("#tatus").val(1);
+        $("#status").val(1);
     },
     // 不通过
     'click #btn_nopass': function (e, value, row, index) {

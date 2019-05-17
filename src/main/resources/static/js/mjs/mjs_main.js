@@ -1,5 +1,5 @@
 $(function () {
-    $("#ann_display").load("/annDisplay")
+    $("#ann_display").load("/annDisplay");
 });
 
 function getAnnContent(id) {
@@ -11,7 +11,13 @@ function getAnnContent(id) {
             "id": id
         },
         success: function (data) {
-            $("#annContent").html(data)
+
+            if (data != null) {
+
+                $("#anntitle").html(data.title);
+                $("#annContent").html(data.content)
+            }
+
         }
     })
 }

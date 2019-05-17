@@ -1,0 +1,35 @@
+.mycard {
+    margin: 0 25%;
+    border: 1px solid black;
+    height: 440px;
+}
+
+.textbox {
+    margin-top: 40px;
+    display: flex;
+    font-size: 18px;
+}
+
+.textbox_2 {
+    font-size: 18px;
+    margin: 4% 0 2% 5%;
+}
+
+.mybtn1 {
+
+    margin-left: 30px;
+}
+
+input {
+    text-align: center;
+    border: none;
+    outline: none;
+    background: none;
+    border-bottom: 1px solid #56A9BA;
+    margin-left: 1%;
+    color: #000080;
+}
+
+.testResult {
+    font-size: 18px;
+}

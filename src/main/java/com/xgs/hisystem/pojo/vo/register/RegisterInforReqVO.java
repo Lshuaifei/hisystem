@@ -13,6 +13,9 @@ public class RegisterInforReqVO {
     private String cardId;
 
     @NotBlank(message = "请先选择挂号医生！")
+    private String doctorId;
+
+    @NotBlank(message = "请先选择挂号医生！")
     private String department;
 
     @NotBlank(message = "请先选择挂号医生！")
@@ -75,4 +78,11 @@ public class RegisterInforReqVO {
         this.payType = payType;
     }
 
+    public String getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
+    }
 }

@@ -1,13 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="../static/css/font-awesome.css"/>
+    <title></title>
+    <style type="text/css">
+
+        .widget-bar {
+            position: fixed;
+            overflow-y: auto;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            z-index: 999;
+            transition: all 0.3s ease-in-out;
+            background-color: #333;
+        }
+
+        .on1 {
+            right: 0;
+        }
+
+        .on2 {
+            right: 400px !important;
+        }
+
+        .showbar {
+            position: fixed;
+            right: 0;
+            background-color: blueviolet;
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
 </head>
+
 <body>
+
+
+<button class="showbar" id="sidebarToggle">提交信息</button>
+<div class="widget-bar">
+</div>
+
 <div>
-    <i class="fa fa-search fa-3x" aria-hidden="true"></i>
+    <script src="../static/sb-admin-2/vendor/jquery/jquery.min.js"></script>
+    <script>
+        $(".showbar").on('click', function () {
+            $('.widget-bar').toggleClass('on1');
+            $('.showbar').toggleClass('on2');
+        })
+    </script>
 </div>
 </body>
+
 </html>

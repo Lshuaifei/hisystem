@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 
 <!--导航栏-->
-<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow" th:fragment="head">
+<nav class="navbar navbar-expand navbar-light bg-white-top topbar mb-4 static-top shadow" th:fragment="head">
 
 
     <!-- 天气 -->
@@ -87,16 +87,18 @@
         $(function () {
             $("#notice").load('/getRoleNotice');
 
-        });
-        //天气预报
-        window.onload = function () {
-            setTimeout("loadweather()", 500);
-        };
-
-        function loadweather(url) {
             var url = "https://tianqiapi.com/api.php?style=tg&skin=orange";
             $("#tianqi").attr("src", url);
-        }
+        });
+        //天气预报
+        /*  window.onload = function () {
+              setTimeout("loadweather()", 500);
+          };*/
+
+        /* function loadweather(url) {
+             var url = "https://tianqiapi.com/api.php?style=tg&skin=orange";
+             $("#tianqi").attr("src", url);
+         }*/
     </script>
 
 </nav>

@@ -22,11 +22,11 @@
                 <div class="scroll_box">
                     <div class="scroll_list">
                         <ul class="scroll_ul">
-                            <li class="scroll_p4"><a href="#"><img th:src="@{/images/img/1.png}"
+                            <li class="scroll_p4"><a href="#"><img th:src="@{/images/img/1.jpg}"
                                                                    alt=""/></a></li>
-                            <li class="scroll_p3"><a href="#"><img th:src="@{/images/img/2.png}"
+                            <li class="scroll_p3"><a href="#"><img th:src="@{/images/img/2.jpg}"
                                                                    alt=""/></a></li>
-                            <li class="scroll_p2"><a href="#"><img th:src="@{/images/img/3.png}"
+                            <li class="scroll_p2"><a href="#"><img th:src="@{/images/img/3.jpg}"
                                                                    alt=""/></a></li>
                             <li class="scroll_p1"><a href="#"><img th:src="@{/images/img/4.jpg}"
                                                                    alt=""/></a></li>
@@ -47,25 +47,28 @@
 
                             <div style="margin-top: 25px;margin-left: 50px">
                                 <div style="width: 5%;float: left;text-align: center;margin-top: 120px;">
-                                    <img class="ann_img" th:src="@{/images/icon/ann.png}"><br>
+                                    <img class="ann_img" th:src="@{/images/icon/annn.png}"><br>
                                     <span>公告</span>
                                 </div>
-                                <div style="width: 20%;float: left; margin-left: 20px;">
-                                    <ui id="ann_display" th:fragment="ann">
-                                        <li th:each="annlist:${annList}">
-                                            <a th:text="${annlist.title}" href="#"
-                                               th:onclick="getAnnContent([[${annlist.id}]])"></a>
-                                            <span th:text="${annlist.annDate}" style="float: right"></span>
-                                        </li>
-                                    </ui>
-                                </div>
-                                <div style="width:70%;float:left;">
-                                    <div style="margin-left: 30%">
-                                    <pre id="annContent">
+
+                                <div style="display: flex;">
+                                    <div style="margin-left: 8%;">
+                                        <ui id="ann_display" th:fragment="ann">
+                                            <li th:each="annlist:${annList}">
+                                                <a th:text="${annlist.title}" href="#"
+                                                   th:onclick="getAnnContent([[${annlist.id}]])"></a>
+                                                <span th:text="${annlist.annDate}"
+                                                      style="float: right;margin-left: 110px;"></span>
+                                            </li>
+                                        </ui>
+                                    </div>
+                                    <div style="margin-left: 20%">
+                                        <div style="text-align: center;font-size: 19px;font-weight: 600;margin-bottom: 10px;"
+                                             id="anntitle"></div>
+                                        <pre style="font-size: 18px" id="annContent">
                                     </pre>
                                     </div>
                                 </div>
-
                             </div>
 
                         </div>

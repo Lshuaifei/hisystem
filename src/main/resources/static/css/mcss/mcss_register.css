@@ -39,7 +39,7 @@
 }
 
 .textbox_1 .cardid {
-    margin: 35px 0 30px 0;
+    margin: 30px 0 15px 0;
 }
 
 .textbox_2 {
@@ -70,12 +70,12 @@
 }
 
 .textbox_3 .select {
-    width: 200px;
+    width: 180px;
 
 }
 
 .textbox_3 .select_1 {
-    width: 150px;
+    width: 140px;
 }
 
 .department-search {
@@ -91,5 +91,6 @@
 }
 
 .mybtn3 {
-    margin-left: 61%;
+    margin-left: 13%;
+    margin-top: 30px;
 }

@@ -1,11 +1,9 @@
 package com.xgs.hisystem.controller;
 
-import com.xgs.hisystem.pojo.bo.BasePageReqBO;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
 import com.xgs.hisystem.pojo.bo.ValidationResultBO;
 import com.xgs.hisystem.pojo.vo.*;
 import com.xgs.hisystem.service.IAdminService;
-import com.xgs.hisystem.service.IUserService;
 import com.xgs.hisystem.util.ParamsValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,9 +18,6 @@ import org.springframework.web.bind.annotation.*;
 @ResponseBody
 @RequestMapping(value = "/admin")
 public class AdminController {
-
-    @Autowired
-    private IUserService iUserService;
 
     @Autowired
     private IAdminService iadminService;
@@ -86,10 +81,10 @@ public class AdminController {
      * @return
      */
     @RequestMapping(value = "/getRoleApply")
-    public PageRspBO<applyRspVO> getRoleApply(BasePageReqBO reqBO) {
+    public PageRspBO<applyRspVO> getRoleApply(BasePageReqVO reqVO) {
 
 
-        return iadminService.getRoleApply(reqBO);
+        return iadminService.getRoleApply(reqVO);
 
     }
 
@@ -101,7 +96,7 @@ public class AdminController {
      * @param email
      */
     @PostMapping(value = "/changeRoleStatus")
-    public void changeRoleStatus(@RequestParam int status, @RequestParam String email) {
+    public void changeRoleStatus(@RequestParam String status, @RequestParam String email) {
 
         iadminService.changeRoleStatus(status, email);
     }
@@ -123,10 +118,10 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/getAnnouncement")
-    public PageRspBO<AnnouncementVO> getAnnouncement(BasePageReqBO reqBO) {
+    public PageRspBO<AnnouncementVO> getAnnouncement(BasePageReqVO reqVO) {
 
 
-        return iadminService.getAnnouncement(reqBO);
+        return iadminService.getAnnouncement(reqVO);
     }
 
     @PostMapping(value = "/changeAnnouncement")

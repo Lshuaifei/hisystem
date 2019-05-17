@@ -18,6 +18,8 @@ public class RegisterDoctorRspVO {
 
     private String id;
 
+    private String workAddress;
+
     public String getDoctorName() {
         return doctorName;
     }
@@ -65,5 +67,13 @@ public class RegisterDoctorRspVO {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getWorkAddress() {
+        return workAddress;
+    }
+
+    public void setWorkAddress(String workAddress) {
+        this.workAddress = workAddress;
     }
 }

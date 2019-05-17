@@ -45,7 +45,7 @@ public class ShiroConfig {
 
         filterChainDefinitionMap.put("/user/dologin", "anon");
         filterChainDefinitionMap.put("/user/doregister", "anon");
-        filterChainDefinitionMap.put("/user/activation", "anon");
+        filterChainDefinitionMap.put("/activation", "anon");
         filterChainDefinitionMap.put("/logout", "logout"); // 用户退出
         filterChainDefinitionMap.put("/fmail", "anon");
 

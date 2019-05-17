@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JS搜索</title>
+</head>
+<body>
+<!--<input id="key-word" class="key-word" value="请输入搜索内容" />
+<button id="search-button">搜索</button>
+<div id="content" >
+    <p>这是主体内容，有很多内容，很多很多啊啊啊……，比如1234abcd啊啊啊啊</p>
+    <p>这是主体内容，有很多内容，很多很多啊啊啊……，比如1234abcd啊啊啊啊</p>
+    <p>这是主体内容，有很多内容，很多很多啊啊啊……，比如1234abcd啊啊啊啊</p>
+    <p>这是主体内容，有很多内容，很多很多啊啊啊……，比如1234abcd啊啊< d d>啊啊</p>
+</div>-->
+
+<div>
+    <input id="search" type="text" placeholder="输入当前章节要搜索内容..."/>
+    <span id="search-btn" style="cursor: pointer">搜索</span>
+</div>
+<div id="content">
+    <p>这是要搜索的内容哦！！</p>
+</div>
+<!--<script>
+    function $(id){
+        return document.getElementById(id)
+    }
+    var putWordsObj = $('key-word');
+    putWordsObj.onfocus = function(){
+        if(this.value == '请输入搜索内容')this.value='';
+    }
+    putWordsObj.onblur = function(){
+        if(!this.value)this.value='请输入搜索内容';
+    }
+    //search
+    $('search-button').onclick = function(){
+        var content = $('content').innerHTML;
+        var keyWord = $('key-word').value;
+        content = search_do(content, keyWord);
+        $('content').innerHTML = content;
+//alert(content)
+    }
+    function search_do(content,keyWord){
+        var keyWordArr = keyWord.replace(/[\s]+/g,' ').split(' ');
+        var re;
+        for(var n = 0; n < keyWordArr.length; n ++) {
+//re = new RegExp(">[\s\S]*?"+keyWordArr[n]+"[\s\S]*?<\S","gmi");
+            re = new RegExp(""+keyWordArr[n]+"","gmi");
+            content = content.replace(re,'<span style="color:#0f0;background-color:#ff0">'+keyWordArr[n]+'</span>');
+        }
+        return content;
+    }
+</script>-->
+<script src="../sb-admin-2/vendor/jquery/jquery.min.js"></script>
+<script>
+    var content = $('#content').html();
+    $('#search-btn').click(function () {
+        $('#content').html(content);
+        var searchText = $('#search').val();
+        if (searchText.length == 0) {
+            return false;
+        }
+        var regExp = new RegExp(searchText, 'g');
+        var newHtml = content.replace(regExp, '<span id="result" style="background:yellow;color:red;">' + searchText + '</span>');
+        $('#content').html(newHtml);
+        var X = $('#result').offset().top;
+        var Y = $('#result').offset().left;
+        window.scrollTo(X, Y);
+    });
+</script>
+</body>
+</html>

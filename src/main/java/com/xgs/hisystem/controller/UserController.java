@@ -1,6 +1,5 @@
 package com.xgs.hisystem.controller;
 
-import com.xgs.hisystem.pojo.bo.BasePageReqBO;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
 import com.xgs.hisystem.pojo.bo.ValidationResultBO;
 import com.xgs.hisystem.pojo.vo.*;
@@ -11,7 +10,6 @@ import com.xgs.hisystem.util.QRcodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -85,13 +83,13 @@ public class UserController {
     /**
      * 获取登录日志
      *
-     * @param reqBO
+     * @param reqVO
      * @return
      */
     @RequestMapping(value = "/getLoginfor")
-    public PageRspBO<LoginInforRspVO> getLoginfor(BasePageReqBO reqBO) {
+    public PageRspBO<LoginInforRspVO> getLoginfor(BasePageReqVO reqVO) {
 
-        return iUserService.getLoginfor(reqBO);
+        return iUserService.getLoginfor(reqVO);
     }
 
     /**
@@ -136,10 +134,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/getAnnContent")
-    public String getAnnContent(@RequestParam String id) {
-        if (StringUtils.isEmpty(id)) {
-            return null;
-        }
+    public AnnRspVO getAnnContent(@RequestParam String id) {
 
         return iUserService.getAnnContent(id);
     }

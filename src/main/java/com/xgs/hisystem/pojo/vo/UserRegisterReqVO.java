@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
  */
 public class UserRegisterReqVO {
 
-    @Length(max = 30, message = "邮箱长度不超过30")
+    @Length(max = 50, message = "邮箱长度不超过50")
     @Email(message = "邮箱格式错误")
     @NotBlank(message = "邮箱不能为空")
     private String email;

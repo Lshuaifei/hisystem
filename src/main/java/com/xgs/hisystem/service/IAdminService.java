@@ -1,6 +1,5 @@
 package com.xgs.hisystem.service;
 
-import com.xgs.hisystem.pojo.bo.BasePageReqBO;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
 import com.xgs.hisystem.pojo.vo.*;
 
@@ -17,17 +16,17 @@ public interface IAdminService {
 
     BaseResponse<?> addRole(AddRoleVO addRoleVO);
 
-    PageRspBO<applyRspVO> getRoleApply(BasePageReqBO reqBO);
+    PageRspBO<applyRspVO> getRoleApply(BasePageReqVO reqVO);
 
     BaseResponse<?> saveUserAndSendEmailTemp(UserRegisterReqVO reqVO);
 
     List<applyRspVO> getRoleNotice();
 
-    BaseResponse<?> changeRoleStatus(int status, String email);
+    BaseResponse<?> changeRoleStatus(String status, String email);
 
     BaseResponse<?> addAnnouncement(AnnouncementVO reqVO);
 
-    PageRspBO<AnnouncementVO> getAnnouncement(BasePageReqBO reqBO);
+    PageRspBO<AnnouncementVO> getAnnouncement(BasePageReqVO reqVO);
 
     BaseResponse<?> changeAnnouncement(AnnouncementVO announcementVO);
 

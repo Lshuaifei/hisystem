@@ -1,7 +1,6 @@
 package com.xgs.hisystem.service.impl;
 
 import com.xgs.hisystem.config.Contants;
-import com.xgs.hisystem.pojo.bo.BasePageReqBO;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
 import com.xgs.hisystem.pojo.entity.AnnouncementEntity;
 import com.xgs.hisystem.pojo.entity.RoleEntity;
@@ -119,7 +118,7 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public PageRspBO<applyRspVO> getRoleApply(BasePageReqBO reqBO) {
+    public PageRspBO<applyRspVO> getRoleApply(BasePageReqVO reqVO) {
 
         Page<UserRoleEntity> page = iUserRoleRepository.findAll(new Specification<UserRoleEntity>() {
             @Override
@@ -131,7 +130,7 @@ public class AdminServiceImpl implements IAdminService {
                 query.where(predicateList.toArray(new Predicate[predicateList.size()]));
                 return null;
             }
-        }, PageRequest.of(reqBO.getPageNumber(), reqBO.getPageSize()));
+        }, PageRequest.of(reqVO.getPageNumber(), reqVO.getPageSize()));
         if (page == null) {
             return null;
         }
@@ -155,7 +154,7 @@ public class AdminServiceImpl implements IAdminService {
 
         PageRspBO pageRspBO = new PageRspBO();
         pageRspBO.setRows(applyRspVOList);
-        pageRspBO.setTotal((int) page.getTotalElements());
+        pageRspBO.setTotal(page.getTotalElements());
         return pageRspBO;
     }
 
@@ -230,6 +229,10 @@ public class AdminServiceImpl implements IAdminService {
         //从shiro中获取当前登录用户信息
         UserEntity userEntity = (UserEntity) SecurityUtils.getSubject().getPrincipal();
 
+        if (StringUtils.isEmpty(userEntity)) {
+            return null;
+        }
+
         List<applyRspVO> applyRspList = new ArrayList<>();
         //若为管理员，组装审核角色通知参数
         long checkCount = userEntity.getRoleList()
@@ -265,14 +268,15 @@ public class AdminServiceImpl implements IAdminService {
      * @return
      */
     @Override
-    public BaseResponse<?> changeRoleStatus(int status, String email) {
+    public BaseResponse<?> changeRoleStatus(String status, String email) {
 
         if (!StringUtils.isEmpty(status)) {
             UserEntity user = iUserRepository.findByEmail(email);
 
             UserRoleEntity userRole = iUserRoleRepository.findByUIdAndRoleStatus(user.getId(), 0);
 
-            userRole.setRoleStatus(status);
+            int mystatus = Integer.parseInt(status);
+            userRole.setRoleStatus(mystatus);
 
             iUserRoleRepository.saveAndFlush(userRole);
         }
@@ -311,7 +315,7 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public PageRspBO<AnnouncementVO> getAnnouncement(BasePageReqBO reqBO) {
+    public PageRspBO<AnnouncementVO> getAnnouncement(BasePageReqVO reqVO) {
         Page<AnnouncementEntity> page = iAnnouncementRepository.findAll(new Specification<AnnouncementEntity>() {
             @Override
             public Predicate toPredicate(Root<AnnouncementEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -323,7 +327,7 @@ public class AdminServiceImpl implements IAdminService {
 
                 return null;
             }
-        }, PageRequest.of(reqBO.getPageNumber(), reqBO.getPageSize()));
+        }, PageRequest.of(reqVO.getPageNumber(), reqVO.getPageSize()));
 
         if (page == null) {
             return null;
@@ -341,7 +345,7 @@ public class AdminServiceImpl implements IAdminService {
         });
 
         PageRspBO pageRspBO = new PageRspBO();
-        pageRspBO.setTotal((int) page.getTotalElements());
+        pageRspBO.setTotal(page.getTotalElements());
         pageRspBO.setRows(announcementVOList);
         return pageRspBO;
     }

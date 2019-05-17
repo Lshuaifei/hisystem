@@ -1,6 +1,5 @@
 package com.xgs.hisystem.service;
 
-import com.xgs.hisystem.pojo.bo.BasePageReqBO;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
 import com.xgs.hisystem.pojo.vo.*;
 
@@ -15,7 +14,7 @@ public interface IUserService {
 
     BaseResponse<?> activation(String email, String validateCode) throws ParseException;
 
-    PageRspBO<LoginInforRspVO> getLoginfor(BasePageReqBO reqBO);
+    PageRspBO<LoginInforRspVO> getLoginfor(BasePageReqVO reqVO);
 
     BaseResponse<?> changePassword(ChangePasswordReqVO reqVO);
 
@@ -25,7 +24,7 @@ public interface IUserService {
 
     List<AnnouncementVO> annDisplay();
 
-    String getAnnContent(String id);
+    AnnRspVO getAnnContent(String id);
 
     List<AccountRoleVO> getAccountRole();
 

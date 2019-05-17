@@ -4,7 +4,10 @@ import com.xgs.hisystem.pojo.vo.AccountRoleVO;
 import com.xgs.hisystem.pojo.vo.AnnouncementVO;
 import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.applyRspVO;
+import com.xgs.hisystem.pojo.vo.outpatient.OutpatientQueueLaterRspVO;
+import com.xgs.hisystem.pojo.vo.outpatient.OutpatientQueueNormalRspVO;
 import com.xgs.hisystem.service.IAdminService;
+import com.xgs.hisystem.service.IOutpatientService;
 import com.xgs.hisystem.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +31,8 @@ public class PageController {
     private IUserService iUserService;
     @Autowired
     private IAdminService iAdminService;
+    @Autowired
+    private IOutpatientService iOutpatientService;
 
     @RequestMapping(value = "/")
     public String login() {
@@ -78,31 +83,18 @@ public class PageController {
         }
     }
 
-    /**
-     * 账号设置
-     *
-     * @return
-     */
+
     @RequestMapping(value = "/accountset")
     public String AccountSet() {
         return "accountset";
     }
 
-    /**
-     * 角色审核
-     *
-     * @return
-     */
+
     @RequestMapping("/toApply")
     public String toApply() {
         return "/admin/roleApply";
     }
 
-    /**
-     * 获取身份证信息
-     *
-     * @return
-     */
     @RequestMapping(value = "/register")
     public String getUserID() {
         return "register/register";
@@ -135,6 +127,12 @@ public class PageController {
         return "admin/announcement";
     }
 
+    /**
+     * 首页公告显示
+     *
+     * @param model
+     * @return
+     */
     @RequestMapping(value = "/annDisplay")
     public String annDisplay(Model model) {
 
@@ -144,6 +142,12 @@ public class PageController {
         return "main::ann";
     }
 
+    /**
+     * 获取当前用户所有角色
+     *
+     * @param model
+     * @return
+     */
     @RequestMapping(value = "/getAccountRole")
     public String getAccountRole(Model model) {
 
@@ -156,6 +160,67 @@ public class PageController {
     @RequestMapping(value = "/registerRecord")
     public String registerRecord() {
         return "/register/registerRecord";
+    }
+
+    @RequestMapping(value = "/outpatient")
+    public String outpatient() {
+        return "/outpatient/outpatient";
+    }
+
+
+    /**
+     * 门诊医生当天所有普通病人
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/getAllPatientNormal")
+    public String getAllPatientNormal(Model model) {
+
+        List<OutpatientQueueNormalRspVO> outpatientQueueNormalList = iOutpatientService.getAllPatientNormal();
+        model.addAttribute("outpatientQueueNormalList", outpatientQueueNormalList);
+
+        return "outpatient/outpatient::patientNormal";
+    }
+
+    /**
+     * 稍后处理病人
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/getAllPatientLater")
+    public String getAllPatientLater(Model model) {
+
+        List<OutpatientQueueLaterRspVO> outpatientQueueLaterList = iOutpatientService.getAllPatientLater();
+        model.addAttribute("outpatientQueueLaterList", outpatientQueueLaterList);
+
+        return "outpatient/outpatient::patientLater";
+    }
+
+    @RequestMapping(value = "/storageManage")
+    public String storageManage() {
+
+        return "drugStore/storageManage";
+    }
+
+    @RequestMapping(value = "/toll")
+    public String toll() {
+
+        return "toll/toll";
+    }
+
+    @RequestMapping(value = "/takingdrug")
+    public String takingdrug() {
+
+        return "takingdrug/takingdrug";
+    }
+
+
+    @RequestMapping(value = "/medicalExamination")
+    public String medicalExamination() {
+
+        return "medicalExamination/medicalExamination";
     }
 }
 

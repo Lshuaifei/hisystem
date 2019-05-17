@@ -16,19 +16,21 @@ public class PatientInforReqVO {
     private String address;
 
     @NotBlank(message = "请读取二代身份证！")
-
     private String name;
-    @NotBlank(message = "请读取二代身份证！")
 
+    @NotBlank(message = "请读取二代身份证！")
     private String nationality;
-    @NotBlank(message = "请读取二代身份证！")
 
+    @NotBlank(message = "请读取二代身份证！")
     private String idcard;
-    @NotBlank(message = "请读取二代身份证！")
 
+    @NotBlank(message = "请读取二代身份证！")
     private String sex;
+
     @NotBlank(message = "请读取二代身份证！")
     private String birth;
+
+    private String telphone;
 
     public String getCardId() {
         return cardId;
@@ -84,5 +86,13 @@ public class PatientInforReqVO {
 
     public void setBirth(String birth) {
         this.birth = birth;
+    }
+
+    public String getTelphone() {
+        return telphone;
+    }
+
+    public void setTelphone(String telphone) {
+        this.telphone = telphone;
     }
 }

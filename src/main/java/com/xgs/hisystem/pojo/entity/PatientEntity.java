@@ -15,9 +15,6 @@ public class PatientEntity extends BaseEntity {
     @Column(name = "cardId", nullable = false, length = 20)
     private String cardId;
 
-    @Column(name = "registerStatus", nullable = false, length = 2)
-    private int registerStatus;
-
     @Column(name = "name", nullable = false, length = 20)
     private String name;
 
@@ -26,9 +23,6 @@ public class PatientEntity extends BaseEntity {
 
     @Column(name = "birthday", nullable = false, length = 20)
     private String birthday;
-
-    @Column(name = "age", nullable = true, length = 4)
-    private int age;
 
     @Column(name = "nationality", nullable = false, length = 4)
     private String nationality;
@@ -42,11 +36,20 @@ public class PatientEntity extends BaseEntity {
     @Column(name = "telphone", nullable = true, length = 20)
     private String telphone;
 
-    @Column(name = "zy", nullable = true, length = 20)
-    private String zy;  //职业
+    @Column(name = "career", nullable = true, length = 20)
+    private String career;  //职业
 
-    @Column(name = "hyzk", nullable = true, length = 10)
-    private String hyzk;  //婚姻状况
+    @Column(name = "maritalStatus", nullable = true, length = 10)
+    private String maritalStatus;  //婚姻状况
+
+    @Column(name = "personalHistory", nullable = true, length = 255)
+    private String personalHistory;  //个人史
+
+    @Column(name = "pastHistory", nullable = true, length = 255)
+    private String pastHistory;  //既往史
+
+    @Column(name = "familyHistory", nullable = true, length = 255)
+    private String familyHistory;  //家族史
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RegisterEntity> registerList;  //挂号信息
@@ -57,14 +60,6 @@ public class PatientEntity extends BaseEntity {
 
     public void setCardId(String cardId) {
         this.cardId = cardId;
-    }
-
-    public int getRegisterStatus() {
-        return registerStatus;
-    }
-
-    public void setRegisterStatus(int registerStatus) {
-        this.registerStatus = registerStatus;
     }
 
     public String getName() {
@@ -89,14 +84,6 @@ public class PatientEntity extends BaseEntity {
 
     public void setBirthday(String birthday) {
         this.birthday = birthday;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
     }
 
     public String getNationality() {
@@ -131,27 +118,51 @@ public class PatientEntity extends BaseEntity {
         this.telphone = telphone;
     }
 
-    public String getZy() {
-        return zy;
-    }
-
-    public void setZy(String zy) {
-        this.zy = zy;
-    }
-
-    public String getHyzk() {
-        return hyzk;
-    }
-
-    public void setHyzk(String hyzk) {
-        this.hyzk = hyzk;
-    }
-
     public List<RegisterEntity> getRegisterList() {
         return registerList;
     }
 
     public void setRegisterList(List<RegisterEntity> registerList) {
         this.registerList = registerList;
+    }
+
+    public String getCareer() {
+        return career;
+    }
+
+    public void setCareer(String career) {
+        this.career = career;
+    }
+
+    public String getMaritalStatus() {
+        return maritalStatus;
+    }
+
+    public void setMaritalStatus(String maritalStatus) {
+        this.maritalStatus = maritalStatus;
+    }
+
+    public String getPersonalHistory() {
+        return personalHistory;
+    }
+
+    public void setPersonalHistory(String personalHistory) {
+        this.personalHistory = personalHistory;
+    }
+
+    public String getPastHistory() {
+        return pastHistory;
+    }
+
+    public void setPastHistory(String pastHistory) {
+        this.pastHistory = pastHistory;
+    }
+
+    public String getFamilyHistory() {
+        return familyHistory;
+    }
+
+    public void setFamilyHistory(String familyHistory) {
+        this.familyHistory = familyHistory;
     }
 }

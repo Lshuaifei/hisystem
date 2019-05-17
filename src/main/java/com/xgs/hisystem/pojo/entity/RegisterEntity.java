@@ -30,9 +30,23 @@ public class RegisterEntity extends BaseEntity {
     @Column(name = "payType", nullable = false, length = 10)
     private String payType;
 
-    @Column(name = "operator", nullable = false, length = 10)
-    private String operator;   //操作员
+    @Column(name = "operatorName", nullable = false, length = 10)
+    private String operatorName;   //操作员
 
+    @Column(name = "operatorEmail", nullable = false, length = 50)
+    private String operatorEmail;   //操作员
+
+    @Column(name = "registerStatus", nullable = false, length = 2)
+    private int registerStatus;
+
+    @Column(name = "treatmentStatus", nullable = false, length = 2)
+    private int treatmentStatus;
+
+    @Column(name = "chargeStatus", nullable = false, length = 2)
+    private int chargeStatus;
+
+    @Column(name = "registeredNum", nullable = false, length = 50)
+    private String registeredNum;  //挂号编号
 
     public PatientEntity getPatient() {
         return patient;
@@ -82,12 +96,51 @@ public class RegisterEntity extends BaseEntity {
         this.payType = payType;
     }
 
-    public String getOperator() {
-        return operator;
+    public String getOperatorName() {
+        return operatorName;
     }
 
-    public void setOperator(String operator) {
-        this.operator = operator;
+    public void setOperatorName(String operatorName) {
+        this.operatorName = operatorName;
     }
 
+    public String getOperatorEmail() {
+        return operatorEmail;
+    }
+
+    public void setOperatorEmail(String operatorEmail) {
+        this.operatorEmail = operatorEmail;
+    }
+
+    public int getRegisterStatus() {
+        return registerStatus;
+    }
+
+    public void setRegisterStatus(int registerStatus) {
+        this.registerStatus = registerStatus;
+    }
+
+    public int getTreatmentStatus() {
+        return treatmentStatus;
+    }
+
+    public void setTreatmentStatus(int treatmentStatus) {
+        this.treatmentStatus = treatmentStatus;
+    }
+
+    public int getChargeStatus() {
+        return chargeStatus;
+    }
+
+    public void setChargeStatus(int chargeStatus) {
+        this.chargeStatus = chargeStatus;
+    }
+
+    public String getRegisteredNum() {
+        return registeredNum;
+    }
+
+    public void setRegisteredNum(String registeredNum) {
+        this.registeredNum = registeredNum;
+    }
 }

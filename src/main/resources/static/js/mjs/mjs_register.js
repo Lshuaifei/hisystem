@@ -9,7 +9,6 @@ function getCardIdInfor() {
                 $("#sex").val(data.sex);
                 $("#nationality").val(data.nationality);
                 $("#age").val(data.age)
-
             } else {
                 swal(data.message, "", "error")
             }
@@ -64,6 +63,7 @@ function cancel() {
     $("#IDbirthday").val("");
     $("#IDaddress").val("");
     $("#cardId_1").val("");
+    $("#IDtelphone").val("")
 }
 
 function addPatientInfor() {
@@ -75,7 +75,8 @@ function addPatientInfor() {
         nationality: $("#IDnationality").val(),
         birth: $("#IDbirthday").val(),
         address: $("#IDaddress").val(),
-        cardId: $("#cardId_1").val()
+        cardId: $("#cardId_1").val(),
+        telphone: $("#IDtelphone").val()
     };
     $.ajax({
         url: "/register/addPatientInfor",
@@ -131,18 +132,17 @@ function addPatientInfor() {
 
 var department = '';
 var registerType = '';
-var cardId = "";
 
 $('.chosen').chosen({
     no_results_text: "没有找到结果！",//搜索无结果时显示的提示
     search_contains: true,   //关键字模糊搜索。设置为true，只要选项包含搜索词就会显示；设置为false，则要求从选项开头开始匹配
-    allow_single_deselect: false, //单选下拉框是否允许取消选择。如果允许，选中选项会有一个x号可以删除选项
+    allow_single_deselect: true, //单选下拉框是否允许取消选择。如果允许，选中选项会有一个x号可以删除选项
     disable_search: false, //禁用搜索。设置为true，则无法搜索选项。
     disable_search_threshold: 0, //当选项少等于于指定个数时禁用搜索。
     inherit_select_classes: true, //是否继承原下拉框的样式类，此处设为继承
     /*placeholder_text_single: '',*/ //单选选择框的默认提示信息，当选项为空时会显示。如果原下拉框设置了data-placeholder，会覆盖这里的值。
 
-    max_shown_results: 7, //下拉框最大显示选项数量
+    /*max_shown_results: 7,*/ //下拉框最大显示选项数量
     display_disabled_options: false,
     single_backstroke_delete: false, //false表示按两次删除键才能删除选项，true表示按一次删除键即可删除
     case_sensitive_search: false, //搜索大小写敏感。此处设为不敏感
@@ -152,7 +152,7 @@ $('.chosen').chosen({
 
     department = $(".chosen option:selected").val();
 });
-$('.select_1').chosen({disable_search: true}).change(function () {
+$('.select_1').chosen({disable_search: true, allow_single_deselect: true,}).change(function () {
 
     registerType = $(".select_1 option:selected").val();
 });
@@ -171,6 +171,23 @@ $(function () {
 
 function getRegisterDoctor() {
 
+    var cardId = $("#cardId").val();
+
+    if (cardId == null || cardId == '') {
+        swal("请先读取就诊卡！", "", "error")
+        return false;
+    }
+
+    if (department == null || department == '') {
+        swal("请选择科室！", "", "error");
+        return false;
+    }
+    if (registerType == null || registerType == '') {
+        swal("请选择就诊类型！", "", "error");
+        return false;
+    }
+
+
     $('#RegisterDoctor').bootstrapTable("destroy");
     //1.初始化Table
     var oTable = new TableInit();
@@ -183,8 +200,10 @@ function getRegisterDoctor() {
 }
 
 var doctor = '';
+var doctorId = '';
 var treatmentPrice = '';
 var doctorName = '';
+var workAddress = '';
 
 var TableInit = function () {
     var oTableInit = new Object();
@@ -297,7 +316,7 @@ var ButtonInit = function () {
 function addFunctionAlty() {
     return [
 
-        '<button id="btn_register" class="btn btn-outline-primary" >挂号</button>  '
+        '<button id="btn_register" class="btn btn-outline-primary" >选择</button>  '
     ].join('');
 }
 
@@ -306,42 +325,28 @@ window.operateEvents = {
     // 挂号
     "click #btn_register": function (e, value, row, index) {
 
+        doctorId = row.id;
         treatmentPrice = row.price;
         doctorName = row.doctorName;
+        workAddress = row.workAddress;
 
-        //弹出模态框
+        cardId = $("#cardId").val();
+
+        if (cardId == null || cardId == '') {
+            swal("请先读取就诊卡！", "", "error");
+            return false;
+        }
+
         swal
         ({
                 title: "确认选择吗?",
                 text: "医生:<span style='color: #2C9FAF'>" + doctorName + "</span>",
                 html: true,
                 showCancelButton: true,
-                closeOnConfirm: false,
-                showLoaderOnConfirm: true
             },
             function () {
 
-                $.ajax({
-                    url: "/register/changeRegisterNum",
-                    type: "post",
-                    data: {
-                        "id": row.id,
-                        "cardId": $("#cardId").val()
-                    },
-                    success: function (data) {
-
-                        if (data == "SUCCESS") {
-                            setTimeout(function () {
-                                swal("选择成功！");
-                                $("#RegisterDoctor").bootstrapTable('refresh');
-                                $("#treatmentPrice").val(treatmentPrice)
-                            }, 1500);
-
-                        } else {
-                            swal(data, "", "error")
-                        }
-                    }
-                })
+                $("#treatmentPrice").val(treatmentPrice)
             })
     }
 };
@@ -353,12 +358,17 @@ $('.payType').chosen({disable_search: true}).change(function () {
     payType = $(".payType option:selected").val();
 
     if (payType == "现金") {
-        $("#money").css("visibility", "visible");
-
+        $("#money").css("display", "block");
+        $("#apay").css("display", "none");
         $("#payMoney").val("");
         $("#Change").val("")
+    }
+    else if (payType == "支付宝") {
+        $("#money").css("display", "none");
+        $("#apay").css("display", "block")
     } else {
-        $("#money").css("visibility", "hidden")
+        $("#money").css("display", "none");
+        $("#apay").css("display", "none")
     }
 });
 
@@ -376,16 +386,29 @@ function addRegisterInfor() {
 
     var RegisterInforReqVO = {
         cardId: cardId,
+        doctorId: doctorId,
         department: department,
         registerType: registerType,
         doctor: doctorName,
         treatmentPrice: treatmentPrice,
         payType: payType
     };
+    if (cardId == null || cardId == '') {
+        swal("请先读取就诊卡！", "", "error");
+        return false;
+    }
+
+    if (treatmentPrice == null || treatmentPrice == '') {
+        swal("请选择挂号医生！！", "", "error");
+        return false;
+    }
+
     swal
     ({
             title: "请确认挂号信息",
-            text: "卡号:<span style='color: #2C9FAF'>" + cardId + "</span>&emsp;科室:<span style='color: #2C9FAF'>" + department + "</span><br>类型:<span style='color: #2C9FAF'>" + registerType + "</span>&emsp;医生:<span style='color: #2C9FAF'>" + doctorName + "</span>",
+            text: "卡号:<span style='color: #2C9FAF'>" + cardId + "</span>&emsp;科室:<span style='color: #2C9FAF'>" + department + "</span>" +
+                "<br>类型:<span style='color: #2C9FAF'>" + registerType + "</span>&emsp;医生:<span style='color: #2C9FAF'>" + doctorName + "</span>" +
+                "<br>地址:<span style='color: #2C9FAF'>" + workAddress + "</span>",
             type: "info",
             html: true,
             showCancelButton: true,
@@ -402,9 +425,20 @@ function addRegisterInfor() {
                 success: function (data) {
                     if (data == "SUCCESS") {
                         setTimeout(function () {
-                            swal("提交成功！", "", "success");
-                            window.location.reload()
+                            swal({
+                                    title: "提交成功！",
+                                    type: "success"
+                                },
+                                function () {
+                                    setTimeout(function () {
+                                        window.location.reload()
+                                    }, 500)
+
+                                });
+
+
                         }, 1500);
+
                     } else {
                         swal(data, "", "error")
                     }
