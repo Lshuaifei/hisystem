@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.xgs.hisystem.service;
+package com.xgs.hisystem.util.card;
 
 import com.sun.jna.win32.StdCallLibrary;
 

@@ -1,12 +1,10 @@
 package com.xgs.hisystem.service.impl;
 
 import com.xgs.hisystem.config.Contants;
-import com.xgs.hisystem.pojo.entity.MedicalRecordEntity;
-import com.xgs.hisystem.pojo.entity.PatientEntity;
-import com.xgs.hisystem.pojo.entity.RegisterEntity;
-import com.xgs.hisystem.pojo.entity.UserEntity;
+import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.takingdrug.MedicalRecordRspVO;
+import com.xgs.hisystem.repository.IMedicalExaminationRepository;
 import com.xgs.hisystem.repository.IMedicalRecordRepository;
 import com.xgs.hisystem.service.ITakingDrugService;
 import com.xgs.hisystem.util.DateUtil;
@@ -25,6 +23,8 @@ public class TakingDrugServiceImpl implements ITakingDrugService {
 
     @Autowired
     private IMedicalRecordRepository iMedicalRecordRepository;
+    @Autowired
+    private IMedicalExaminationRepository iMedicalExaminationRepository;
 
     @Override
     public MedicalRecordRspVO getMedicalRecord(String prescriptionNum) throws Exception {
@@ -51,10 +51,13 @@ public class TakingDrugServiceImpl implements ITakingDrugService {
         recordRspVO.setNationality(patient.getNationality());
         recordRspVO.setPrescription(medicalRecord.getPrescription());
         recordRspVO.setSex(patient.getSex());
-        recordRspVO.setExaminationCost(medicalRecord.getExaminationCost());
+
+        MedicalExaminationEntity medicalExamination = iMedicalExaminationRepository.findByPrescriptionNum(medicalRecord.getPrescriptionNum());
+        if (!StringUtils.isEmpty(medicalExamination)) {
+            recordRspVO.setExaminationCost(medicalExamination.getExaminationCost());
+        }
         recordRspVO.setDoctorName(register.getDoctor());
         recordRspVO.setDepartment(register.getDepartment());
-        recordRspVO.setExaminationCost(medicalRecord.getExaminationCost());
 
         return recordRspVO;
     }

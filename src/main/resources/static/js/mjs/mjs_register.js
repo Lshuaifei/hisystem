@@ -313,11 +313,19 @@ var ButtonInit = function () {
 };
 
 //操作
-function addFunctionAlty() {
-    return [
+function addFunctionAlty(value, row, index) {
+    if (row.allowNum == row.nowNum) {
+        return [
 
-        '<button id="btn_register" class="btn btn-outline-primary" >选择</button>  '
-    ].join('');
+            '<button id="btn_register" disabled="disabled" class="btn btn-outline-primary" >选择</button>  '
+        ].join('');
+    } else {
+        return [
+
+            '<button id="btn_register" class="btn btn-outline-primary" >选择</button>  '
+        ].join('');
+    }
+
 }
 
 window.operateEvents = {

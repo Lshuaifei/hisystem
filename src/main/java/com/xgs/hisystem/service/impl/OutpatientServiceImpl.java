@@ -1,12 +1,10 @@
 package com.xgs.hisystem.service.impl;
 
-import com.sun.jna.Native;
 import com.xgs.hisystem.config.Contants;
 import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.outpatient.*;
 import com.xgs.hisystem.repository.*;
-import com.xgs.hisystem.service.Dcrf32_h;
 import com.xgs.hisystem.service.IOutpatientService;
 import com.xgs.hisystem.util.DateUtil;
 import org.apache.shiro.SecurityUtils;
@@ -18,6 +16,8 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.xgs.hisystem.util.card.Card.defaultGetCardId;
 
 /**
  * @author xgs
@@ -37,6 +37,10 @@ public class OutpatientServiceImpl implements IOutpatientService {
     private IMedicalRecordRepository iMedicalRecordRepository;
     @Autowired
     private IDrugRepository iDrugRepository;
+    @Autowired
+    private IUserRepository iUserRepository;
+    @Autowired
+    private IMedicalExaminationRepository iMedicalExaminationRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(RegisterServiceImpl.class);
 
@@ -103,6 +107,14 @@ public class OutpatientServiceImpl implements IOutpatientService {
             patientInforRspVO.setFamilyHistory(patientInfor.getFamilyHistory());
             patientInforRspVO.setDate(DateUtil.getCurrentDateSimpleToString());
             patientInforRspVO.setDepartment(outpatientQueue.getRegister().getDepartment());
+
+            String registerId = outpatientQueue.getRegister().getId();
+            MedicalRecordEntity medicalRecord = iMedicalRecordRepository.findByRegisterId(registerId);
+            if (StringUtils.isEmpty(medicalRecord)) {
+                patientInforRspVO.setPrescriptionNum(String.valueOf(System.currentTimeMillis()));
+            } else {
+                patientInforRspVO.setPrescriptionNum(medicalRecord.getPrescriptionNum());
+            }
             return patientInforRspVO;
 
 
@@ -253,9 +265,13 @@ public class OutpatientServiceImpl implements IOutpatientService {
             RegisterEntity registerEntity = iRegisterRepository.findById(register.getId()).get();
             registerEntity.setTreatmentStatus(1);
 
+            MedicalExaminationEntity medicalExamination = new MedicalExaminationEntity();
+            medicalExamination.setPrescriptionNum(reqVO.getPrescriptionNum());
+
             try {
                 iMedicalRecordRepository.saveAndFlush(medicalRecord);
                 iRegisterRepository.saveAndFlush(registerEntity);
+                iMedicalExaminationRepository.saveAndFlush(medicalExamination);
             } catch (Exception e) {
                 return BaseResponse.success(Contants.user.FAIL);
             }
@@ -360,6 +376,10 @@ public class OutpatientServiceImpl implements IOutpatientService {
 
         OutpatientQueueEntity outpatientQueue = iOutpatientQueueRepository.findByPatientId(patientId);
 
+        String doctorId = outpatientQueue.getRegister().getDoctorId();
+        UserEntity userEntity = iUserRepository.findById(doctorId).get();
+        userEntity.setUpdateTime(DateUtil.getCurrentDateSimpleToString());
+
         if (!StringUtils.isEmpty(medicalR)) {
             medicalR.setConditionDescription(reqVO.getConditionDescription());
             medicalR.setDiagnosisResult(reqVO.getDiagnosisResult());
@@ -367,10 +387,10 @@ public class OutpatientServiceImpl implements IOutpatientService {
             medicalR.setMedicalOrder(reqVO.getMedicalOrder());
             medicalR.setPrescription(reqVO.getPrescription());
 
-
             try {
                 iMedicalRecordRepository.saveAndFlush(medicalR);
                 iOutpatientQueueRepository.delete(outpatientQueue);
+                iUserRepository.saveAndFlush(userEntity);
                 return BaseResponse.success(Contants.user.SUCCESS);
             } catch (Exception e) {
                 return BaseResponse.success(Contants.user.FAIL);
@@ -402,6 +422,7 @@ public class OutpatientServiceImpl implements IOutpatientService {
             iMedicalRecordRepository.saveAndFlush(medicalRecord);
             iRegisterRepository.saveAndFlush(registerEntity);
             iOutpatientQueueRepository.delete(outpatientQueue);
+            iUserRepository.saveAndFlush(userEntity);
             return BaseResponse.success(Contants.user.SUCCESS);
         } catch (Exception e) {
             return BaseResponse.success(Contants.user.FAIL);
@@ -409,81 +430,23 @@ public class OutpatientServiceImpl implements IOutpatientService {
 
     }
 
+    @Override
+    public medicalExaminationInfoRspVO getMedicalExamination(String prescriptionNum) {
 
-    /**
-     * 默认获取IC卡号
-     *
-     * @return
-     */
-    public static String defaultGetCardId() {
-        Dcrf32_h dcrf32_h;
-        try {
-            dcrf32_h = (Dcrf32_h) Native.loadLibrary("dcrf32", Dcrf32_h.class);
-        } catch (Exception e) {
-            return "fail";
+        MedicalExaminationEntity medicalExamination = iMedicalExaminationRepository.findByPrescriptionNum(prescriptionNum);
+
+        medicalExaminationInfoRspVO rspVO = new medicalExaminationInfoRspVO();
+        if (StringUtils.isEmpty(medicalExamination)) {
+            rspVO.setMessage("未查询到相关体检信息！");
+            return rspVO;
         }
 
-        int result;
-        int handle;
-        int[] snr = new int[1];
-        byte[] send_buffer = new byte[2048];
-        byte[] recv_buffer = new byte[2048];
+        rspVO.setHeartRate(medicalExamination.getHeartRate());
+        rspVO.setBodyTemperature(medicalExamination.getBodyTemperature());
+        rspVO.setBloodPressure(medicalExamination.getBloodPressure());
 
+        rspVO.setPulse(medicalExamination.getPulse());
 
-        result = dcrf32_h.dc_init((short) 100, 115200);
-        if (result < 0) {
-            logger.info("dc_init ...error ");
-            return "fail";
-        }
-
-        handle = result;
-
-        result = dcrf32_h.dc_config_card(handle, (byte) 0x41);//设置非接卡型为A
-        result = dcrf32_h.dc_card(handle, (byte) 0, snr);
-        if (result != 0) {
-            logger.info("dc_card ...error ");
-            dcrf32_h.dc_exit(handle);
-            return "none";
-        }
-
-
-        recv_buffer[0] = (byte) ((snr[0] >>> 24) & 0xff);
-        recv_buffer[1] = (byte) ((snr[0] >>> 16) & 0xff);
-        recv_buffer[2] = (byte) ((snr[0] >>> 8) & 0xff);
-        recv_buffer[3] = (byte) ((snr[0] >>> 0) & 0xff);
-        String cardid = print_bytes(recv_buffer, 4);
-
-        if (cardid.equals("00000000")) {
-            logger.info("未识别到卡片！");
-            return "none";
-        }
-
-        /* 蜂鸣*/
-        dcrf32_h.dc_beep(handle, (short) 10);
-        if (result != 0) {
-            logger.info("dc_beep ...error ");
-            dcrf32_h.dc_exit(handle);
-            return "fail";
-        }
-
-        result = dcrf32_h.dc_exit(handle);
-        if (result != 0) {
-            logger.info("dc_exit ...error ");
-            return "fail";
-        }
-
-        return cardid;
-    }
-
-    private static String print_bytes(byte[] b, int length) {
-        List<String> temp = new ArrayList<>();
-        for (int i = 0; i < length; ++i) {
-            String hex = Integer.toHexString(b[i] & 0xFF);
-            if (hex.length() == 1) {
-                hex = '0' + hex;
-            }
-            temp.add(hex.toUpperCase());
-        }
-        return String.join("", temp);
+        return rspVO;
     }
 }

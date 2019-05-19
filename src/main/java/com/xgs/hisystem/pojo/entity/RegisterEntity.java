@@ -24,6 +24,9 @@ public class RegisterEntity extends BaseEntity {
     @Column(name = "doctor", nullable = false, length = 32)
     private String doctor;
 
+    @Column(name = "doctorId", nullable = false, length = 255)
+    private String doctorId;
+
     @Column(name = "treatmentPrice", nullable = false, length = 10)
     private String treatmentPrice;
 
@@ -47,6 +50,14 @@ public class RegisterEntity extends BaseEntity {
 
     @Column(name = "registeredNum", nullable = false, length = 50)
     private String registeredNum;  //挂号编号
+
+    public String getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
+    }
 
     public PatientEntity getPatient() {
         return patient;

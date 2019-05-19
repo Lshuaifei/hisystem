@@ -20,7 +20,7 @@ function getCardIdInfor() {
                 $("#sex").val(data.sex);
                 $("#nationality").val(data.nationality);
                 $("#age").val(data.age);
-                $("#prescriptionNum").val((new Date()).getTime());
+                $("#prescriptionNum").val(data.prescriptionNum);
                 $("#date").val(data.date);
                 $("#department").val(data.department);
 
@@ -369,5 +369,32 @@ function addMedicalRecord() {
         }, 1000)
     })
 
+
+}
+
+function getMedicalExamination() {
+
+    var prescriptionNum = $("#prescriptionNum").val();
+
+    $.ajax({
+        url: "/outpatient/getMedicalExamination",
+        type: "post",
+        data: {
+            "prescriptionNum": prescriptionNum
+        },
+        success: function (data) {
+
+            if (data.message == null) {
+                $("#cardId").val(),
+                    $("#bodyTemperature").val(data.bodyTemperature),
+                    $("#pulse").val(data.pulse),
+                    $("#heartRate").val(data.heartRate),
+                    $("#bloodPressure").val(data.bloodPressure),
+                    $("#examinationCost").val(data.examinationCost)
+            } else {
+                swal(data.message, "", "error")
+            }
+        }
+    })
 
 }

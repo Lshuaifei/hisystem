@@ -33,9 +33,6 @@ public class MedicalRecordEntity extends BaseEntity {
     @Column(name = "medicalOrder", nullable = true, length = 255)
     private String medicalOrder; //医嘱
 
-    @Column(name = "examinationCost", nullable = true, length = 20)
-    private String examinationCost;  //检查费用
-
     @Column(name = "tollFrequency", nullable = false, length = 20)
     private int tollFrequency;  //划价收费次数
 
@@ -108,14 +105,6 @@ public class MedicalRecordEntity extends BaseEntity {
 
     public void setMedicalOrder(String medicalOrder) {
         this.medicalOrder = medicalOrder;
-    }
-
-    public String getExaminationCost() {
-        return examinationCost;
-    }
-
-    public void setExaminationCost(String examinationCost) {
-        this.examinationCost = examinationCost;
     }
 
     public int getTollFrequency() {

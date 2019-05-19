@@ -25,7 +25,7 @@ public class TollMedicalRecordRspVO {
 
     private String medicalOrder;
 
-    private String examinationCost;
+    private double examinationCost;
 
     public String getDate() {
         return date;
@@ -99,11 +99,11 @@ public class TollMedicalRecordRspVO {
         this.medicalOrder = medicalOrder;
     }
 
-    public String getExaminationCost() {
+    public double getExaminationCost() {
         return examinationCost;
     }
 
-    public void setExaminationCost(String examinationCost) {
+    public void setExaminationCost(double examinationCost) {
         this.examinationCost = examinationCost;
     }
 }

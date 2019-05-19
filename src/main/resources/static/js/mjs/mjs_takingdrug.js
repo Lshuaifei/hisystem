@@ -26,7 +26,7 @@ function getMedicalRecord() {
                 $("#drugCost").val(data.drugCost);
                 $("#doctorName").val(data.doctorName);
                 $("#prescription").html(data.prescription);
-
+                $("#examinationCost").val(data.examinationCost);
             } else {
                 swal(data, "", "error")
             }

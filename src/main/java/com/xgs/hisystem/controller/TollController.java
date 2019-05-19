@@ -43,6 +43,14 @@ public class TollController {
         return iTollService.getAllMedicalRecord(cardId, tollStatus);
     }
 
+    /**
+     * 获取处方笺信息
+     *
+     * @param cardId
+     * @param registerId
+     * @return
+     * @throws Exception
+     */
     @PostMapping(value = "/getMedicalRecord")
     public TollMedicalRecordRspVO getMedicalRecord(@RequestParam String cardId,
                                                    @RequestParam String registerId) throws Exception {

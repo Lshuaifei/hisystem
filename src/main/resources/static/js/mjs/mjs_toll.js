@@ -179,8 +179,9 @@ window.operateEvents = {
                     $("#drugCost").val(data.drugCost);
                     $("#doctorName").val(doctorName);
                     $("#prescription").html(data.prescription);
+                    $("#examinationCost").val(data.examinationCost);
 
-                    $("#total").val($("#drugCost").val() + $("#examinationCost").val())
+                    $("#total").val(data.drugCost + data.examinationCost)
                 }
             }
         })

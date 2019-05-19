@@ -1,10 +1,7 @@
 package com.xgs.hisystem.controller;
 
 import com.xgs.hisystem.pojo.vo.BaseResponse;
-import com.xgs.hisystem.pojo.vo.outpatient.DrugRspVO;
-import com.xgs.hisystem.pojo.vo.outpatient.MedicalRecordReqVO;
-import com.xgs.hisystem.pojo.vo.outpatient.OtherPatientInforReqVO;
-import com.xgs.hisystem.pojo.vo.outpatient.PatientInforRspVO;
+import com.xgs.hisystem.pojo.vo.outpatient.*;
 import com.xgs.hisystem.service.IOutpatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +30,13 @@ public class OutpatientController {
 
         return iOutpatientService.getCardIdInfor();
     }
+
+    /**
+     * 修改患者基础信息
+     *
+     * @param reqVO
+     * @return
+     */
 
     @PostMapping(value = "/changePatientInfor")
     public String changePatientInfor(@RequestBody OtherPatientInforReqVO reqVO) {
@@ -68,11 +72,23 @@ public class OutpatientController {
         return iOutpatientService.restorePatientInfor(registerId);
     }
 
+    /**
+     * 所有药品名
+     *
+     * @return
+     */
 
     @PostMapping(value = "/getAllDrug")
     public List<String> getAllDrug() {
         return iOutpatientService.getAllDrug();
     }
+
+    /**
+     * 单个药品规格
+     *
+     * @param drug
+     * @return
+     */
 
     @PostMapping(value = "/getDrugInfor")
     public DrugRspVO getDrugInfor(String drug) {
@@ -90,6 +106,20 @@ public class OutpatientController {
         BaseResponse baseResponse = iOutpatientService.addMedicalRecord(reqVO);
 
         return baseResponse.getMessage();
+    }
+
+    /**
+     * 就诊获取体检信息
+     *
+     * @param prescriptionNum
+     * @return
+     */
+
+    @PostMapping(value = "/getMedicalExamination")
+    public medicalExaminationInfoRspVO getMedicalExamination(@RequestParam String prescriptionNum) {
+        medicalExaminationInfoRspVO rspVO = iOutpatientService.getMedicalExamination(prescriptionNum);
+
+        return rspVO;
     }
 
 }

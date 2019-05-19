@@ -30,4 +30,6 @@ public interface IOutpatientService {
 
     BaseResponse<?> addMedicalRecord(MedicalRecordReqVO reqVO);
 
+    medicalExaminationInfoRspVO getMedicalExamination(String prescriptionNum);
+
 }

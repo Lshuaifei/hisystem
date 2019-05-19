@@ -21,12 +21,25 @@ public class TakingDrugController {
     @Autowired
     private ITakingDrugService iTakingDrugService;
 
+    /**
+     * 获取处方笺信息
+     *
+     * @param prescriptionNum
+     * @return
+     * @throws Exception
+     */
     @PostMapping(value = "/getMedicalRecord")
     public MedicalRecordRspVO getMedicalRecord(@RequestParam String prescriptionNum) throws Exception {
 
         return iTakingDrugService.getMedicalRecord(prescriptionNum);
     }
 
+    /**
+     * 保存拿药信息
+     *
+     * @param prescriptionNum
+     * @return
+     */
     @PostMapping(value = "/saveTakingDrugInfo")
     public String saveTakingDrugInfo(@RequestParam String prescriptionNum) {
 

@@ -28,7 +28,7 @@ public class MedicalRecordRspVO {
 
     private String department;
 
-    private String examinationCost;
+    private double examinationCost;
 
     private String message;
 
@@ -128,11 +128,11 @@ public class MedicalRecordRspVO {
         this.department = department;
     }
 
-    public String getExaminationCost() {
+    public double getExaminationCost() {
         return examinationCost;
     }
 
-    public void setExaminationCost(String examinationCost) {
+    public void setExaminationCost(double examinationCost) {
         this.examinationCost = examinationCost;
     }
 }

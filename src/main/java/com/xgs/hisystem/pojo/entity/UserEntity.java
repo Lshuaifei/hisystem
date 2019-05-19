@@ -79,6 +79,9 @@ public class UserEntity extends BaseEntity {
     @Column(name = "treatmentPrice", nullable = true, length = 10)
     private String treatmentPrice;  //诊疗费，由等级决定
 
+    @Column(name = "updateTime", nullable = true, length = 50)
+    private String updateTime;
+
     @Column(name = "allowNum", nullable = true, length = 10)
     private Integer allowNum;
 
@@ -275,5 +278,13 @@ public class UserEntity extends BaseEntity {
 
     public void setOutpatientQueueList(List<OutpatientQueueEntity> outpatientQueueList) {
         this.outpatientQueueList = outpatientQueueList;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }
