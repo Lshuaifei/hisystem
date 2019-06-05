@@ -9,12 +9,6 @@ input {
     color: #000080;
 }
 
-.mybutton {
-    width: 58px;
-    font-size: 16px;
-    height: 35px;
-}
-
-.addNewDrug {
-    font-size: 18px;
+.drug_search {
+    display: flex;
 }

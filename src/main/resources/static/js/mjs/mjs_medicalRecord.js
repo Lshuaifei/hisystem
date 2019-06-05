@@ -14,8 +14,8 @@ var TableInit = function () {
     var oTableInit = new Object();
     //初始化Table
     oTableInit.Init = function () {
-        $('#registerRecord').bootstrapTable({
-            url: '/register/getRegisterRecord',         //请求后台的URL（*）
+        $('#medicalRecord').bootstrapTable({
+            url: '/outpatient/getMedicalRecord',         //请求后台的URL（*）
             method: 'get',                      //请求方式（*）
             toolbar: '#toolbar',                //工具按钮用哪个容器
             striped: false,                      //是否显示行间隔色
@@ -50,9 +50,9 @@ var TableInit = function () {
                 // width: 40,
                 formatter: function (value, row, index) {
                     //获取每页显示的数量
-                    var pageSize = $('#registerRecord').bootstrapTable('getOptions').pageSize;
+                    var pageSize = $('#medicalRecord').bootstrapTable('getOptions').pageSize;
                     //获取当前是第几页
-                    var pageNumber = $('#registerRecord').bootstrapTable('getOptions').pageNumber;
+                    var pageNumber = $('#medicalRecord').bootstrapTable('getOptions').pageNumber;
                     //返回序号，注意index是从0开始的，所以要加上1
                     return pageSize * (pageNumber - 1) + index + 1
                 }
@@ -107,10 +107,10 @@ var TableInit = function () {
         var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
             pageSize: params.pageSize,   //页面大小
             pageNumber: params.pageNumber - 1,//页码
-            department: department,
+            /*department: department,
             registerType: registerType,
             startTime: $(".startTime").val(),
-            endTime: $(".endTime").val()
+            endTime: $(".endTime").val()*/
         };
         return temp;
     };

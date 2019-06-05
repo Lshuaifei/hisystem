@@ -1,3 +1,5 @@
+$(window).preloader();
+
 Split(['#myprescription', '#tolloperation'], {
     sizes: [52, 48],
     minSize: [770, 730]
@@ -117,10 +119,9 @@ var TableInit = function () {
     oTableInit.queryParams = function (params) {
         var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
 
-                cardId: $("#cardId").val(),
-                tollStatus: tollStatus
-            }
-        ;
+            cardId: $("#cardId").val(),
+            tollStatus: tollStatus
+        };
         return temp;
     };
     return oTableInit;
@@ -142,22 +143,16 @@ function addFunctionAlty() {
         '<button id="btn_toll" class="btn btn-outline-primary" >选择</button>  '
     ].join('');
 }
-
 var registerId = '';
 var prescriptionNum = '';
-
 window.operateEvents = {
-
     // 选择病历收费
     "click #btn_toll": function (e, value, row, index) {
-
         registerId = row.registerId;
-
         var cardId = $("#cardId").val();
         var doctorName = row.doctorName;
         var department = row.department;
         prescriptionNum = row.prescriptionNum;
-
         $.ajax({
             url: "/toll/getMedicalRecord",
             type: "post",

@@ -86,19 +86,15 @@ public class RegisterServiceImpl implements IRegisterService {
 
             //过期的挂号
             List<RegisterEntity> ExpiredList = new ArrayList<>();
-
             for (RegisterEntity register : registerList) {
-
                 //已挂号未就诊情况下
                 if (register.getRegisterStatus() == 1 && register.getTreatmentStatus() == 0) {
-
                     String createDate = DateUtil.DateTimeToDate(register.getCreateDatetime());
                     String nowDate = DateUtil.getCurrentDateSimpleToString();
                     //当天情况下
                     if (createDate.equals(nowDate)) {
                         patientInforRspVO.setMessage("已挂号，未就诊！");
                         return patientInforRspVO;
-
                         //不是当天则修改挂号状态为：-1 （过期）
                     } else {
                         register.setRegisterStatus(-1);
@@ -241,16 +237,14 @@ public class RegisterServiceImpl implements IRegisterService {
             return null;
         }
         List<RegisterDoctorRspVO> registerDoctorRspList = new ArrayList<>();
-        List<UserEntity> userList = iUserRepository.findByDepartmentAndDepartmentType(reqVO.getDepartment(), reqVO.getRegisterType());
+        List<UserEntity> userList = iUserRepository.findByDepartmentAndDepartmentType(reqVO.getDepartment(),
+                reqVO.getRegisterType());
         if (userList != null && userList.size() > 0) {
-
             RegisterDoctorRspVO registerDoctorRspVO = new RegisterDoctorRspVO();
             userList.forEach(user -> {
-
                 if (!DateUtil.getCurrentDateSimpleToString().equals(user.getUpdateTime())) {
                     user.setNowNum(0);
                     user.setUpdateTime(DateUtil.getCurrentDateSimpleToString());
-
                     iUserRepository.saveAndFlush(user);
                 }
                 registerDoctorRspVO.setDoctorName(user.getUsername());

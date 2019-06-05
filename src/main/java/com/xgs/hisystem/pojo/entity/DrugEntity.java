@@ -29,7 +29,7 @@ public class DrugEntity extends BaseEntity {
     private String unit;   //规格单位
 
     @Column(name = "limitStatus", nullable = false, length = 50)
-    private String limitStatus;  //是否限制药物
+    private int limitStatus;  //是否限制药物
 
     @Column(name = "efficacyClassification", nullable = false, length = 50)
     private String efficacyClassification;  //功效分类
@@ -42,6 +42,15 @@ public class DrugEntity extends BaseEntity {
 
     @Column(name = "manufacturer", nullable = false, length = 255)
     private String manufacturer;  //生产厂家
+
+    @Column(name = "storageQuantity", nullable = false, length = 20)
+    private int storageQuantity; //入库量
+
+    @Column(name = "productionDate", nullable = false, length = 50)
+    private String productionDate;  //生产日期
+
+    @Column(name = "qualityDate", nullable = false, length = 50)
+    private String qualityDate;  //保质日期
 
     public double getNum() {
         return num;
@@ -83,11 +92,11 @@ public class DrugEntity extends BaseEntity {
         this.unit = unit;
     }
 
-    public String getLimitStatus() {
+    public int getLimitStatus() {
         return limitStatus;
     }
 
-    public void setLimitStatus(String limitStatus) {
+    public void setLimitStatus(int limitStatus) {
         this.limitStatus = limitStatus;
     }
 
@@ -121,6 +130,31 @@ public class DrugEntity extends BaseEntity {
 
     public void setManufacturer(String manufacturer) {
         this.manufacturer = manufacturer;
+    }
+
+
+    public int getStorageQuantity() {
+        return storageQuantity;
+    }
+
+    public void setStorageQuantity(int storageQuantity) {
+        this.storageQuantity = storageQuantity;
+    }
+
+    public String getProductionDate() {
+        return productionDate;
+    }
+
+    public void setProductionDate(String productionDate) {
+        this.productionDate = productionDate;
+    }
+
+    public String getQualityDate() {
+        return qualityDate;
+    }
+
+    public void setQualityDate(String qualityDate) {
+        this.qualityDate = qualityDate;
     }
 }
 

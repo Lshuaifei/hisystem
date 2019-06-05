@@ -1,3 +1,5 @@
+$(window).preloader();
+
 $(function () {
 
     //1.初始化Table

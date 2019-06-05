@@ -1,3 +1,5 @@
+$(window).preloader();
+
 $(function () {
 
 
@@ -109,16 +111,16 @@ function addFunctionAlty(value, row, index) {
 
         return [
 
-            '<button id="btn_pass" class="btn btn-outline-primary" >修改</button>&emsp;',
-            '<button id="btn_nopass" class="btn btn-outline-danger">删除</button>&emsp;',
-            '<button id="btn_addpass" class="btn btn-outline-primary"  title="添加到主页">+</button>'
+            '<button id="btn_modify" class="btn btn-outline-primary" >修改</button>&emsp;',
+            '<button id="btn_delete" class="btn btn-outline-danger">删除</button>&emsp;',
+            '<button id="btn_add" class="btn btn-outline-primary"  title="添加到主页">+</button>'
         ].join('');
     } else {
         return [
 
-            '<button id="btn_pass" class="btn btn-outline-primary" >修改</button>&emsp;',
-            '<button id="btn_nopass" class="btn btn-outline-danger">删除</button>&emsp;',
-            '<button id="btn_subpass"  style="width: 35.61px;text-align: center" class="btn btn-outline-primary" title="从主页移除">-</button>'
+            '<button id="btn_modify" class="btn btn-outline-primary" >修改</button>&emsp;',
+            '<button id="btn_delete" class="btn btn-outline-danger">删除</button>&emsp;',
+            '<button id="btn_sub"  style="width: 35.61px;text-align: center" class="btn btn-outline-primary" title="从主页移除">-</button>'
         ].join('');
     }
 }
@@ -126,7 +128,7 @@ function addFunctionAlty(value, row, index) {
 window.operateEvents = {
 
     // 修改
-    "click #btn_pass": function (e, value, row, index) {
+    "click #btn_modify": function (e, value, row, index) {
         //弹出模态框
         window.location.hash = "#mymodal_2";
         $("#change_id").val(row.id);
@@ -134,17 +136,17 @@ window.operateEvents = {
         $("#contents").val(row.contents);
     },
     // 删除
-    'click #btn_nopass': function (e, value, row, index) {
+    'click #btn_delete': function (e, value, row, index) {
         window.location.hash = "#mymodal_1";
         $("#delete_id").val(row.id);
     },
     //添加到主页
-    'click #btn_addpass': function (e, value, row, index) {
+    'click #btn_add': function (e, value, row, index) {
         window.location.hash = "#mymodal_3";
         $("#add_id").val(row.id);
     },
     //从主页移除
-    'click #btn_subpass': function (e, value, row, index) {
+    'click #btn_sub': function (e, value, row, index) {
         window.location.hash = "#mymodal_4";
         $("#sub_id").val(row.id);
     }
@@ -200,11 +202,22 @@ function addAnnouncement() {
         data: JSON.stringify(AnnouncementVO),
         success: function (data) {
 
-            $('.modalxa').html(data);
-            $('.modalx').fadeIn();
-            setTimeout(function () {
-                $('.modalx').fadeOut();
-            }, 3000);
+            if (data == "SUCCESS") {
+
+                swal({
+                        title: "添加成功！",
+                        type: "success"
+                    },
+                    function () {
+                        setTimeout(function () {
+                            window.location.reload()
+                        }, 500)
+
+                    });
+
+            } else {
+                swal(data, "", "error")
+            }
 
 
         }

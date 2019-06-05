@@ -5,9 +5,13 @@
     </head>
     <title>体检</title>
     <link rel="stylesheet" type="text/css" th:href="@{css/mcss/mcss_medicalExamination.css}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/preloader.css}">
 </head>
 <body>
 
+<div id="preloader">
+    <div id="preloader-inner"></div>
+</div>
 <div id="wrapper">
     <div th:replace="common/common_left :: left"></div>
 
@@ -78,7 +82,8 @@
 </div>
 <div>
     <div th:replace="common/common_js :: js(~{::script})"></div>
-    <script th:src="@{/sb-admin-2/bootstrap/bootstrap-table.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.preloader.min.js}"></script>
+    <script th:src="@{/sb-admin-2/bootstrap/bootstrap-table.min.js}"></script>
     <script th:src="@{/sb-admin-2/bootstrap/bootstrap-table-zh-CN.js}"></script>
     <script type="text/javascript" th:src="@{/js/mjs/mjs_medicalExamination.js}"></script>
 </div>

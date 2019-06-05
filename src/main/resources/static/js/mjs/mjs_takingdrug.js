@@ -1,3 +1,5 @@
+$(window).preloader();
+
 Split(['#myprescription', '#takingDrugOperation'], {
     sizes: [65, 35],
     minSize: [800, 400]
@@ -5,6 +7,11 @@ Split(['#myprescription', '#takingDrugOperation'], {
 
 function getMedicalRecord() {
     var prescriptionNum = $("#prescriptionNum_input").val();
+
+    if (prescriptionNum == null || prescriptionNum == '') {
+        swal("请填写处方号！", "", "error");
+        return false;
+    }
 
     $.ajax({
         url: "/takingdrug/getMedicalRecord",
@@ -36,12 +43,18 @@ function getMedicalRecord() {
 
 function saveTakingDrugInfo() {
 
+    var prescriptionNum = $("#prescriptionNum_input").val();
+
+    if (prescriptionNum == null || prescriptionNum == '') {
+        swal("请填写处方号！", "", "error");
+        return false;
+    }
 
     $.ajax({
         url: "/takingdrug/saveTakingDrugInfo",
         type: "post",
         data: {
-            "prescriptionNum": $("#prescriptionNum_input").val()
+            "prescriptionNum": prescriptionNum
         },
         success: function (data) {
 

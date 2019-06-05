@@ -95,6 +95,13 @@ public class RegisterController {
         return baseResponse.getMessage();
     }
 
+    /**
+     * 获取医生
+     *
+     * @param reqVO
+     * @return
+     */
+
     @RequestMapping(value = "/getAllRegisterDoctor")
     public List<RegisterDoctorRspVO> getAllRegisterDoctor(RegisterTypeReqVO reqVO) {
 
@@ -102,6 +109,11 @@ public class RegisterController {
 
     }
 
+    /**
+     * 提交挂号信息
+     * @param reqVO
+     * @return
+     */
 
     @PostMapping(value = "/addRegisterInfor")
     public String addRegisterInfor(@RequestBody RegisterInforReqVO reqVO) {

@@ -159,12 +159,12 @@ public class PageController {
 
     @RequestMapping(value = "/registerRecord")
     public String registerRecord() {
-        return "/register/registerRecord";
+        return "register/registerRecord";
     }
 
     @RequestMapping(value = "/outpatient")
     public String outpatient() {
-        return "/outpatient/outpatient";
+        return "outpatient/outpatient";
     }
 
 
@@ -221,6 +221,19 @@ public class PageController {
     public String medicalExamination() {
 
         return "medicalExamination/medicalExamination";
+    }
+
+    @RequestMapping(value = "/drugManage")
+    public String drugManage() {
+
+        return "drugStore/drugManage";
+    }
+
+
+    @RequestMapping(value = "/medicalRecord")
+    public String medicalRecord() {
+
+        return "outpatient/medicalRecord";
     }
 }
 

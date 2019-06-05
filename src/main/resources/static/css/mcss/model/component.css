@@ -71,6 +71,9 @@ a.mymodal_button:hover {
     width: 30%;
 }
 
+.modal3 {
+    width: 33%;
+}
 .mymodal_modal .mymodal_content {
     margin-top: 1rem;
 }

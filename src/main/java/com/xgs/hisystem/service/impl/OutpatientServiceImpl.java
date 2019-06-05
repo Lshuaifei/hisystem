@@ -373,13 +373,10 @@ public class OutpatientServiceImpl implements IOutpatientService {
 
 
         String patientId = iPatientRepository.findByCardId(cardId).getId();
-
         OutpatientQueueEntity outpatientQueue = iOutpatientQueueRepository.findByPatientId(patientId);
-
         String doctorId = outpatientQueue.getRegister().getDoctorId();
         UserEntity userEntity = iUserRepository.findById(doctorId).get();
         userEntity.setUpdateTime(DateUtil.getCurrentDateSimpleToString());
-
         if (!StringUtils.isEmpty(medicalR)) {
             medicalR.setConditionDescription(reqVO.getConditionDescription());
             medicalR.setDiagnosisResult(reqVO.getDiagnosisResult());

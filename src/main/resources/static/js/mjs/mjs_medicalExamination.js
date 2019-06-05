@@ -1,3 +1,5 @@
+$(window).preloader();
+
 function getCardIdInfor() {
     $.ajax({
         url: "/medicalExamination/getCardIdInfor",

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -54,7 +55,13 @@ public class AsyncTask {
 
             //调百度地图api，通过ip获取地理位置
             String url = Contants.url.BAIDU_URL + ip;
-            String result = restTemplate.getForObject(url, String.class);
+
+            String result = null;
+            try {
+                result = restTemplate.getForObject(url, String.class);
+            } catch (RestClientException e) {
+                e.printStackTrace();
+            }
 
             if (!StringUtils.isEmpty(result)) {
 
@@ -67,9 +74,4 @@ public class AsyncTask {
         }
     }
 
-    @Async("myTaskAsyncPool")
-    public void getRoleApply() {
-
-
-    }
 }

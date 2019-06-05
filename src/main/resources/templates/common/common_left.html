@@ -56,7 +56,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">doctor:</h6>
                     <a class="collapse-item" th:href="@{/outpatient}">门诊就诊</a>
-                    <a class="collapse-item" href="#">Other</a>
+                    <!-- <a class="collapse-item" href="@{/medicalRecord}">就诊记录</a>-->
                 </div>
             </div>
         </li>
@@ -72,7 +72,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">toller:</h6>
                     <a class="collapse-item" th:href="@{/toll}">划价收费</a>
-                    <a class="collapse-item" href="#">Other</a>
+                    <!--<a class="collapse-item" href="#">Other</a>-->
                 </div>
             </div>
         </li>
@@ -88,7 +88,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">takingdrug:</h6>
                     <a class="collapse-item" th:href="@{/takingdrug}">药房取药</a>
-                    <a class="collapse-item" href="#">Other</a>
+                    <!--<a class="collapse-item" href="#">Other</a>-->
                 </div>
             </div>
         </li>
@@ -104,10 +104,10 @@
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">drugStore:</h6>
-                    <a class="collapse-item" th:href="@{/#}">药物管理</a>
+                    <a class="collapse-item" th:href="@{/drugManage}">药物管理</a>
                     <a class="collapse-item" th:href="@{/storageManage}">入库管理</a>
-                    <a class="collapse-item" th:href="@{/#}">出库管理</a>
-                    <a class="collapse-item" href="#">Other</a>
+                    <!--<a class="collapse-item" th:href="@{/#}">出库管理</a>-->
+                    <!--<a class="collapse-item" href="#">Other</a>-->
                 </div>
             </div>
         </li>
@@ -123,7 +123,6 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">drugStore:</h6>
                     <a class="collapse-item" th:href="@{/medicalExamination}">身体检查</a>
-                    <a class="collapse-item" href="#">Other</a>
                 </div>
             </div>
         </li>
@@ -138,7 +137,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">system:</h6>
                     <a class="collapse-item" th:href="@{/announcement}">公告管理</a>
-                    <a class="collapse-item" href="#">Other</a>
+                    <!--<a class="collapse-item" href="#">Other</a>-->
                 </div>
             </div>
         </li>
@@ -148,9 +147,9 @@
         <hr class="sidebar-divider d-none d-md-block">
 
         <!-- Sidebar Toggler (Sidebar) -->
-        <div class="text-center d-none d-md-inline">
-            <button class="rounded-circle border-0" id="sidebarToggle"></button>
-        </div>
+        <!-- <div class="text-center d-none d-md-inline">
+             <button class="rounded-circle border-0" id="sidebarToggle"></button>
+         </div>-->
 
     </ul>
 </div>

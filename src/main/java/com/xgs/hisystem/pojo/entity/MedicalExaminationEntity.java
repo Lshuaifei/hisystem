@@ -33,7 +33,7 @@ public class MedicalExaminationEntity extends BaseEntity {
     private String prescriptionNum;
 
     @Column(name = "examinationOperator", nullable = true, length = 255)
-    private String examinationOperator;  //收费操作员
+    private String examinationOperator;  //体检操作员
 
     public String getBodyTemperature() {
         return bodyTemperature;

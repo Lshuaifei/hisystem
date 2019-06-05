@@ -1,3 +1,5 @@
+$(window).preloader();
+
 Split(['#outpatient-one', '#outpatient-two', '#outpatient-three'], {
     sizes: [25, 48, 27],
     minSize: [380, 760, 410]
@@ -93,17 +95,16 @@ $(function () {
             });
             $('.drugSelect').html(optionHtml);
             $('.drugSelect').trigger("chosen:updated");
-
             $('.drugSelect').chosen({
-                no_results_text: "没有找到结果！",//搜索无结果时显示的提示
-                search_contains: true,   //关键字模糊搜索。设置为true，只要选项包含搜索词就会显示；设置为false，则要求从选项开头开始匹配
-                allow_single_deselect: true, //单选下拉框是否允许取消选择。如果允许，选中选项会有一个x号可以删除选项
-                disable_search: false, //禁用搜索。设置为true，则无法搜索选项。
+                no_results_text: "没有找到结果！",
+                search_contains: true,
+                allow_single_deselect: true,
+                disable_search: false,
                 disable_search_threshold: 0, //当选项少等于于指定个数时禁用搜索。
                 inherit_select_classes: true, //是否继承原下拉框的样式类，此处设为继承
                 /*placeholder_text_single: '',*/ //单选选择框的默认提示信息，当选项为空时会显示。如果原下拉框设置了data-placeholder，会覆盖这里的值。
 
-                /*max_shown_results: 7,*/ //下拉框最大显示选项数量
+                max_shown_results: 5, //下拉框最大显示选项数量
                 display_disabled_options: false,
                 single_backstroke_delete: false, //false表示按两次删除键才能删除选项，true表示按一次删除键即可删除
                 case_sensitive_search: false, //搜索大小写敏感。此处设为不敏感
@@ -112,7 +113,6 @@ $(function () {
             }).change(function () {
 
                 drug = $(".drugSelect option:selected").val();
-
                 $.ajax({
                     url: "/outpatient/getDrugInfor",
                     type: "post",

@@ -308,9 +308,9 @@ public class AdminServiceImpl implements IAdminService {
         try {
             iAnnouncementRepository.saveAndFlush(announcement);
 
-            return BaseResponse.success(Contants.user.ADD_OK);
+            return BaseResponse.success(Contants.user.SUCCESS);
         } catch (Exception e) {
-            return BaseResponse.errormsg(Contants.user.FAIL);
+            return BaseResponse.errormsg("系统异常，请稍后重试！");
         }
     }
 

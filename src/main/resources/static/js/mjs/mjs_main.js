@@ -1,3 +1,6 @@
+$(window).preloader();
+
+
 $(function () {
     $("#ann_display").load("/annDisplay");
 });

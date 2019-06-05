@@ -1,3 +1,5 @@
+$(window).preloader();
+
 function getCardIdInfor() {
     $.ajax({
         url: "/register/getCardIdInfor",
@@ -272,7 +274,7 @@ var TableInit = function () {
 
             }, {
                 field: 'nowNum',
-                title: '已挂数',
+                title: '已挂号数',
                 align: 'center',
                 valign: 'middle',
                 Color: 'red'
@@ -362,16 +364,13 @@ window.operateEvents = {
 var payType = '';
 
 $('.payType').chosen({disable_search: true}).change(function () {
-
     payType = $(".payType option:selected").val();
-
     if (payType == "现金") {
         $("#money").css("display", "block");
         $("#apay").css("display", "none");
         $("#payMoney").val("");
         $("#Change").val("")
-    }
-    else if (payType == "支付宝") {
+    } else if (payType == "支付宝") {
         $("#money").css("display", "none");
         $("#apay").css("display", "block")
     } else {

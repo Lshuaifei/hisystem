@@ -30,16 +30,13 @@ public class TakingDrugServiceImpl implements ITakingDrugService {
     public MedicalRecordRspVO getMedicalRecord(String prescriptionNum) throws Exception {
 
         MedicalRecordEntity medicalRecord = iMedicalRecordRepository.findByPrescriptionNum(prescriptionNum);
-
         MedicalRecordRspVO recordRspVO = new MedicalRecordRspVO();
 
         if (StringUtils.isEmpty(medicalRecord)) {
             recordRspVO.setMessage("该处方号未查询到任何信息！");
             return recordRspVO;
         }
-
         RegisterEntity register = medicalRecord.getRegister();
-
         PatientEntity patient = medicalRecord.getRegister().getPatient();
 
         recordRspVO.setAge(DateUtil.getAge(patient.getBirthday()));

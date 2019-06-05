@@ -1,3 +1,5 @@
+$(window).preloader();
+
 $(function () {
     $.ajax({
         url: "/user/getUserInfo",
