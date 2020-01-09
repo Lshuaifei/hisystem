@@ -1,37 +1,8 @@
 # hisystem
 
 #### 介绍
-毕设相关
-
-#### 软件架构
-软件架构说明
-
-
-#### 安装教程
-
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### 使用说明
-
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### 参与贡献
-
-1. Fork 本仓库
-2. 新建 Feat_xxx 分支
-3. 提交代码
-4. 新建 Pull Request
-
-
-#### 码云特技
-
-1. 使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2. 码云官方博客 [blog.gitee.com](https://blog.gitee.com)
-3. 你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解码云上的优秀开源项目
-4. [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
-5. 码云官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6. 码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+#####1.毕业设计-基于SpringBoot的中小医院信息管理系统，做的比较粗糙，但也实现了部分核心功能。
+#####2.就诊卡暂采取读卡方式录入，读卡器使用的是"德卡D8"，他的官网也提供了相应的SDK，可以集成。当然，若有需求可以换成手动输入的逻辑。
+#####3.用户注册，验证邮件的邮箱考虑到安全问题，暂不提供授权码，如有需求可使用自己邮箱，开启：POP3/SMTP服务
+#####4.管理员的账户：1208585122@qq.com 密码：123
+#####5.喜欢就给个star，有问题可以给我发邮件1208585122@qq.com

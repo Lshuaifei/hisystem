@@ -7,6 +7,7 @@ import com.xgs.hisystem.pojo.entity.UserEntity;
 import com.xgs.hisystem.pojo.vo.getAddress.GetAddressRspVO;
 import com.xgs.hisystem.repository.ILoginInforRepository;
 import com.xgs.hisystem.repository.IUserRepository;
+import com.xgs.hisystem.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -40,10 +41,10 @@ public class AsyncTask {
 
         UserEntity user = iUserRepository.findByEmail(email);
         String userId = user.getId();
-        LoginInforEntity CheckUserInformation = iLoginInforRepository.findByLoginIpAndLoginBroswerAndUserId(ip, broswer, userId);
+        LoginInforEntity checkUserInformation = iLoginInforRepository.findByLoginIpAndLoginBroswerAndUserId(ip, broswer, userId);
 
 
-        if (CheckUserInformation == null) {
+        if (checkUserInformation == null) {
 
             LoginInforEntity userInformation = new LoginInforEntity();
             userInformation.setLoginIp(ip);
@@ -71,6 +72,10 @@ public class AsyncTask {
                 userInformation.setLoginAddress(loginAddress);
             }
             iLoginInforRepository.saveAndFlush(userInformation);
+        } else {
+            checkUserInformation.setCreateDatetime(DateUtil.getCurrentDateToString());
+
+            iLoginInforRepository.saveAndFlush(checkUserInformation);
         }
     }
 
