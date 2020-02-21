@@ -70,8 +70,6 @@ public class TakingDrugServiceImpl implements ITakingDrugService {
 
         MedicalRecordEntity medicalRecord = iMedicalRecordRepository.findByPrescriptionNum(prescriptionNum);
 
-        MedicalRecordRspVO recordRspVO = new MedicalRecordRspVO();
-
         if (StringUtils.isEmpty(medicalRecord)) {
 
             return BaseResponse.errormsg("该处方号未查询到任何信息！");

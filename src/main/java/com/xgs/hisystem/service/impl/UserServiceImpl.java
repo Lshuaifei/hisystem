@@ -75,7 +75,7 @@ public class UserServiceImpl implements IUserService {
         UserEntity user = iUserRepository.findByEmail(email);
 
         if (StringUtils.isEmpty(user)) {
-            return BaseResponse.errormsg(Contants.user.USER_not_EXIST);
+            return BaseResponse.errormsg(Contants.user.USER_NOT_EXIST);
         }
 
         UsernamePasswordToken token = new UsernamePasswordToken(email, password);

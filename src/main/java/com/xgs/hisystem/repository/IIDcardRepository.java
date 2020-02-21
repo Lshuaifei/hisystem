@@ -8,4 +8,6 @@ import com.xgs.hisystem.pojo.entity.IDcardEntity;
  * @description:
  */
 public interface IIDcardRepository extends BaseRepository<IDcardEntity> {
+
+    IDcardEntity findByCardId(String cardId);
 }

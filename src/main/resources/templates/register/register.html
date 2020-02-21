@@ -38,9 +38,14 @@
                             <div>
 
                                 <div class="textbox">
-                                    卡号<input type="text" readonly="readonly" id="cardId">
+                                    卡号<input type="text"  id="cardId">
+                                    <div class="department-search">
+                                        <button class="btn btn-success" onclick="getCardIdInfor(1)">
+                                            <img class="png" th:src="@{/images/icon/search.png}">
+                                        </button>
+                                    </div>
                                     <div class="mybtn1">
-                                        <button class="btn btn-info" onclick="getCardIdInfor()">读取就诊卡信息</button>
+                                        <button class="btn btn-info" onclick="getCardIdInfor(0)">读取就诊卡</button>
                                     </div>
                                     <div class="mybtn">
                                         <a href="#mymodal_1">
@@ -167,6 +172,7 @@
                         <div class="mymodal_modal modal1">
                             <div style="font-size: 1.1rem">
                                 <img class="png" th:src="@{/images/icon/change.png}">&emsp;办理就诊卡
+                                <div style="color: crimson;display: inline">(暂不提供手动输入办理，可后台添加)</div>
                             </div>
 
                             <div class="textbox_1">

@@ -2,6 +2,7 @@ package com.xgs.hisystem.service;
 
 import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.outpatient.*;
+import com.xgs.hisystem.pojo.vo.register.GetCardIdInforReqVO;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public interface IOutpatientService {
 
-    PatientInforRspVO getCardIdInfor() throws Exception;
+    PatientInforRspVO getCardIdInfor(GetCardIdInforReqVO reqVO) throws Exception;
 
     BaseResponse<?> changePatientInfor(OtherPatientInforReqVO reqVO);
 
@@ -20,7 +21,7 @@ public interface IOutpatientService {
 
     List<OutpatientQueueLaterRspVO> getAllPatientLater();
 
-    BaseResponse<?> ProcessLaterMedicalRecord(MedicalRecordReqVO reqVO);
+    BaseResponse<?> processLaterMedicalRecord(MedicalRecordReqVO reqVO);
 
     PatientInforRspVO restorePatientInfor(String registerId) throws Exception;
 

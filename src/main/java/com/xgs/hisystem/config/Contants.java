@@ -19,7 +19,7 @@ public final class Contants {
 
     public class user {
 
-        public static final String USER_not_EXIST = "该账户不存在";
+        public static final String USER_NOT_EXIST = "该账户不存在";
 
         public static final String PASSWORD_ERROR = "密码错误";
 

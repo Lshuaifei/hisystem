@@ -34,9 +34,14 @@
 
                                 <div style="margin-left: 5%">
                                     <div class="textbox">
-                                        卡号<input type="text" style="width: 140px" readonly="readonly" id="cardId">
+                                        卡号<input type="text" style="width: 140px"  id="cardId">
+                                        <div class="department-search">
+                                            <button class="btn btn-success" onclick="getCardIdInfor(1)">
+                                                <img class="png" th:src="@{/images/icon/search.png}">
+                                            </button>
+                                        </div>
                                         <div class="mybtn1">
-                                            <button class="btn btn-info" onclick="getCardIdInfor()">读取就诊卡</button>
+                                            <button class="btn btn-info" onclick="getCardIdInfor(0)">读取就诊卡</button>
                                         </div>
                                     </div>
                                 </div>

@@ -7,10 +7,8 @@ import com.xgs.hisystem.pojo.vo.register.*;
 import com.xgs.hisystem.service.IRegisterService;
 import com.xgs.hisystem.util.ParamsValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,9 +30,8 @@ public class RegisterController {
      * @return
      */
     @PostMapping(value = "/getCardIdInfor")
-    public PatientInforRspVO getCardIdInfor() throws Exception {
-        PatientInforRspVO patientInforRspVO = iRegisterService.getCardIdInfor();
-        return patientInforRspVO;
+    public PatientInforRspVO getCardIdInfor(@RequestBody GetCardIdInforReqVO reqVO) throws Exception {
+        return iRegisterService.getCardIdInfor(reqVO);
     }
 
     /**
@@ -45,8 +42,7 @@ public class RegisterController {
     @PostMapping(value = "/getIDcardInfor")
     public IDcardRspVO getIDcardInfor() {
 
-        IDcardRspVO iDcardRspVO = iRegisterService.getIDcardInfor();
-        return iDcardRspVO;
+        return iRegisterService.getIDcardInfor();
     }
 
     /**

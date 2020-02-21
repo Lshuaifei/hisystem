@@ -5,7 +5,7 @@ package com.xgs.hisystem.pojo.vo.medicalExamination;
  * @date 2019-5-18
  * @description:
  */
-public class patientInforRspVO {
+public class PatientInforRspVO {
 
     private String cardId;
 

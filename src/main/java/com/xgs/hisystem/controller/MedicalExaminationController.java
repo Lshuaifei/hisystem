@@ -3,7 +3,8 @@ package com.xgs.hisystem.controller;
 import com.xgs.hisystem.pojo.bo.ValidationResultBO;
 import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.medicalExamination.medicalExaminationInfoReqVO;
-import com.xgs.hisystem.pojo.vo.medicalExamination.patientInforRspVO;
+import com.xgs.hisystem.pojo.vo.medicalExamination.PatientInforRspVO;
+import com.xgs.hisystem.pojo.vo.register.GetCardIdInforReqVO;
 import com.xgs.hisystem.service.IMedicalExaminationService;
 import com.xgs.hisystem.util.ParamsValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,9 @@ public class MedicalExaminationController {
     private IMedicalExaminationService iMedicalExaminationService;
 
     @PostMapping(value = "/getCardIdInfor")
-    public patientInforRspVO getCardIdInfor() throws Exception {
+    public PatientInforRspVO getCardIdInfor(@RequestBody GetCardIdInforReqVO reqVO) throws Exception {
 
-        patientInforRspVO patientInforRspVO = iMedicalExaminationService.getCardIdInfor();
-        return patientInforRspVO;
+        return iMedicalExaminationService.getCardIdInfor(reqVO);
     }
 
     @PostMapping(value = "/saveMedicalExaminationInfo")

@@ -48,28 +48,24 @@ public class TollServiceImpl implements ITollService {
     @Override
     public cardRspVO getCardIdInfor() {
 
-        String message = defaultGetCardId();
+        String cardId = defaultGetCardId();
 
         cardRspVO cardRspVO = new cardRspVO();
 
-        if (message.equals("fail")) {
+        if ("fail".equals(cardId)) {
             cardRspVO.setMessage("读卡失败！请刷新页面重试");
             return cardRspVO;
-        } else if (message.equals("none")) {
+        } else if ("none".equals(cardId)) {
             cardRspVO.setMessage("未识别到卡片！");
             return cardRspVO;
         } else {
-            String cardId = message;
-
             PatientEntity patientInfor = iPatientRepository.findByCardId(cardId);
 
             if (StringUtils.isEmpty(patientInfor)) {
                 cardRspVO.setMessage("未从该卡片识别到信息！");
                 return cardRspVO;
             }
-
             cardRspVO.setCardId(cardId);
-
             return cardRspVO;
         }
     }

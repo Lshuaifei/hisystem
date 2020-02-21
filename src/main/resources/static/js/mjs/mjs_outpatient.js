@@ -11,13 +11,20 @@ $(".showbar").on('click', function () {
     $('.showbar').toggleClass('on2');
 });
 
-function getCardIdInfor() {
+function getCardIdInfor(command) {
+    var GetCardIdInforReqVO={
+        command:command, //0:表示读卡器输入卡号 1:表示手动输入卡号
+        cardId:$("#cardId").val()
+    };
     $.ajax({
         url: "/outpatient/getCardIdInfor",
         type: "post",
+        contentType: 'application/json',
+        data: JSON.stringify(GetCardIdInforReqVO),
         success: function (data) {
             if (null == data.message) {
                 $("#cardId").val(data.cardId);
+                $("#cardId").css()
                 $("#name").val(data.name);
                 $("#sex").val(data.sex);
                 $("#nationality").val(data.nationality);
@@ -35,6 +42,7 @@ function getCardIdInfor() {
                 $("#personalHistory").val(data.personalHistory);
                 $("#pastHistory").val(data.pastHistory);
                 $("#familyHistory").val(data.familyHistory);
+
             } else {
                 swal(data.message, "", "error")
             }
@@ -257,6 +265,7 @@ function selectTemplate() {
 var allPrice = 0;
 
 function addDrugs() {
+    var cardId = $("#cardId").val();
     var usage = $("#usage").val();
     var price = parseInt($("#price").val());
     var specification = $("#specification").val();
@@ -279,7 +288,10 @@ function addDrugs() {
         swal("请选择药品每日服用次数！", "", "error");
         return false;
     }
-
+    if (cardId == null || cardId == '') {
+        swal("请先读取就诊卡！", "", "error");
+        return false;
+    }
 
     $("#drugs ol").append('<li>' + drug + '<span style="margin-left:100px">'
         + specification + '</span></li><div style="margin: 10px 0 10px 5px;">用法：<sapn>'

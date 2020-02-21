@@ -1,6 +1,7 @@
 package com.xgs.hisystem.controller;
 
 import com.xgs.hisystem.pojo.vo.BaseResponse;
+import com.xgs.hisystem.pojo.vo.register.GetCardIdInforReqVO;
 import com.xgs.hisystem.pojo.vo.toll.SaveTollInfoReqVO;
 import com.xgs.hisystem.pojo.vo.toll.TollMedicalRecordRspVO;
 import com.xgs.hisystem.pojo.vo.toll.TollRspVO;

@@ -2,6 +2,7 @@ package com.xgs.hisystem.controller;
 
 import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.outpatient.*;
+import com.xgs.hisystem.pojo.vo.register.GetCardIdInforReqVO;
 import com.xgs.hisystem.service.IOutpatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +27,9 @@ public class OutpatientController {
      * @return
      */
     @PostMapping(value = "/getCardIdInfor")
-    public PatientInforRspVO getCardIdInfor() throws Exception {
+    public PatientInforRspVO getCardIdInfor(@RequestBody GetCardIdInforReqVO reqVO) throws Exception {
 
-        return iOutpatientService.getCardIdInfor();
+        return iOutpatientService.getCardIdInfor(reqVO);
     }
 
     /**
@@ -52,9 +53,9 @@ public class OutpatientController {
      * @return
      */
     @PostMapping(value = "/ProcessLaterMedicalRecord")
-    public String ProcessLaterMedicalRecord(@RequestBody MedicalRecordReqVO reqVO) {
+    public String processLaterMedicalRecord(@RequestBody MedicalRecordReqVO reqVO) {
 
-        BaseResponse baseResponse = iOutpatientService.ProcessLaterMedicalRecord(reqVO);
+        BaseResponse baseResponse = iOutpatientService.processLaterMedicalRecord(reqVO);
 
         return baseResponse.getMessage();
 
@@ -117,9 +118,8 @@ public class OutpatientController {
 
     @PostMapping(value = "/getMedicalExamination")
     public medicalExaminationInfoRspVO getMedicalExamination(@RequestParam String prescriptionNum) {
-        medicalExaminationInfoRspVO rspVO = iOutpatientService.getMedicalExamination(prescriptionNum);
 
-        return rspVO;
+        return iOutpatientService.getMedicalExamination(prescriptionNum);
     }
 
 }

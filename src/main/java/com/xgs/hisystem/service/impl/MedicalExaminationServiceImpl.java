@@ -4,18 +4,20 @@ import com.xgs.hisystem.config.Contants;
 import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.medicalExamination.medicalExaminationInfoReqVO;
-import com.xgs.hisystem.pojo.vo.medicalExamination.patientInforRspVO;
+import com.xgs.hisystem.pojo.vo.medicalExamination.PatientInforRspVO;
+import com.xgs.hisystem.pojo.vo.register.GetCardIdInforReqVO;
 import com.xgs.hisystem.repository.IMedicalExaminationRepository;
 import com.xgs.hisystem.repository.IMedicalRecordRepository;
 import com.xgs.hisystem.repository.IOutpatientQueueRepository;
 import com.xgs.hisystem.repository.IPatientRepository;
 import com.xgs.hisystem.service.IMedicalExaminationService;
 import com.xgs.hisystem.util.DateUtil;
-import com.xgs.hisystem.util.card.Card;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import static com.xgs.hisystem.util.card.Card.defaultGetCardId;
 
 /**
  * @author xgs
@@ -36,50 +38,59 @@ public class MedicalExaminationServiceImpl implements IMedicalExaminationService
     private IMedicalRecordRepository iMedicalRecordRepository;
 
     @Override
-    public patientInforRspVO getCardIdInfor() throws Exception {
+    public PatientInforRspVO getCardIdInfor(GetCardIdInforReqVO reqVO) throws Exception {
 
-        String message = Card.defaultGetCardId();
-
-        patientInforRspVO patientInforRspVO = new patientInforRspVO();
-
-        if (message.equals("fail")) {
-            patientInforRspVO.setMessage("读卡失败！请刷新页面重试");
-            return patientInforRspVO;
-        } else if (message.equals("none")) {
-            patientInforRspVO.setMessage("未识别到卡片！");
-            return patientInforRspVO;
-        } else {
-            String cardId = message;
-
-            PatientEntity patientInfor = iPatientRepository.findByCardId(cardId);
-
-            if (StringUtils.isEmpty(patientInfor)) {
-                patientInforRspVO.setMessage("未从该卡片识别到信息！");
+        String myCardId = reqVO.getCardId();
+        String command = reqVO.getCommand();
+        PatientInforRspVO patientInforRspVO = new PatientInforRspVO();
+        //手动输入卡号
+        if ("1".equals(command)) {
+            if (StringUtils.isEmpty(myCardId)) {
+                patientInforRspVO.setMessage("请输入就诊卡号！");
                 return patientInforRspVO;
             }
-
-
-            OutpatientQueueEntity outpatientQueueEntity = iOutpatientQueueRepository.findByPatientId(patientInfor.getId());
-            if (StringUtils.isEmpty(outpatientQueueEntity)) {
-                patientInforRspVO.setMessage("请先到挂号处挂号！");
+        }
+        //读卡器输入
+        if ("0".equals(command)) {
+            String message = defaultGetCardId();
+            if ("fail".equals(message)) {
+                patientInforRspVO.setMessage("读卡失败！请刷新页面重试");
                 return patientInforRspVO;
-            }
-
-            String registerId = outpatientQueueEntity.getRegister().getId();
-
-            MedicalRecordEntity medicalRecordEntity = iMedicalRecordRepository.findByRegisterId(registerId);
-            if (StringUtils.isEmpty(medicalRecordEntity)) {
-                patientInforRspVO.setMessage("医生门诊处未处理！");
+            } else if ("none".equals(message)) {
+                patientInforRspVO.setMessage("未识别到卡片！");
                 return patientInforRspVO;
+            } else {
+                myCardId = message;
             }
+        }
+        PatientEntity patientInfor = iPatientRepository.findByCardId(myCardId);
 
-            patientInforRspVO.setAge(DateUtil.getAge(patientInfor.getBirthday()));
-            patientInforRspVO.setCardId(patientInfor.getCardId());
-            patientInforRspVO.setName(patientInfor.getName());
-            patientInforRspVO.setSex(patientInfor.getSex());
-            patientInforRspVO.setNationality(patientInfor.getNationality());
+        if (StringUtils.isEmpty(patientInfor)) {
+            patientInforRspVO.setMessage("未从该卡片识别到信息！");
             return patientInforRspVO;
         }
+
+
+        OutpatientQueueEntity outpatientQueueEntity = iOutpatientQueueRepository.findByPatientId(patientInfor.getId());
+        if (StringUtils.isEmpty(outpatientQueueEntity)) {
+            patientInforRspVO.setMessage("请先到挂号处挂号！");
+            return patientInforRspVO;
+        }
+
+        String registerId = outpatientQueueEntity.getRegister().getId();
+
+        MedicalRecordEntity medicalRecordEntity = iMedicalRecordRepository.findByRegisterId(registerId);
+        if (StringUtils.isEmpty(medicalRecordEntity)) {
+            patientInforRspVO.setMessage("医生门诊处未处理！");
+            return patientInforRspVO;
+        }
+
+        patientInforRspVO.setAge(DateUtil.getAge(patientInfor.getBirthday()));
+        patientInforRspVO.setCardId(patientInfor.getCardId());
+        patientInforRspVO.setName(patientInfor.getName());
+        patientInforRspVO.setSex(patientInfor.getSex());
+        patientInforRspVO.setNationality(patientInfor.getNationality());
+        return patientInforRspVO;
     }
 
     @Override

@@ -27,6 +27,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author xgs
@@ -166,15 +168,32 @@ public class DrugStoreServiceImpl implements IDrugStoreService {
             return BaseResponse.errormsg("药品信息有误，请稍后重试！");
         }
 
-        drugEntity.setStorageQuantity(drugEntity.getStorageQuantity() + Integer.parseInt(addStorageQuantity));
-
         try {
-            iDrugRepository.saveAndFlush(drugEntity);
-            return BaseResponse.success(Contants.user.SUCCESS);
+            if (isNumer(addStorageQuantity)) {
+
+                drugEntity.setStorageQuantity(drugEntity.getStorageQuantity() + Integer.parseInt(addStorageQuantity));
+
+                iDrugRepository.saveAndFlush(drugEntity);
+                return BaseResponse.success(Contants.user.SUCCESS);
+
+            } else {
+                return BaseResponse.success("库存量不能为非整数！");
+            }
         } catch (Exception e) {
             return BaseResponse.errormsg("系统异常，请稍后重试！");
         }
+    }
 
+    /**
+     * @author XueGuiSheng
+     * @date 2020/2/20
+     * @desciption 判断整数
+     */
+    private static Pattern NUMBER_PATTERN = Pattern.compile("^\\+?[1-9][0-9]*$");
+
+    private static boolean isNumer(String str) {
+        Matcher isNum = NUMBER_PATTERN.matcher(str);
+        return isNum.matches();
     }
 
     @Override

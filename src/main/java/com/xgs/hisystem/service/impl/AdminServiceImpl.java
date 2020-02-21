@@ -54,7 +54,7 @@ public class AdminServiceImpl implements IAdminService {
     @Autowired
     private IAnnouncementRepository iAnnouncementRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdminServiceImpl.class);
 
     /**
      * 新增角色

@@ -1,9 +1,16 @@
 $(window).preloader();
 
-function getCardIdInfor() {
+function getCardIdInfor(command) {
+
+    var GetCardIdInforReqVO={
+        command:command, //0:表示读卡器输入卡号 1:表示手动输入卡号
+        cardId:$("#cardId").val()
+    };
     $.ajax({
         url: "/register/getCardIdInfor",
         type: "post",
+        contentType: 'application/json',
+        data: JSON.stringify(GetCardIdInforReqVO),
         success: function (data) {
             if (null == data.message) {
                 $("#cardId").val(data.cardId);
@@ -173,9 +180,9 @@ $(function () {
 
 function getRegisterDoctor() {
 
-    var cardId = $("#cardId").val();
-
-    if (cardId == null || cardId == '') {
+    var name = $("#name").val();
+    //患者姓名作为限制
+    if (name == null || name == '') {
         swal("请先读取就诊卡！", "", "error")
         return false;
     }

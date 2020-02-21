@@ -68,12 +68,17 @@
 }
 
 .textbox .mybtn1 {
-    margin-left: 10%;
+    margin-left: 6%;
 }
 
 .textbox .mybtn {
     margin-left: 8%;
 }
+
+.textbox .department-search {
+    margin-left: 2%;
+}
+
 
 .textbox_2 {
     font-size: 18px;

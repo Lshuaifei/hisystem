@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface IRegisterService {
 
-    PatientInforRspVO getCardIdInfor() throws Exception;
+    PatientInforRspVO getCardIdInfor(GetCardIdInforReqVO reqVO) throws Exception;
 
     IDcardRspVO getIDcardInfor();
 
