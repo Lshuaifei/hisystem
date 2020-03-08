@@ -24,7 +24,6 @@ function getCardIdInfor(command) {
         success: function (data) {
             if (null == data.message) {
                 $("#cardId").val(data.cardId);
-                $("#cardId").css()
                 $("#name").val(data.name);
                 $("#sex").val(data.sex);
                 $("#nationality").val(data.nationality);
