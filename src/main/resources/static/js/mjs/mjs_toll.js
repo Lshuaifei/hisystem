@@ -1,8 +1,8 @@
 $(window).preloader();
 
 Split(['#myprescription', '#tolloperation'], {
-    sizes: [52, 48],
-    minSize: [770, 730]
+    sizes: [53, 47],
+    minSize: [775, 725]
 });
 
 function getCardIdInfor() {
@@ -196,9 +196,17 @@ function getMedicalRecord() {
 
 }
 
+/**打印**/
 function printPrescription() {
 
-    $("#myprescription").jqprint();
+    Print('#myprescription', {
+        onStart: function () {
+            console.log('onStart', new Date())
+        },
+        onEnd: function () {
+            console.log('onEnd', new Date())
+        }
+    })
 }
 
 var payType = '';
@@ -250,7 +258,17 @@ function saveTollInfo() {
         swal("请选择收费的处方笺！", "", "error");
         return false;
     }
-
+    if (payType == null||payType=='') {
+        swal("请先付款，再提交！", "", "error");
+        return false;
+    }
+    if (payType == "现金") {
+        var change=$("#Change").val();
+        if (change==null||change=='') {
+            swal("请先付款，再提交！", "", "error");
+            return false;
+        }
+    }
     $.ajax({
         url: "/toll/saveTollInfo",
         type: "post",
