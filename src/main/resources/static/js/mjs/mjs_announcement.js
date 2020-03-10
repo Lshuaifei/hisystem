@@ -251,10 +251,10 @@ function deleteAnnouncement() {
 }
 
 /*添加到主页*/
-function add_Announcement() {
+function showAnnouncement() {
     var id = $("#add_id").val();
     $.ajax({
-        url: "/admin/add_Announcement",
+        url: "/admin/showAnnouncement",
         type: "post",
         data: {
             "id": id
@@ -277,9 +277,9 @@ function add_Announcement() {
 }
 
 /*从主页移除*/
-function sub_Announcement() {
+function hiddenAnnouncement() {
     $.ajax({
-        url: "/admin/sub_Announcement",
+        url: "/admin/hiddenAnnouncement",
         type: "post",
         data: {
             "id": $("#sub_id").val()

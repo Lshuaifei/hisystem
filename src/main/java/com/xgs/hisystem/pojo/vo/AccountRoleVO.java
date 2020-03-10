@@ -10,13 +10,13 @@ import javax.validation.constraints.Min;
 public class AccountRoleVO {
 
     @Min(1)
-    private String role;
+    private String roleValue;
 
-    public String getRole() {
-        return role;
+    public String getRoleValue() {
+        return roleValue;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoleValue(String roleValue) {
+        this.roleValue = roleValue;
     }
 }

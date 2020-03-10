@@ -6,7 +6,10 @@ package com.xgs.hisystem.pojo.vo.takingdrug;
  * @description:
  */
 public class MedicalRecordRspVO {
-    private String date;
+
+    private String nowDate;
+
+    private String createDate;
 
     private String name;
 
@@ -40,12 +43,20 @@ public class MedicalRecordRspVO {
         this.message = message;
     }
 
-    public String getDate() {
-        return date;
+    public String getNowDate() {
+        return nowDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setNowDate(String nowDate) {
+        this.nowDate = nowDate;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
     }
 
     public String getName() {

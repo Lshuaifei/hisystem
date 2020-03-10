@@ -40,13 +40,13 @@ public class RegisterEntity extends BaseEntity {
     private String operatorEmail;   //操作员
 
     @Column(name = "registerStatus", nullable = false, length = 2)
-    private int registerStatus;
+    private int registerStatus; //挂号状态
 
     @Column(name = "treatmentStatus", nullable = false, length = 2)
-    private int treatmentStatus;
+    private int treatmentStatus;//门诊状态
 
     @Column(name = "chargeStatus", nullable = false, length = 2)
-    private int chargeStatus;
+    private int chargeStatus;//收费状态
 
     @Column(name = "registeredNum", nullable = false, length = 50)
     private String registeredNum;  //挂号编号

@@ -33,22 +33,30 @@
 
                         <div class="split split-horizontal card prescription" id="myprescription">
 
-                            <h2>门诊处方笺</h2>
-                            <h3>(本日有效)</h3>
+                            <div style="display: flex">
+                                <h4 style="font-family: STLiti,serif;color: #2C9FAF">SHOSPITAL</h4>
+
+                                <h2>门诊处方笺</h2>
+
+                                <div style="font-size: 15px;margin-left: 26%">
+                                    <div id="nowDate"></div>
+                                </div>
+
+                            </div>
 
                             <div class="textbox">
 
                                 处方号<input type="text" id="prescriptionNum" style="width: 170px"
                                           readonly="readonly">
                                 科室<input type="text" id="department" style="width: 110px" readonly="readonly">&emsp;
-                                日期<input type="text" id="date" style="width: 133px" readonly="readonly">
+                                日期<input type="text" id="createDate" style="width: 133px" readonly="readonly">
                                 <br> <br>
                                 姓名<input type="text" id="name" style="width: 110px" readonly="readonly">&emsp;
                                 性别<input type="text" id="sex" style="width: 90px" readonly="readonly">
                                 民族<input type="text" id="nationality" style="width: 90px" readonly="readonly">
                                 年龄<input type="text" id="age" style="width:90px" readonly="readonly">
                                 <br> <br>
-                                初步诊断<input type="text" id="diagnosisResult" style="width:505px">
+                                初步诊断<input type="text" id="diagnosisResult" style="width:505px" readonly="readonly">
                             </div>
 
                             <div style="display: flex">
@@ -123,7 +131,7 @@
 
                             <div class="textbox_2">
 
-                                <div style="margin: 16px 5px 0 0;">
+                                <div style="margin: 16px 5px 0 0;color: #2C9FAF">
                                     拿药完成
                                 </div>
 

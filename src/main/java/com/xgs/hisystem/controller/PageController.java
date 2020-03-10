@@ -151,7 +151,7 @@ public class PageController {
     @RequestMapping(value = "/getAccountRole")
     public String getAccountRole(Model model) {
 
-        List<AccountRoleVO> accountRoleList = iUserService.getAccountRole();
+        List<String> accountRoleList = iUserService.getAccountRole();
         model.addAttribute("accountRole", accountRoleList);
 
         return "accountset::accountRole";

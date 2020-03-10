@@ -2,6 +2,23 @@
 /*初始化登录注册js*/
 Auth.init({});
 
+/* 注册选择角色*/
+function choseRole() {
+    $.ajax({
+        url: "/user/getAllRole",
+        type: "post",
+        dataType: "json",
+        success: function (data) {
+            var optionHtml = '<li value=""></li>';
+            $.each(data, function (i,val) {
+                optionHtml += '<li value="' + val.roleValue+ '" >' + val.description + '</li>';
+            });
+            $('#chooseRole').html(optionHtml)
+        }
+    })
+
+}
+
 /*浏览器信息*/
 function getBroswer() {
     var Sys = {};
@@ -64,6 +81,7 @@ function dologin() {
         }
     });
 
+    /**记住密码**/
     setCookie();
 }
 
@@ -73,8 +91,7 @@ var roleValue = "";
 $(function () {
     $("#chooseRole li").click(function () {
 
-        var temp = $(this).val();
-        roleValue = temp;
+        roleValue = $(this).val()
     })
 });
 
@@ -113,7 +130,6 @@ function register() {
 /*记住密码，cookie相关*/
 function setCookie() {
     var checked = $("#checkbox").prop("checked");
-
 
     if (checked) {
         var loginCode = $("#LoginEmail").val();

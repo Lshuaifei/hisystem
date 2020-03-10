@@ -3,6 +3,7 @@ $(window).preloader();
 
 $(function () {
     $("#ann_display").load("/annDisplay");
+    getAnnContent(null)
 });
 
 function getAnnContent(id) {

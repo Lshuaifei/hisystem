@@ -12006,16 +12006,15 @@ body.sidebar-toggled footer.sticky-footer {
 }
 
 #hospitalLog {
+    font-family: STLiti, serif;
     color: #fff;
+    font-size: 21px;
 }
 
 .png {
     width: 25px;
     height: 25px;
 
-}
-
-#png {
     transform: translateY(-3px);
     -ms-transform: translateY(-3px);
     -webkit-transform: translateY(-3px);

@@ -1,8 +1,8 @@
 $(window).preloader();
 
 Split(['#myprescription', '#tolloperation'], {
-    sizes: [53, 47],
-    minSize: [775, 725]
+    sizes: [46, 54],
+    minSize: [700, 800]
 });
 
 function getCardIdInfor() {
@@ -62,7 +62,7 @@ var TableInit = function () {
             showRefresh: false,                  //是否显示刷新按钮
             minimumCountColumns: 0,             //最少允许的列数
             clickToSelect: false,                //是否启用点击选中行
-            height: 200,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            height: 350,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
             uniqueId: "loginIp",                     //每一行的唯一标识，一般为主键列
             showToggle: false,                    //是否显示详细视图和列表视图的切换按钮
             cardView: false,                    //是否显示详细视图
@@ -72,38 +72,42 @@ var TableInit = function () {
                 title: '序号',
                 sortable: true,
                 align: "center",
-                width: 40,
+                width: 35,
                 formatter: function (value, row, index) {
 
                     return index + 1
                 }
             }, {
+                field: 'outpatientDate',
+                title: '门诊时间',
+                align: 'center',
+                valign: 'middle',
+                fontSize: 10
+            }, {
                 field: 'department',
                 title: '科室',
                 align: 'center',
                 valign: 'middle',
-                fontSize: 14
+                fontSize: 10
             }, {
                 field: 'registerType',
                 title: '挂号类型',
                 align: 'center',
                 valign: 'middle',
-                fontSize: 14
+                fontSize: 10
             }, {
-
-
                 field: 'doctorName',
                 title: '医生名称',
                 align: 'center',
                 valign: 'middle',
-                fontSize: 14
+                fontSize: 10
 
             }, {
                 field: 'prescriptionNum',
                 title: '处方号',
                 align: 'center',
                 valign: 'middle',
-                fontSize: 14
+                fontSize: 10
             }, {
                 field: 'operation',
                 title: '操作',
@@ -167,7 +171,7 @@ window.operateEvents = {
                     $("#nationality").val(data.nationality);
                     $("#age").val(data.age);
                     $("#prescriptionNum").val(prescriptionNum);
-                    $("#date").val(data.date);
+                    $("#createDate").val(data.createDate);
                     $("#department").val(department);
                     $("#diagnosisResult").val(data.diagnosisResult);
                     $("#medicalOrder").html(data.medicalOrder);
@@ -175,7 +179,7 @@ window.operateEvents = {
                     $("#doctorName").val(doctorName);
                     $("#prescription").html(data.prescription);
                     $("#examinationCost").val(data.examinationCost);
-
+                    $("#nowDate").html(data.nowDate);
                     $("#total").val(data.drugCost + data.examinationCost)
                 }
             }
@@ -286,7 +290,7 @@ function saveTollInfo() {
                     window.location.reload()
                 })
             } else {
-                swal("系统异常，请稍后重试！", "", "error")
+                swal(data, "", "error")
             }
         }
 

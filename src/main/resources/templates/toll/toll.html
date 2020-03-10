@@ -33,22 +33,31 @@
 
                         <div class="split split-horizontal card prescription" id="myprescription">
 
-                            <h2>门诊处方笺</h2>
-                            <h3>(本日有效)</h3>
+                            <div style="display: flex">
+                                <h4 style="font-family: STLiti,serif;color: #2C9FAF">SHOSPITAL</h4>
+
+                                <h2>门诊处方笺</h2>
+
+                                <div style="font-size: 15px;margin-left: 26%">
+                                    <div id="nowDate"></div>
+                                </div>
+
+                            </div>
+
 
                             <div class="textbox">
 
                                 处方号<input type="text" id="prescriptionNum" style="width: 170px"
                                           readonly="readonly">
                                 科室<input type="text" id="department" style="width: 110px" readonly="readonly">&emsp;
-                                日期<input type="text" id="date" style="width: 133px" readonly="readonly">
+                                日期<input type="text" id="createDate" style="width: 133px" readonly="readonly">
                                 <br> <br>
                                 姓名<input type="text" id="name" style="width: 110px" readonly="readonly">&emsp;
                                 性别<input type="text" id="sex" style="width: 90px" readonly="readonly">
                                 民族<input type="text" id="nationality" style="width: 90px" readonly="readonly">
                                 年龄<input type="text" id="age" style="width:90px" readonly="readonly">
                                 <br> <br>
-                                初步诊断<input type="text" id="diagnosisResult" style="width:505px">
+                                初步诊断<input type="text" id="diagnosisResult" readonly="readonly" style="width:505px">
                             </div>
 
                             <div style="display: flex">
@@ -63,9 +72,9 @@
                             <div>
                                 <div id="prescription" class="prescription-1"></div>
 
-                                <div style="margin: 0 130px 0 100px">
+                                <div style="margin: 0 70px 0 60px">
                                     <div style="display: flex;">
-                                        <div style="display: flex;width: 410px">
+                                        <div style="display: flex;width: 430px">
                                             <div>
                                                 医嘱
                                             </div>
@@ -74,7 +83,7 @@
                                         <div style="display: flex;">
                                             <div>医师</div>
                                             <div>
-                                                <input type="text" id="doctorName" style="width:90px"
+                                                <input type="text" id="doctorName" style="width:80px"
                                                        readonly="readonly">
                                             </div>
                                         </div>
@@ -85,17 +94,17 @@
                                         <div style="display: flex">
                                             <div>药费</div>
                                             <div>
-                                                <input type="text" id="drugCost" style="width:90px" readonly="readonly">
+                                                <input type="text" id="drugCost" style="width:80px" readonly="readonly">
                                             </div>
                                         </div>
                                         <div style="display: flex;margin-left: 20px">
                                             <div>检查费</div>
                                             <div>
-                                                <input type="text" id="examinationCost" style="width:90px"
+                                                <input type="text" id="examinationCost" style="width:80px"
                                                        readonly="readonly">
                                             </div>
                                         </div>
-                                        <div style="margin-left: 130px">
+                                        <div style="margin-left: 170px">
                                             签字:
                                         </div>
 
@@ -136,7 +145,7 @@
                             </div>
 
 
-                            <div style="margin: 70px 0 0 30px">
+                            <div style="margin: 70px 0 0 100px">
                                 <div style="display: flex;">
                                     <div>
                                         合计：
@@ -159,7 +168,7 @@
                             </div>
 
                             <div class="textbox_2" style="display: flex">
-                                <div style="width: 56%;margin-left: 30px">
+                                <div style="width: 60%">
                                     <div id="money" style="display: none">
                                         实付<input type="text" id="payMoney" style="width: 120px"
                                                  oninput="getChange()">元&emsp;&emsp;&emsp;
@@ -168,7 +177,7 @@
 
                                     </div>
 
-                                    <div id="apay" style="display: none;margin-left: 55%">
+                                    <div id="apay" style="display: none;margin-left: 40%">
                                         <img style="width: 100px;height: 100px;"
                                              th:src="@{/images/icon/apay.jpg}">
                                     </div>

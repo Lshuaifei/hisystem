@@ -26,7 +26,7 @@ function getMedicalRecord() {
                 $("#nationality").val(data.nationality);
                 $("#age").val(data.age);
                 $("#prescriptionNum").val(prescriptionNum);
-                $("#date").val(data.date);
+                $("#createDate").val(data.createDate);
                 $("#department").val(data.department);
                 $("#diagnosisResult").val(data.diagnosisResult);
                 $("#medicalOrder").html(data.medicalOrder);
@@ -34,8 +34,9 @@ function getMedicalRecord() {
                 $("#doctorName").val(data.doctorName);
                 $("#prescription").html(data.prescription);
                 $("#examinationCost").val(data.examinationCost);
+                $("#nowDate").html(data.nowDate);
             } else {
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
         }
     })

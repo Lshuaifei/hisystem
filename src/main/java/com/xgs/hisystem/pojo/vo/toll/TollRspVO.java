@@ -7,6 +7,8 @@ package com.xgs.hisystem.pojo.vo.toll;
  */
 public class TollRspVO {
 
+    private String outpatientDate;
+
     private String registerId;
 
     private String department;
@@ -16,6 +18,14 @@ public class TollRspVO {
     private String registerType;
 
     private String prescriptionNum;
+
+    public String getOutpatientDate() {
+        return outpatientDate;
+    }
+
+    public void setOutpatientDate(String outpatientDate) {
+        this.outpatientDate = outpatientDate;
+    }
 
     public String getRegisterId() {
         return registerId;

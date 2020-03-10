@@ -146,4 +146,15 @@ public class UserController {
         return baseResponse.getMessage();
     }
 
+
+    /**
+     * 获取所有角色
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/getAllRole")
+    public List<GetAllRoleRspVO> getAllRole() {
+        return iUserService.getAllRole();
+    }
+
 }

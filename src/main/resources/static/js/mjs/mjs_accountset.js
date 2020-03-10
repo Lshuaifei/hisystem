@@ -1,5 +1,6 @@
 $(window).preloader();
 
+var roleValue = '';
 $(function () {
     //1.初始化Table
     var oTable = new TableInit();
@@ -9,8 +10,32 @@ $(function () {
     var oButtonInit = new ButtonInit();
     oButtonInit.Init();
 
+    $("#getAccountRole").load("/getAccountRole");
 
-    $("#getAccountRole").load("/getAccountRole")
+    /*获取角色*/
+        $.ajax({
+            url: "/user/getAllRole",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                var optionHtml = '<option value=""></option>';
+                $.each(data, function (i,val) {
+                    optionHtml += '<option value="' + val.roleValue+ '" >' + val.description + '</option>';
+                });
+                $('.roleSelect').html(optionHtml).trigger("chosen:updated").chosen({
+
+                    allow_single_deselect: false, //单选下拉框是否允许取消选择。如果允许，选中选项会有一个x号可以删除选项
+                    disable_search: true, //禁用搜索。设置为true，则无法搜索选项。
+                    disable_search_threshold: 0, //当选项少等于于指定个数时禁用搜索。
+                    inherit_select_classes: true, //是否继承原下拉框的样式类，此处设为继承
+                    max_shown_results: 100, //下拉框最大显示选项数量
+                    width: '150px'
+                }).change(function () {
+
+                    roleValue = $(".roleSelect option:selected").val();
+                });
+            }
+        })
 });
 
 var TableInit = function () {
@@ -29,7 +54,7 @@ var TableInit = function () {
             queryParams: oTableInit.queryParams,//传递参数（*）
             sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
             pageNumber: 1,                       //初始化加载第一页，默认第一页
-            pageSize: 5,                       //每页的记录行数（*）
+            pageSize: 10,                       //每页的记录行数（*）
             queryParamsType: "",
             paginationPreText: "上一页",
             paginationNextText: "下一页",
@@ -141,23 +166,10 @@ function changePassword() {
     })
 }
 
-var role = '';
-$('.roleSelect').chosen({
-
-    allow_single_deselect: false, //单选下拉框是否允许取消选择。如果允许，选中选项会有一个x号可以删除选项
-    disable_search: true, //禁用搜索。设置为true，则无法搜索选项。
-    disable_search_threshold: 0, //当选项少等于于指定个数时禁用搜索。
-    inherit_select_classes: true, //是否继承原下拉框的样式类，此处设为继承
-    max_shown_results: 5, //下拉框最大显示选项数量
-    width: '150px'
-}).change(function () {
-
-    role = $(".roleSelect option:selected").val();
-});
 
 function addAnotherRole() {
     var AccountRoleVO = {
-        role: role
+        roleValue: roleValue
     };
 
     $.ajax({

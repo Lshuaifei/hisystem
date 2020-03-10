@@ -1,14 +1,18 @@
 package com.xgs.hisystem.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.xgs.hisystem.config.Contants;
 import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.takingdrug.MedicalRecordRspVO;
 import com.xgs.hisystem.repository.IMedicalExaminationRepository;
 import com.xgs.hisystem.repository.IMedicalRecordRepository;
+import com.xgs.hisystem.repository.ITollTakeDrugInfoRepository;
 import com.xgs.hisystem.service.ITakingDrugService;
 import com.xgs.hisystem.util.DateUtil;
 import org.apache.shiro.SecurityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -25,6 +29,10 @@ public class TakingDrugServiceImpl implements ITakingDrugService {
     private IMedicalRecordRepository iMedicalRecordRepository;
     @Autowired
     private IMedicalExaminationRepository iMedicalExaminationRepository;
+    @Autowired
+    private ITollTakeDrugInfoRepository iTollTakeDrugInfoRepository;
+
+    private static final Logger logger = LoggerFactory.getLogger(TakingDrugServiceImpl.class);
 
     @Override
     public MedicalRecordRspVO getMedicalRecord(String prescriptionNum) throws Exception {
@@ -36,11 +44,17 @@ public class TakingDrugServiceImpl implements ITakingDrugService {
             recordRspVO.setMessage("该处方号未查询到任何信息！");
             return recordRspVO;
         }
+        TollTakeDrugInfoEntity tollTakeDrugInfo=iTollTakeDrugInfoRepository.findByPrescriptionNumAndTakingDrugStatus(medicalRecord.getPrescriptionNum(),0 );
+
+        if (tollTakeDrugInfo==null) {
+            recordRspVO.setMessage("该处方未查询到最新划价收费信息！");
+            return recordRspVO;
+        }
         RegisterEntity register = medicalRecord.getRegister();
         PatientEntity patient = medicalRecord.getRegister().getPatient();
 
         recordRspVO.setAge(DateUtil.getAge(patient.getBirthday()));
-        recordRspVO.setDate(DateUtil.DateTimeToDate(medicalRecord.getCreateDatetime()));
+        recordRspVO.setCreateDate(DateUtil.DateTimeToDate(medicalRecord.getCreateDatetime()));
         recordRspVO.setDiagnosisResult(medicalRecord.getDiagnosisResult());
         recordRspVO.setDrugCost(medicalRecord.getDrugCost());
         recordRspVO.setMedicalOrder(medicalRecord.getMedicalOrder());
@@ -48,6 +62,7 @@ public class TakingDrugServiceImpl implements ITakingDrugService {
         recordRspVO.setNationality(patient.getNationality());
         recordRspVO.setPrescription(medicalRecord.getPrescription());
         recordRspVO.setSex(patient.getSex());
+        recordRspVO.setNowDate(DateUtil.getCurrentDateSimpleToString());
 
         MedicalExaminationEntity medicalExamination = iMedicalExaminationRepository.findByPrescriptionNum(medicalRecord.getPrescriptionNum());
         if (!StringUtils.isEmpty(medicalExamination)) {
@@ -72,35 +87,26 @@ public class TakingDrugServiceImpl implements ITakingDrugService {
 
         if (StringUtils.isEmpty(medicalRecord)) {
 
-            return BaseResponse.errormsg("该处方号未查询到任何信息！");
+            return BaseResponse.errormsg("未查询到相关就诊记录！");
         }
-        if (StringUtils.isEmpty(medicalRecord.getTollDateTime())) {
-            return BaseResponse.errormsg("该处方未划价！");
-        }
-        String tollDateTime = DateUtil.DateTimeToDate(medicalRecord.getTollDateTime());
-        String nowDate = DateUtil.getCurrentDateSimpleToString();
+        TollTakeDrugInfoEntity tollTakeDrugInfo=iTollTakeDrugInfoRepository.findByPrescriptionNumAndTakingDrugStatus(medicalRecord.getPrescriptionNum(),0 );
 
-        if (!tollDateTime.equals(nowDate)) {
-            return BaseResponse.errormsg("该处方划价已逾期！");
+        if (tollTakeDrugInfo==null) {
+            return BaseResponse.errormsg("该处方未查询到最新划价收费信息！");
         }
-
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
-
-        if (StringUtils.isEmpty(user)) {
-            return null;
+        if (user==null) {
+            return BaseResponse.errormsg("登录信息异常！");
         }
-
-        int takingDrugFrequency = medicalRecord.getTakingDrugFrequency();
-
-        medicalRecord.setTakingDrugFrequency(takingDrugFrequency + 1);
-        medicalRecord.setTakingDrugDateTime(DateUtil.getCurrentDateToString());
-        medicalRecord.setTakingDrugOperator(user.getId());
-
+        tollTakeDrugInfo.setTakingDrugDateTime(DateUtil.getCurrentDateToString());
+        tollTakeDrugInfo.setTakingDrugOperator(user.getId());
+        tollTakeDrugInfo.setTakingDrugStatus(1);
         try {
-            iMedicalRecordRepository.saveAndFlush(medicalRecord);
+            iTollTakeDrugInfoRepository.saveAndFlush(tollTakeDrugInfo);
             return BaseResponse.success(Contants.user.SUCCESS);
         } catch (Exception e) {
-            return BaseResponse.success(Contants.user.FAIL);
+            logger.error("处方号={},保存划价收费—拿药信息异常！msg={}", prescriptionNum,e.toString());
+            return BaseResponse.errormsg("操作异常，请稍后重试！");
         }
 
     }

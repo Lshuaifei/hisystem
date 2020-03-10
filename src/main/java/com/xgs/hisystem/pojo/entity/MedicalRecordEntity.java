@@ -33,24 +33,6 @@ public class MedicalRecordEntity extends BaseEntity {
     @Column(name = "medicalOrder", nullable = true, length = 255)
     private String medicalOrder; //医嘱
 
-    @Column(name = "tollFrequency", nullable = false, length = 20)
-    private int tollFrequency;  //划价收费次数
-
-    @Column(name = "takingDrugFrequency", nullable = false, length = 20)
-    private int takingDrugFrequency;  //取药次数
-
-    @Column(name = "tollOperator", nullable = true, length = 255)
-    private String tollOperator;  //收费操作员
-
-    @Column(name = "tollDateTime", nullable = true, length = 50)
-    private String tollDateTime;  //收费时间
-
-    @Column(name = "takingDrugOperator", nullable = true, length = 255)
-    private String takingDrugOperator;  //药房操作员
-
-    @Column(name = "takingDrugDateTime", nullable = true, length = 50)
-    private String takingDrugDateTime;  //拿药时间
-
     public String getConditionDescription() {
         return conditionDescription;
     }
@@ -105,53 +87,5 @@ public class MedicalRecordEntity extends BaseEntity {
 
     public void setMedicalOrder(String medicalOrder) {
         this.medicalOrder = medicalOrder;
-    }
-
-    public int getTollFrequency() {
-        return tollFrequency;
-    }
-
-    public void setTollFrequency(int tollFrequency) {
-        this.tollFrequency = tollFrequency;
-    }
-
-    public int getTakingDrugFrequency() {
-        return takingDrugFrequency;
-    }
-
-    public void setTakingDrugFrequency(int takingDrugFrequency) {
-        this.takingDrugFrequency = takingDrugFrequency;
-    }
-
-    public String getTollOperator() {
-        return tollOperator;
-    }
-
-    public void setTollOperator(String tollOperator) {
-        this.tollOperator = tollOperator;
-    }
-
-    public String getTollDateTime() {
-        return tollDateTime;
-    }
-
-    public void setTollDateTime(String tollDateTime) {
-        this.tollDateTime = tollDateTime;
-    }
-
-    public String getTakingDrugOperator() {
-        return takingDrugOperator;
-    }
-
-    public void setTakingDrugOperator(String takingDrugOperator) {
-        this.takingDrugOperator = takingDrugOperator;
-    }
-
-    public String getTakingDrugDateTime() {
-        return takingDrugDateTime;
-    }
-
-    public void setTakingDrugDateTime(String takingDrugDateTime) {
-        this.takingDrugDateTime = takingDrugDateTime;
     }
 }

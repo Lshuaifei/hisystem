@@ -54,21 +54,18 @@
     text-align: center;
     margin-top: 15px;
     font-weight: 600;
+    margin-left: 20%;
 }
 
-.prescription h3 {
-    margin: -29px 0 0 472px;
-    font-size: 17px;
-}
 
 .textbox {
     font-size: 17px;
-    margin: 30px 0 15px 80px;
+    margin: 30px 0 15px 60px;
 }
 
 .tolloperation {
     width: 48%;
-    margin-left: 2%;
+    margin-left: 1%;
     font-size: 17px;
 }
 
@@ -89,6 +86,7 @@ input {
 .CardIdInfor {
     display: flex;
     margin-top: 20px;
+    margin-left: 100px;
 }
 
 .tollStatus {
@@ -96,7 +94,6 @@ input {
 }
 
 .toll_table {
-    margin-right: 50px;
     margin-top: 5%;
     border: 1px solid #56A9BA;
 }
@@ -113,5 +110,5 @@ input {
 }
 
 .textbox_2 {
-    margin: 30px 0 0 0;
+    margin: 30px 0 0 100px;
 }

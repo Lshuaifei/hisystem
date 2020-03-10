@@ -1,5 +1,6 @@
 package com.xgs.hisystem.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.xgs.hisystem.config.Contants;
 import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.BaseResponse;
@@ -7,21 +8,26 @@ import com.xgs.hisystem.pojo.vo.toll.SaveTollInfoReqVO;
 import com.xgs.hisystem.pojo.vo.toll.TollMedicalRecordRspVO;
 import com.xgs.hisystem.pojo.vo.toll.TollRspVO;
 import com.xgs.hisystem.pojo.vo.toll.cardRspVO;
-import com.xgs.hisystem.repository.IMedicalExaminationRepository;
-import com.xgs.hisystem.repository.IMedicalRecordRepository;
-import com.xgs.hisystem.repository.IPatientRepository;
-import com.xgs.hisystem.repository.IRegisterRepository;
+import com.xgs.hisystem.repository.*;
 import com.xgs.hisystem.service.ITollService;
 import com.xgs.hisystem.util.DateUtil;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.xgs.hisystem.util.card.Card.defaultGetCardId;
 
@@ -42,6 +48,8 @@ public class TollServiceImpl implements ITollService {
     private IMedicalRecordRepository iMedicalRecordRepository;
     @Autowired
     private IMedicalExaminationRepository iMedicalExaminationRepository;
+    @Autowired
+    private ITollTakeDrugInfoRepository iTollTakeDrugInfoRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(TollServiceImpl.class);
 
@@ -79,9 +87,27 @@ public class TollServiceImpl implements ITollService {
         }
         String patientId = iPatientRepository.findByCardId(cardId).getId();
 
+        Optional<PatientEntity> patient=iPatientRepository.findById(patientId);
+
+        //患者处方存在已划价收费未取药，禁止划价
+        TollTakeDrugInfoEntity tollTakeDrugInfo=iTollTakeDrugInfoRepository.findByPatientIdAndTakingDrugStatus(patientId,0);
+        if (tollTakeDrugInfo!=null){
+            return null;
+        }
+
         int chargeStatus = Integer.parseInt(tollStatus);
 
-        List<RegisterEntity> registerList = iRegisterRepository.findByPatientIdAndChargeStatusAndRegisterStatusAndTreatmentStatus(patientId, chargeStatus, 1, 1);
+        List<RegisterEntity> registerList = iRegisterRepository.findAll((Specification<RegisterEntity>) (root, query, cb) -> {
+            List<Predicate> predicateList=new ArrayList<>();
+
+            predicateList.add(cb.equal(root.get("patient"),patient.get() ));
+            predicateList.add(cb.equal(root.get("chargeStatus"),chargeStatus ));
+            predicateList.add(cb.equal(root.get("registerStatus"),1 ));
+            predicateList.add(cb.equal(root.get("treatmentStatus"),1 ));
+
+            query.where(predicateList.toArray(new Predicate[predicateList.size()]));
+            return null;
+        }, Sort.by(Sort.Direction.DESC,"createDatetime"));
 
         if (registerList == null || registerList.size() <= 0) {
             return null;
@@ -90,19 +116,16 @@ public class TollServiceImpl implements ITollService {
 
         for (RegisterEntity register : registerList) {
             TollRspVO tollRspVO = new TollRspVO();
+            MedicalRecordEntity medicalRecord = iMedicalRecordRepository.findByRegisterId(register.getId());
+            if (StringUtils.isEmpty(medicalRecord)) {
+                continue;
+            }
+            tollRspVO.setPrescriptionNum(medicalRecord.getPrescriptionNum());
             tollRspVO.setRegisterId(register.getId());
             tollRspVO.setRegisterType(register.getRegisterType());
             tollRspVO.setDepartment(register.getDepartment());
             tollRspVO.setDoctorName(register.getDoctor());
-
-            MedicalRecordEntity medicalRecord = iMedicalRecordRepository.findByRegisterId(register.getId());
-
-            if (StringUtils.isEmpty(medicalRecord)) {
-                continue;
-            }
-
-            tollRspVO.setPrescriptionNum(medicalRecord.getPrescriptionNum());
-
+            tollRspVO.setOutpatientDate(medicalRecord.getCreateDatetime());
             tollRspVOList.add(tollRspVO);
 
         }
@@ -121,7 +144,7 @@ public class TollServiceImpl implements ITollService {
         }
         TollMedicalRecordRspVO recordRspVO = new TollMedicalRecordRspVO();
         recordRspVO.setAge(DateUtil.getAge(patient.getBirthday()));
-        recordRspVO.setDate(DateUtil.DateTimeToDate(medicalRecord.getCreateDatetime()));
+        recordRspVO.setCreateDate(DateUtil.DateTimeToDate(medicalRecord.getCreateDatetime()));
         recordRspVO.setDiagnosisResult(medicalRecord.getDiagnosisResult());
         recordRspVO.setDrugCost(medicalRecord.getDrugCost());
         recordRspVO.setMedicalOrder(medicalRecord.getMedicalOrder());
@@ -129,7 +152,7 @@ public class TollServiceImpl implements ITollService {
         recordRspVO.setNationality(patient.getNationality());
         recordRspVO.setPrescription(medicalRecord.getPrescription());
         recordRspVO.setSex(patient.getSex());
-
+        recordRspVO.setNowDate(DateUtil.getCurrentDateSimpleToString());
         MedicalExaminationEntity medicalExamination = iMedicalExaminationRepository.findByPrescriptionNum(medicalRecord.getPrescriptionNum());
         if (!StringUtils.isEmpty(medicalExamination)) {
             recordRspVO.setExaminationCost(medicalExamination.getExaminationCost());
@@ -147,39 +170,37 @@ public class TollServiceImpl implements ITollService {
     @Override
     public BaseResponse<?> saveTollInfo(SaveTollInfoReqVO reqVO) {
 
-        RegisterEntity registerEntity = iRegisterRepository.findById(reqVO.getRegisterId()).get();
-
-        if (StringUtils.isEmpty(registerEntity)) {
-            return null;
+        Optional<RegisterEntity> register= iRegisterRepository.findById(reqVO.getRegisterId());
+        if (!register.isPresent()) {
+            return BaseResponse.errormsg("未查询到相关挂号记录！");
         }
-        registerEntity.setChargeStatus(1);
 
-        MedicalRecordEntity medicalRecordEntity = iMedicalRecordRepository.findByPrescriptionNum(reqVO.getPrescriptionNum());
 
-        if (StringUtils.isEmpty(medicalRecordEntity)) {
-            return null;
+        MedicalRecordEntity medicalRecord = iMedicalRecordRepository.findByPrescriptionNum(reqVO.getPrescriptionNum());
+        if (medicalRecord==null) {
+            return BaseResponse.errormsg("未查询到相关就诊记录！");
         }
-        int tollFrequency = medicalRecordEntity.getTollFrequency();
-
-        medicalRecordEntity.setTollFrequency(tollFrequency + 1);
-        medicalRecordEntity.setTollDateTime(DateUtil.getCurrentDateToString());
-
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
 
-        if (StringUtils.isEmpty(user)) {
-            return null;
+        if (user==null) {
+            return BaseResponse.errormsg("登录信息异常！");
         }
-
-        medicalRecordEntity.setTollOperator(user.getId());
-
+        TollTakeDrugInfoEntity tollTakeDrugInfo=new TollTakeDrugInfoEntity();
+        tollTakeDrugInfo.setPrescriptionNum(medicalRecord.getPrescriptionNum());
+        tollTakeDrugInfo.setTakingDrugStatus(0);
+        tollTakeDrugInfo.setTollOperator(user.getId());
+        tollTakeDrugInfo.setTollDateTime(DateUtil.getCurrentDateToString());
+        tollTakeDrugInfo.setPatientId(register.get().getPatient().getId());
+        //更新收费状态
+        register.get().setChargeStatus(1);
 
         try {
-            iRegisterRepository.saveAndFlush(registerEntity);
-            iMedicalRecordRepository.saveAndFlush(medicalRecordEntity);
-
+            iRegisterRepository.saveAndFlush(register.get());
+            iTollTakeDrugInfoRepository.saveAndFlush(tollTakeDrugInfo);
             return BaseResponse.success(Contants.user.SUCCESS);
         } catch (Exception e) {
-            return BaseResponse.success(Contants.user.FAIL);
+            logger.error("req={},保存划价收费—拿药信息异常！msg={}", JSON.toJSONString(reqVO,true),e.toString());
+            return BaseResponse.errormsg("操作异常，请稍后重试！");
         }
     }
 

@@ -26,7 +26,9 @@ public interface IUserService {
 
     AnnRspVO getAnnContent(String id);
 
-    List<AccountRoleVO> getAccountRole();
+    List<String> getAccountRole();
 
     BaseResponse<?> addAnotherRole(AccountRoleVO reqVO);
+
+    List<GetAllRoleRspVO> getAllRole();
 }

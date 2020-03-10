@@ -61,17 +61,17 @@
                                         <ui id="ann_display" th:fragment="ann">
                                             <li th:each="annlist:${annList}">
                                                 <a th:text="${annlist.title}" href="#"
-                                                   th:onclick="getAnnContent([[${annlist.id}]])"></a>
+                                                   th:onclick="getAnnContent([[${annlist.id}]])">
+                                                </a>
                                                 <span th:text="${annlist.annDate}"
-                                                      style="float: right;margin-left: 110px;"></span>
+                                                      style="float: right;margin-left: 110px;">
+                                                </span>
                                             </li>
                                         </ui>
                                     </div>
                                     <div style="margin-left: 20%">
-                                        <div style="text-align: center;font-size: 19px;font-weight: 600;margin-bottom: 10px;"
-                                             id="anntitle"></div>
-                                        <pre style="font-size: 18px" id="annContent">
-                                    </pre>
+                                        <div style="text-align: center;font-size: 19px;font-weight: 600;margin-bottom: 10px;"  id="anntitle"></div>
+                                        <pre style="font-size: 18px" id="annContent"></pre>
                                     </div>
                                 </div>
                             </div>

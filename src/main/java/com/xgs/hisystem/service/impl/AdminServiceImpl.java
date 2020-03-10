@@ -33,6 +33,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author xgs
@@ -68,7 +69,7 @@ public class AdminServiceImpl implements IAdminService {
         RoleEntity roleEntity = new RoleEntity();
         roleEntity.setRole(roleVO.getRolename());
         roleEntity.setRoleValue(roleVO.getRoleValue());
-        roleEntity.setDesrciption(roleVO.getDesciption());
+        roleEntity.setDescription(roleVO.getDesciption());
 
         try {
             iRoleRespository.saveAndFlush(roleEntity);
@@ -134,11 +135,11 @@ public class AdminServiceImpl implements IAdminService {
         if (page == null) {
             return null;
         }
-        List<UserRoleEntity> UserRoleEntityList = page.getContent();
+        List<UserRoleEntity> userRoleList = page.getContent();
 
         List<applyRspVO> applyRspVOList = new ArrayList<>();
 
-        UserRoleEntityList.forEach(userRole -> {
+        userRoleList.forEach(userRole -> {
             Optional<UserEntity> user = iUserRepository.findById(userRole.getuId());
 
             applyRspVO applyRspVO = new applyRspVO();
@@ -147,7 +148,7 @@ public class AdminServiceImpl implements IAdminService {
             applyRspVO.setDateTime(userRole.getCreateDatetime());
 
             Optional<RoleEntity> role = iRoleRespository.findById(userRole.getRoleId());
-            applyRspVO.setRole(role.get().getDesrciption());
+            applyRspVO.setRole(role.get().getDescription());
 
             applyRspVOList.add(applyRspVO);
         });
@@ -239,22 +240,21 @@ public class AdminServiceImpl implements IAdminService {
                 .stream().filter(roleEntity -> roleEntity.getRole().equals("admin")).count();
 
         if (checkCount > 0) {
-            List<UserRoleEntity> userRoleList = iUserRoleRepository.findByRoleStatus(0);
+            List<UserRoleEntity> userRoleList = iUserRoleRepository.findByRoleStatusOrderByCreateDatetimeDesc(0);
 
             if (userRoleList != null && userRoleList.size() > 0) {
-                userRoleList.forEach(userRole -> {
-                    Optional<UserEntity> user = iUserRepository.findById(userRole.getuId());
-
+                applyRspList.addAll(userRoleList.stream().map(userRole -> {
                     applyRspVO applyRspVO = new applyRspVO();
-                    applyRspVO.setEmail(user.get().getEmail());
-                    applyRspVO.setUsername(user.get().getUsername());
                     applyRspVO.setDateTime(userRole.getCreateDatetime());
-
+                    Optional<UserEntity> user = iUserRepository.findById(userRole.getuId());
+                    if (user.isPresent()){
+                        applyRspVO.setEmail(user.get().getEmail());
+                        applyRspVO.setUsername(user.get().getUsername());
+                    }
                     Optional<RoleEntity> role = iRoleRespository.findById(userRole.getRoleId());
-                    applyRspVO.setRole(role.get().getDesrciption());
-
-                    applyRspList.add(applyRspVO);
-                });
+                    role.ifPresent(roleEntity -> applyRspVO.setRole(roleEntity.getDescription()));
+                    return applyRspVO;
+                }).collect(Collectors.toList()));
             }
         }
         return applyRspList;
@@ -320,9 +320,7 @@ public class AdminServiceImpl implements IAdminService {
             @Override
             public Predicate toPredicate(Root<AnnouncementEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicateList = new ArrayList<>();
-
-                Predicate Announcement = criteriaBuilder.isNotNull(root.get("title"));
-                predicateList.add(Announcement);
+                predicateList.add(criteriaBuilder.isNotNull(root.get("title")));
                 query.where(predicateList.toArray(new Predicate[predicateList.size()]));
 
                 return null;
@@ -381,7 +379,7 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public BaseResponse<?> add_Announcement(String id) {
+    public BaseResponse<?> showAnnouncement(String id) {
 
         Optional<AnnouncementEntity> announcement = iAnnouncementRepository.findById(id);
         announcement.get().setAnnStatus(1);
@@ -394,7 +392,7 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public BaseResponse<?> sub_Announcement(String id) {
+    public BaseResponse<?> hiddenAnnouncement(String id) {
 
         Optional<AnnouncementEntity> announcement = iAnnouncementRepository.findById(id);
         announcement.get().setAnnStatus(0);

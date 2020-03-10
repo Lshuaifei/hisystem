@@ -54,12 +54,9 @@
     text-align: center;
     margin-top: 15px;
     font-weight: 600;
+    margin-left: 20%;
 }
 
-.prescription h3 {
-    margin: -29px 0 0 476px;
-    font-size: 17px;
-}
 
 .textbox {
     font-size: 17px;

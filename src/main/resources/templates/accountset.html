@@ -84,7 +84,7 @@
 
                     <div id="account3" class="container tab-pane fade"><br>
                         <div style="width: 70%;float: left;">
-                            <div class="card shadow mb-4" style="margin-left: 1%;height: 400px">
+                            <div class="card shadow mb-4" style="margin-left: 1%;height: 450px">
                                 <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">添加角色</h6>
                                 </div>
@@ -105,7 +105,7 @@
                                                         <div id="getAccountRole" th:fragment="accountRole">
                                                             <div th:each="accountRole:${accountRole}">
                                                                 <span style="margin-left: 1rem"
-                                                                      th:text="${accountRole.role}"></span>
+                                                                      th:text="${accountRole}"></span>
                                                             </div>
 
                                                         </div>
@@ -116,18 +116,7 @@
                                             <div style="margin-top: 2.5rem">
                                                 选择添加的角色
                                                 <select class='roleSelect' data-placeholder=' '>
-                                                     
                                                     <option value=""></option>
-
-                                                    <option value="register">挂号收费员</option>
-                                                    <option value="mdoctor">门诊医生</option>
-                                                    <option value="druggist">药剂师</option>
-                                                    <option value="nurseAdmin">护士管理员</option>
-                                                    <option value="mdoctor">住院医生</option>
-                                                    <option value="technologyDoc">医技师</option>
-                                                    <option value="toller">划价收费员</option>
-                                                    <option value="drugStoreAdmin">药房管理员</option>
-                                                     
                                                 </select>
                                             </div>
 

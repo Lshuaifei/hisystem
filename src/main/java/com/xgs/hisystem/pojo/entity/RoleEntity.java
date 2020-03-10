@@ -21,8 +21,8 @@ public class RoleEntity extends BaseEntity{
     @Column(name = "role_value")
     private Integer roleValue;
 
-    @Column(name = "desrciption")
-    private String desrciption;
+    @Column(name = "description")
+    private String description;
 
     @ManyToMany(mappedBy = "roleList")
     private List<UserEntity> userList;
@@ -35,12 +35,12 @@ public class RoleEntity extends BaseEntity{
         this.role = role;
     }
 
-    public String getDesrciption() {
-        return desrciption;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDesrciption(String desrciption) {
-        this.desrciption = desrciption;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<UserEntity> getUserList() {

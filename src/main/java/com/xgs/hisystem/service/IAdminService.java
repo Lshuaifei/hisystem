@@ -32,7 +32,7 @@ public interface IAdminService {
 
     BaseResponse<?> deleteAnnouncement(String id);
 
-    BaseResponse<?> add_Announcement(String id);
+    BaseResponse<?> showAnnouncement(String id);
 
-    BaseResponse<?> sub_Announcement(String id);
+    BaseResponse<?> hiddenAnnouncement(String id);
 }

@@ -15,7 +15,7 @@
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
             <a class="nav-link" th:href="@{main}">
-                <img id="png" class="png" th:src="@{/images/icon/main.png}"></img>
+                <img class="png" th:src="@{/images/icon/main.png}">
                 <span>&nbsp;首&nbsp;页</span></a>
         </li>
 
@@ -31,7 +31,7 @@
         <li class="nav-item" shiro:hasAnyRoles="admin,register">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#registerId"
                aria-expanded="true" aria-controls="collapseTwo">
-                <img class="png" th:src="@{/images/icon/register.png}"></img>
+                <img class="png" th:src="@{/images/icon/register.png}" src="">
                 <span>&nbsp;挂号收费</span>
             </a>
             <div id="registerId" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -48,7 +48,7 @@
         <li class="nav-item" shiro:hasAnyRoles="admin,mdoctor">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#outpatientId"
                aria-expanded="true" aria-controls="collapseUtilities">
-                <img id="png" class="png" th:src="@{/images/icon/treatment.png}"></img>
+                <img class="png" th:src="@{/images/icon/treatment.png}">
                 <span>&nbsp;门诊管理</span>
             </a>
             <div id="outpatientId" class="collapse" aria-labelledby="headingUtilities"
@@ -64,7 +64,7 @@
         <li class="nav-item" shiro:hasAnyRoles="admin,tollCollector">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#tollCollectorId"
                aria-expanded="true" aria-controls="collapseUtilities">
-                <img id="png" class="png" th:src="@{/images/icon/toll.png}"></img>
+                <img class="png" th:src="@{/images/icon/toll.png}">
                 <span>&nbsp;划价收费</span>
             </a>
             <div id="tollCollectorId" class="collapse" aria-labelledby="headingUtilities"
@@ -80,7 +80,7 @@
         <li class="nav-item" shiro:hasAnyRoles="admin,druggist">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#takingDrugId"
                aria-expanded="true" aria-controls="collapseUtilities">
-                <img id="png" class="png" th:src="@{/images/icon/takingDrug.png}"></img>
+                <img class="png" th:src="@{/images/icon/takingDrug.png}">
                 <span>&nbsp;药房取药</span>
             </a>
             <div id="takingDrugId" class="collapse" aria-labelledby="headingUtilities"
@@ -97,7 +97,7 @@
         <li class="nav-item" shiro:hasAnyRoles="admin,drugStoreAdmin">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#storageManageId"
                aria-expanded="true" aria-controls="collapseUtilities">
-                <img id="png" class="png" th:src="@{/images/icon/drugStore.png}"></img>
+                <img class="png" th:src="@{/images/icon/drugStore.png}">
                 <span>&nbsp;药库管理</span>
             </a>
             <div id="storageManageId" class="collapse" aria-labelledby="headingUtilities"
@@ -115,7 +115,7 @@
         <li class="nav-item" shiro:hasAnyRoles="admin,technologyDoc">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#technologyId"
                aria-expanded="true" aria-controls="collapseUtilities">
-                <img id="png" class="png" th:src="@{/images/icon/technology.png}"></img>
+                <img class="png" th:src="@{/images/icon/technology.png}">
                 <span>&nbsp;体检管理</span>
             </a>
             <div id="technologyId" class="collapse" aria-labelledby="headingUtilities"
@@ -127,16 +127,33 @@
             </div>
         </li>
 
+        <li class="nav-item" >
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#userCenterId"
+               aria-expanded="true" aria-controls="collapseUtilities">
+                <img class="png" th:src="@{/images/icon/userCenter.png}">
+                <span>&nbsp;用户中心</span>
+            </a>
+            <div id="userCenterId"  class="collapse" aria-labelledby="headingUtilities"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">userCenter:</h6>
+                    <a class="collapse-item" th:href="@{/toUserinfo}">个人中心</a>
+                    <a class="collapse-item" th:href="@{/accountset}">账号设置</a>
+                </div>
+            </div>
+        </li>
+
         <li class="nav-item" shiro:hasRole="admin">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#systemId"
                aria-expanded="true" aria-controls="collapsePages">
-                <img id="png" class="png" th:src="@{/images/icon/sys.png}"></img>
+                <img class="png" th:src="@{/images/icon/sys.png}">
                 <span>&nbsp;系统维护</span>
             </a>
             <div id="systemId" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">system:</h6>
                     <a class="collapse-item" th:href="@{/announcement}">公告管理</a>
+                    <a class="collapse-item" th:href="@{/toApply}">角色审核</a>
                     <!--<a class="collapse-item" href="#">Other</a>-->
                 </div>
             </div>

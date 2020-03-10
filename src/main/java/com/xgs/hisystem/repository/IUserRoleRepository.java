@@ -17,5 +17,5 @@ public interface IUserRoleRepository extends BaseRepository<UserRoleEntity> {
 
     UserRoleEntity findByUIdAndRoleStatus(String uid, int roleStatus);
 
-    List<UserRoleEntity> findByRoleStatus(int roleStatus);
+    List<UserRoleEntity> findByRoleStatusOrderByCreateDatetimeDesc(int roleStatus);
 }

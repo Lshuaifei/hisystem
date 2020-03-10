@@ -37,6 +37,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -389,38 +391,37 @@ public class UserServiceImpl implements IUserService {
     @Override
     public AnnRspVO getAnnContent(String id) {
 
-        if (StringUtils.isEmpty(id)) {
-            return null;
-        }
-
-        AnnouncementEntity announcement = iAnnouncementRepository.findById(id).get();
-        if (announcement == null) {
-            return null;
-        }
         AnnRspVO annRspVO = new AnnRspVO();
 
-        annRspVO.setTitle(announcement.getTitle());
-        annRspVO.setContent(announcement.getContents());
-
+        //取第一个主页显示
+        if (StringUtils.isEmpty(id)) {
+            List<AnnouncementEntity> announcementList = iAnnouncementRepository.findAll();
+            if (announcementList!=null&&announcementList.size()>0){
+                annRspVO.setTitle(announcementList.get(0).getTitle());
+                annRspVO.setContent(announcementList.get(0).getContents());
+            }
+        }else {
+            Optional<AnnouncementEntity> announcement = iAnnouncementRepository.findById(id);
+            if (announcement.isPresent()) {
+                annRspVO.setTitle(announcement.get().getTitle());
+                annRspVO.setContent(announcement.get().getContents());
+            }
+        }
         return annRspVO;
     }
 
     @Override
-    public List<AccountRoleVO> getAccountRole() {
+    public List<String> getAccountRole() {
 
-        List<AccountRoleVO> accountRoleList = new ArrayList<>();
+        List<String> accountRoleList = new ArrayList<>();
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
         if (StringUtils.isEmpty(user)) {
             return null;
         }
         user.getRoleList().forEach(role -> {
-
             UserRoleEntity userRole = iUserRoleRepository.findByUIdAndRoleId(user.getId(), role.getId());
             if (userRole.getRoleStatus().equals(1)) {
-                AccountRoleVO accountRole = new AccountRoleVO();
-                accountRole.setRole(role.getDesrciption());
-
-                accountRoleList.add(accountRole);
+                accountRoleList.add(role.getDescription());
             }
         });
 
@@ -442,23 +443,23 @@ public class UserServiceImpl implements IUserService {
         }
         List<UserRoleEntity> userRoleList = iUserRoleRepository.findByUId(user.getId());
 
-        long statusCount_0 = userRoleList.stream()
+        long statusNotAudit = userRoleList.stream()
                 .filter(userRole -> userRole.getRoleStatus().equals(0)).count();
-        long statusCount_1 = userRoleList.stream()
+        long statusNotPass = userRoleList.stream()
                 .filter(userRole -> userRole.getRoleStatus().equals(-1)).count();
-        if (statusCount_0 >= 1 || statusCount_1 >= 1) {
+        if (statusNotAudit >= 1 || statusNotPass >= 1) {
             return BaseResponse.errormsg("存在未审核或未通过的角色，禁止再申请添加！");
         }
 
         for (RoleEntity role1 : user.getRoleList()) {
 
-            if (role1.getRole().equals(reqVO.getRole())) {
+            if (role1.getRoleValue().toString().equals(reqVO.getRoleValue())) {
 
                 return BaseResponse.errormsg("该角色已存在，不需要重复添加！");
             }
         }
 
-        RoleEntity role2 = iRoleRespository.findByRole(reqVO.getRole());
+        RoleEntity role2 = iRoleRespository.findByRoleValue(Integer.parseInt(reqVO.getRoleValue()));
         UserRoleEntity userRole = new UserRoleEntity();
         userRole.setuId(user.getId());
         userRole.setRoleId(role2.getId());
@@ -472,8 +473,31 @@ public class UserServiceImpl implements IUserService {
         } catch (Exception e) {
             return BaseResponse.errormsg("角色添加异常，请稍后再试！");
         }
-
-
     }
+
+    @Override
+    public List<GetAllRoleRspVO> getAllRole() {
+
+        List<GetAllRoleRspVO> getAllRoleList=new ArrayList<>();
+
+        List<RoleEntity> roleList=iRoleRespository.findAll((Specification<RoleEntity>) (root, query, cb) -> {
+            List<Predicate> predicateList = new ArrayList<>();
+            predicateList.add(cb.notEqual(root.get("role"), "admin"));
+            query.where(predicateList.toArray(new Predicate[predicateList.size()]));
+            return null;
+        });
+
+        if (roleList!=null&&roleList.size()>0){
+
+            getAllRoleList.addAll(roleList.stream().map(role -> {
+                GetAllRoleRspVO allRoleRspVO=new GetAllRoleRspVO();
+                allRoleRspVO.setRoleValue(role.getRoleValue());
+                allRoleRspVO.setDescription(role.getDescription());
+                return allRoleRspVO;
+            }).collect(Collectors.toList()));
+        }
+        return getAllRoleList;
+    }
+
 
 }
