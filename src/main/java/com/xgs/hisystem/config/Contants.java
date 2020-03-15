@@ -14,7 +14,7 @@ public final class Contants {
     }
 
     public class url {
-        public static final String BAIDU_URL = "http://api.map.baidu.com/location/ip?ak=AsOobWFmNIE65pv9BGGQROiHwDFDHkLT&coor=bd09ll&ip=";
+        public static final String ADDRESS_URL = "http://whois.pconline.com.cn/ip.jsp";
     }
 
     public class user {

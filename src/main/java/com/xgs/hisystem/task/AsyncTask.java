@@ -46,43 +46,32 @@ public class AsyncTask {
 
         UserEntity user = iUserRepository.findByEmail(email);
         String userId = user.getId();
-        LoginInforEntity checkUserInformation = iLoginInforRepository.findByLoginIpAndLoginBroswerAndUserId(ip, broswer, userId);
-
+        LoginInforEntity userInfo= iLoginInforRepository.findByLoginIpAndLoginBroswerAndUserId(ip, broswer, userId);
 
         try {
-            if (checkUserInformation == null) {
+            if (userInfo == null) {
 
-                LoginInforEntity userInformation = new LoginInforEntity();
-                userInformation.setLoginIp(ip);
-                userInformation.setLoginBroswer(broswer);
-                userInformation.setUser(user);
-                userInformation.setDescription(email);
+                userInfo= new LoginInforEntity();
+                userInfo.setLoginIp(ip);
+                userInfo.setLoginBroswer(broswer);
+                userInfo.setUser(user);
+                userInfo.setDescription(email);
 
                 RestTemplate restTemplate = new RestTemplate();
+                //获取地理位置
+                String url = Contants.url.ADDRESS_URL ;
+                String resultAddress = restTemplate.getForObject(url, String.class);
 
-                //调百度地图api，通过ip获取地理位置
-                String url = Contants.url.BAIDU_URL + ip;
+                logger.info("登录获取地址，url={},返回={}",url,resultAddress);
 
-                String result = null;
-                try {
-                    result = restTemplate.getForObject(url, String.class);
-                } catch (RestClientException e) {
-                    e.printStackTrace();
+                if (!StringUtils.isEmpty(resultAddress)) {
+                    resultAddress=resultAddress.replaceAll("[\r\n]" ,"");
+                    userInfo.setLoginAddress(resultAddress);
                 }
-
-                if (!StringUtils.isEmpty(result)) {
-
-                    GetAddressRspVO addressRspVO = JSON.parseObject(result, GetAddressRspVO.class);
-                    String loginAddress = addressRspVO.getContent().getAddress();
-
-                    userInformation.setLoginAddress(loginAddress);
-                }
-                iLoginInforRepository.saveAndFlush(userInformation);
             } else {
-                checkUserInformation.setCreateDatetime(DateUtil.getCurrentDateToString());
-
-                iLoginInforRepository.saveAndFlush(checkUserInformation);
+                userInfo.setCreateDatetime(DateUtil.getCurrentDateToString());
             }
+            iLoginInforRepository.saveAndFlush(userInfo);
         } catch (Exception e) {
             logger.error("userId={},保存登录记录失败！msg={}", userId, e.getStackTrace());
         }

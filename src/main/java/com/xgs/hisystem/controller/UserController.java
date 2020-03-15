@@ -6,7 +6,6 @@ import com.xgs.hisystem.pojo.vo.*;
 import com.xgs.hisystem.repository.ILoginInforRepository;
 import com.xgs.hisystem.service.IUserService;
 import com.xgs.hisystem.util.ParamsValidationUtils;
-import com.xgs.hisystem.util.QRcodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -62,21 +61,6 @@ public class UserController {
         BaseResponse baseResponse = iUserService.saveUserAndSendEmail(reqVO);
 
         return baseResponse.getMessage();
-    }
-
-
-    /**
-     * 生成二维码
-     *
-     * @param model
-     * @return
-     * @throws IOException
-     */
-    @RequestMapping(value = "/getCode")
-    public String QRcode(Model model) throws IOException {
-        String code = QRcodeUtil.crateQRCode("hello");
-        model.addAttribute("code", code);
-        return "tables";
     }
 
 

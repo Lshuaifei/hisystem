@@ -13,7 +13,7 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
   mail:
     default-encoding: UTF-8
     host: smtp.qq.com
@@ -28,7 +28,7 @@ spring:
     servlet:
       content-type: text/html
     suffix: .html
-  #ÈÈ²¿Êð
+  #ï¿½È²ï¿½ï¿½ï¿½
   devtools:
     livereload:
       enabled: true
