@@ -12,14 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 
-/**
- * 
- * @Description: 参数校验类
- * @PackageName com.hxgy.push.utils
- * @ClassName: ParamsValidationUtils 
- * @Author MDH
- * @Date 2019年1月16日 上午11:49:06
- */
 public class ParamsValidationUtils {
 	
 	private ParamsValidationUtils() {}

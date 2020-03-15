@@ -22,16 +22,6 @@
         <swagger-bootstrap-ui.version>1.7.8</swagger-bootstrap-ui.version>
     </properties>
 
-    <repositories>
-        <!-- GoEasy消杯推逝 -->
-        <repository>
-            <id>goeasy</id>
-            <name>goeasy</name>
-            <url>http://maven.goeasy.io/content/repositories/releases/</url>
-        </repository>
-
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -134,10 +124,6 @@
             <version>0.3.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
         <!-- swagger2 -->
         <dependency>
             <groupId>io.springfox</groupId>
