@@ -1,5 +1,6 @@
 package com.xgs.hisystem.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.xgs.hisystem.config.Contants;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
 import com.xgs.hisystem.pojo.entity.*;
@@ -77,38 +78,44 @@ public class UserServiceImpl implements IUserService {
         UserEntity user = iUserRepository.findByEmail(email);
 
         if (StringUtils.isEmpty(user)) {
+
             return BaseResponse.errormsg(Contants.user.USER_NOT_EXIST);
         }
 
+        //登录验证
         UsernamePasswordToken token = new UsernamePasswordToken(email, password);
-
         Subject subject = SecurityUtils.getSubject();
-        if (StringUtils.isEmpty(user)) {
-            return null;
-        }
         try {
             subject.login(token);
         } catch (AuthenticationException e) {
             return BaseResponse.errormsg(Contants.user.PASSWORD_ERROR);
         }
+        //验证邮箱激活状态
         if (user.getEmailStatus().equals(0)) {
-            return BaseResponse.errormsg(Contants.user.EMAIL_STATUS_0);
+            return BaseResponse.errormsg(Contants.user.EMAIL_STATUS_INACTIVE);
         }
-
+        //验证角色审核状态
         List<UserRoleEntity> userRoleList = iUserRoleRepository.findByUId(user.getId());
 
-        long statusCount_1 = userRoleList.stream()
+        //审核通过角色个数
+        long passStatusCount = userRoleList.stream()
                 .filter(userRole -> userRole.getRoleStatus().equals(1)).count();
-        if (statusCount_1 == 0) {
-            long statusCount_0 = userRoleList.stream()
+
+        if (passStatusCount == 0) {
+            //未审核角色个数
+            long unAuditStatusCount = userRoleList.stream()
                     .filter(userRole -> userRole.getRoleStatus().equals(0)).count();
-            if (statusCount_0 >= 1) {
-                return BaseResponse.errormsg(Contants.user.ROLE_STATUS_0);
-            } else {
-                return BaseResponse.errormsg(Contants.user.ROLE_STATUS_0_BAD);
+
+            if (unAuditStatusCount >= 1) {
+                return BaseResponse.errormsg(Contants.user.ROLE_STATUS_NOTAUDIT);
+            }
+            //审核未通过
+            else {
+                return BaseResponse.errormsg(Contants.user.ROLE_STATUS_NOTPASS);
             }
         }
 
+        //保存用户登录信息
         asyncTask.saveLoginInfor(reqVO.getIp(), reqVO.getBroswer(), email);
 
         return BaseResponse.success(Contants.user.SUCCESS);
@@ -126,49 +133,51 @@ public class UserServiceImpl implements IUserService {
     public BaseResponse<?> saveUserAndSendEmail(UserRegisterReqVO reqVO) {
 
         String email = reqVO.getEmail();
-        int roleValue = reqVO.getRoleValue();
+        String roleName=reqVO.getRoleName();
 
+        //验证角色
+        RoleEntity role = iRoleRespository.findByDescription(roleName);
+        if (role==null){
+            return BaseResponse.errormsg("您选择的角色不存在，请重试！");
+        }
+
+        //检查该账户是否已存在
         UserEntity checkUser = iUserRepository.findByEmail(email);
 
         if (checkUser != null) {
-
             return BaseResponse.errormsg(Contants.user.ACCOUNT_EXIST);
         }
 
-        UserEntity userEntity = new UserEntity();
+        UserEntity user = new UserEntity();
 
-        userEntity.setEmail(email);
-        userEntity.setUsername(reqVO.getUsername());
-        userEntity.setPlainPassword(reqVO.getPassword());
+        user.setEmail(email);
+        user.setUsername(reqVO.getUsername());
+        user.setPlainPassword(reqVO.getPassword());
         //生成盐和加盐密码
         String salt = MD5Util.md5Encrypt32Lower(reqVO.getEmail());
         String password = new SimpleHash("MD5", reqVO.getPassword(), salt, 1024).toHex(); // 使用SimpleHash类对原始密码进行加密
 
-        userEntity.setPassword(password);
-        userEntity.setSalt(salt);
+        user.setPassword(password);
+        user.setSalt(salt);
         //生成激活码
         String validateCode = MD5Util.md5Encrypt32Upper(reqVO.getEmail());
-        userEntity.setValidateCode(validateCode);
-        userEntity.setEmailStatus(0);
+        user.setValidateCode(validateCode);
+        user.setEmailStatus(0);
 
+        //组装发送邮件参数
         String title = "账户激活";
         Context context = new Context();
         context.setVariable("email", email);
-        context.setVariable("roleValue", roleValue);
+        context.setVariable("roleValue", role.getRoleValue());
         context.setVariable("validateCode", validateCode);
         String emailContent = templateEngine.process("email/email", context);
         try {
-            iUserRepository.saveAndFlush(userEntity);
-            //保存角色
-            UserEntity user = iUserRepository.findByEmail(email);
-            String uId = user.getId();
+            iUserRepository.saveAndFlush(user);
 
-            RoleEntity role = iRoleRespository.findByRoleValue(roleValue);
-            String roleId = role.getId();
-
+            //保存用户与角色信息
             UserRoleEntity userRole = new UserRoleEntity();
-            userRole.setuId(uId);
-            userRole.setRoleId(roleId);
+            userRole.setuId(user.getId());
+            userRole.setRoleId(role.getId());
             String desciption = user.getEmail() + "#" + role.getRole();
             userRole.setDesciption(desciption);
             userRole.setRoleStatus(0);
@@ -180,7 +189,7 @@ public class UserServiceImpl implements IUserService {
             return BaseResponse.success(Contants.user.SUCCESS);
         } catch (Exception e) {
             e.printStackTrace();
-            return BaseResponse.errormsg("保存用户信息或邮件发送异常!");
+            return BaseResponse.errormsg("保存用户信息或邮件发送异常,请联系管理员处理!");
         }
 
     }
@@ -200,7 +209,7 @@ public class UserServiceImpl implements IUserService {
     public BaseResponse<?> activation(String email, String validateCode) throws ParseException {
         UserEntity userEntity = iUserRepository.findByEmail(email);
         if (userEntity == null) {
-            return BaseResponse.errormsg("未查询到该邮箱！");
+            return BaseResponse.errormsg("未查询到该邮箱，请核对信息！");
         }
 
         String nowDate = DateUtil.getCurrentDateToString();
@@ -211,13 +220,13 @@ public class UserServiceImpl implements IUserService {
         long cha = end.getTime() - start.getTime();
         double result = cha * 1.0 / (1000 * 60 * 60);
         if (result > 48) {
-            return BaseResponse.errormsg("链接已过期！");
+            return BaseResponse.errormsg("激活邮件已过期，请重试！");
         }
         if (!validateCode.equals(userEntity.getValidateCode())) {
-            return BaseResponse.errormsg("激活码错误！");
+            return BaseResponse.errormsg("激活码错误，请联系管理员！");
         }
         if (userEntity.getEmailStatus() == 1) {
-            return BaseResponse.errormsg("账户已被激活！");
+            return BaseResponse.errormsg("账户已被激活，请勿重复操作！");
         }
         userEntity.setEmailStatus(1);
         try {
@@ -225,7 +234,7 @@ public class UserServiceImpl implements IUserService {
             return BaseResponse.success();
         } catch (Exception e) {
             e.printStackTrace();
-            return BaseResponse.errormsg("更新状态码异常！");
+            return BaseResponse.errormsg("激活账户异常，请稍后重试！");
         }
     }
 
@@ -350,7 +359,7 @@ public class UserServiceImpl implements IUserService {
 
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
         if (StringUtils.isEmpty(user)) {
-            return null;
+            return BaseResponse.errormsg("登录信息已过期，请重新登录！");
         }
         user.setUsername(reqVO.getUsername());
         user.setSex(reqVO.getSex());
@@ -439,7 +448,7 @@ public class UserServiceImpl implements IUserService {
 
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
         if (StringUtils.isEmpty(user)) {
-            return null;
+            return BaseResponse.errormsg("登录信息已过期，请重新登录！");
         }
         List<UserRoleEntity> userRoleList = iUserRoleRepository.findByUId(user.getId());
 

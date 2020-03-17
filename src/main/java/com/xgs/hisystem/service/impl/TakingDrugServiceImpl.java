@@ -1,6 +1,5 @@
 package com.xgs.hisystem.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.xgs.hisystem.config.Contants;
 import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.BaseResponse;
@@ -96,7 +95,7 @@ public class TakingDrugServiceImpl implements ITakingDrugService {
         }
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
         if (user==null) {
-            return BaseResponse.errormsg("登录信息异常！");
+            return BaseResponse.errormsg("登录信息已过期，请重新登录！");
         }
         tollTakeDrugInfo.setTakingDrugDateTime(DateUtil.getCurrentDateToString());
         tollTakeDrugInfo.setTakingDrugOperator(user.getId());

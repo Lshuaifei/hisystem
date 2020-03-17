@@ -23,11 +23,11 @@ public final class Contants {
 
         public static final String PASSWORD_ERROR = "密码错误";
 
-        public static final String EMAIL_STATUS_0 = "账户未激活";
+        public static final String EMAIL_STATUS_INACTIVE = "账户未激活";
 
-        public static final String ROLE_STATUS_0 = "角色暂未审核,请等待或联系管理员";
+        public static final String ROLE_STATUS_NOTAUDIT = "角色暂未审核,请等待或联系管理员";
 
-        public static final String ROLE_STATUS_0_BAD = "角色未审核通过，请联系管理员";
+        public static final String ROLE_STATUS_NOTPASS = "角色未审核通过，请联系管理员";
 
         public static final String SUCCESS = "SUCCESS";
 

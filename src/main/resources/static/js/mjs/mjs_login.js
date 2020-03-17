@@ -2,7 +2,7 @@
 /*初始化登录注册js*/
 Auth.init({});
 
-/* 注册选择角色*/
+/* 注册显示所有角色*/
 function choseRole() {
     $.ajax({
         url: "/user/getAllRole",
@@ -13,7 +13,7 @@ function choseRole() {
             $.each(data, function (i,val) {
                 optionHtml += '<li value="' + val.roleValue+ '" >' + val.description + '</li>';
             });
-            $('#chooseRole').html(optionHtml)
+            $('#allRole').html(optionHtml)
         }
     })
 
@@ -48,12 +48,14 @@ var broswer = getBroswer();
 /*当前ip*/
 var ip = returnCitySN["cip"];
 
+/*点击Enter登录*/
 $(document).keypress(function (e) {
     if ((e.keyCode || e.which) == 13) {
         $("#loginId").click(dologin());
     }
 });
 
+/*登录*/
 function dologin() {
 
     var user = {
@@ -85,25 +87,16 @@ function dologin() {
     setCookie();
 }
 
-var roleValue = "";
 
-/* 注册选择角色*/
-$(function () {
-    $("#chooseRole li").click(function () {
-
-        roleValue = $(this).val()
-    })
-});
-
-
+/*注册*/
 function register() {
 
-    var email = $("#RegisterEmail").val();
+    var email = $("#registerEmail").val();
     var register = {
         username: $("#username").val(),
         email: email,
-        password: $("#RegisterPassword").val(),
-        roleValue: roleValue
+        password: $("#registerPassword").val(),
+        roleName: $("#chooseRole").text()
     };
 
     $.ajax({
@@ -117,10 +110,9 @@ function register() {
 
             if (data == "SUCCESS") {
 
+                /*注册成功，页面跳转*/
                 window.location.href = "/fmail?email=" + email
-
             } else {
-
                 swal(data, "", "error")
             }
         }
@@ -146,6 +138,7 @@ function setCookie() {
     }
 }
 
+/*填充登录信息*/
 function getCookie() {
     var loginCode = $.cookie("login_code");
     var pwd = $.cookie("pwd");

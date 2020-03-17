@@ -34,16 +34,16 @@ public class UserEntity extends BaseEntity {
     private String politicalStatus;
 
     @Column(name = "plain_password")
-    private String plainPassword;
+    private String plainPassword;  //原始密码
 
     @Column(name = "password")
-    private String password;
+    private String password;  //加盐加密密码
 
     @Column(name = "salt")
-    private String salt;
+    private String salt;  //盐
 
     @Column(name = "email_status")
-    private Integer emailStatus;        //激活状态
+    private Integer emailStatus;        //激活状态 0未激活 1已激活
 
     @Column(name = "validate_code")
     private String validateCode;        //邮箱激活验证码

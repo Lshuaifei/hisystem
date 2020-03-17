@@ -26,8 +26,8 @@ public class UserRegisterReqVO {
     @NotBlank(message = "密码不能为空")
     private String password;
 
-    @Min(1)
-    private Integer roleValue;
+    @NotBlank(message = "请选择角色")
+    private String roleName;
 
     public String getEmail() {
         return email;
@@ -53,11 +53,11 @@ public class UserRegisterReqVO {
         this.password = password;
     }
 
-    public Integer getRoleValue() {
-        return roleValue;
+    public String getRoleName() {
+        return roleName;
     }
 
-    public void setRoleValue(Integer roleValue) {
-        this.roleValue = roleValue;
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 }

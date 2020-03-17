@@ -168,7 +168,13 @@ public class AdminServiceImpl implements IAdminService {
     @Override
     public BaseResponse<?> saveUserAndSendEmailTemp(UserRegisterReqVO reqVO) {
         String email = reqVO.getEmail();
-        int roleValue = reqVO.getRoleValue();
+        String roleName=reqVO.getRoleName();
+
+        //验证角色
+        RoleEntity role = iRoleRespository.findByDescription(roleName);
+        if (role==null){
+            return BaseResponse.errormsg("您选择的角色不存在，请重试！");
+        }
 
         UserEntity checkUser = iUserRepository.findByEmail(email);
 
@@ -199,12 +205,9 @@ public class AdminServiceImpl implements IAdminService {
             UserEntity user = iUserRepository.findByEmail(email);
             String uId = user.getId();
 
-            RoleEntity role = iRoleRespository.findByRoleValue(roleValue);
-            String roleId = role.getId();
-
             UserRoleEntity userRole = new UserRoleEntity();
             userRole.setuId(uId);
-            userRole.setRoleId(roleId);
+            userRole.setRoleId(role.getId());
             String desciption = user.getEmail() + "#" + role.getRole();
             userRole.setDesciption(desciption);
             userRole.setRoleStatus(0);
