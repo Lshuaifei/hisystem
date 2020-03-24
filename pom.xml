@@ -118,10 +118,11 @@
             <version>5.0.0</version>
         </dependency>
 
+        <!--拼音-->
         <dependency>
-            <groupId>io.goeasy</groupId>
-            <artifactId>goeasy-sdk</artifactId>
-            <version>0.3.5</version>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+            <version>2.5.0</version>
         </dependency>
 
         <!-- swagger2 -->

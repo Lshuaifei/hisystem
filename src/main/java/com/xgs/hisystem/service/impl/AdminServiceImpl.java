@@ -2,22 +2,19 @@ package com.xgs.hisystem.service.impl;
 
 import com.xgs.hisystem.config.Contants;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
-import com.xgs.hisystem.pojo.entity.AnnouncementEntity;
-import com.xgs.hisystem.pojo.entity.RoleEntity;
-import com.xgs.hisystem.pojo.entity.UserEntity;
-import com.xgs.hisystem.pojo.entity.UserRoleEntity;
+import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.*;
-import com.xgs.hisystem.repository.IAnnouncementRepository;
-import com.xgs.hisystem.repository.IRoleRespository;
-import com.xgs.hisystem.repository.IUserRepository;
-import com.xgs.hisystem.repository.IUserRoleRepository;
+import com.xgs.hisystem.repository.*;
 import com.xgs.hisystem.service.IAdminService;
+import com.xgs.hisystem.util.ChineseCharacterUtil;
 import com.xgs.hisystem.util.DateUtil;
 import com.xgs.hisystem.util.MD5Util;
+import net.sourceforge.pinyin4j.PinyinHelper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -54,6 +51,9 @@ public class AdminServiceImpl implements IAdminService {
 
     @Autowired
     private IAnnouncementRepository iAnnouncementRepository;
+
+    @Autowired
+    private IDepartmentRepository iDepartmentRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(AdminServiceImpl.class);
 
@@ -405,5 +405,44 @@ public class AdminServiceImpl implements IAdminService {
         } catch (Exception e) {
             return BaseResponse.success(Contants.user.FAIL);
         }
+    }
+
+    @Override
+    public BaseResponse<?> addDepartment(AddDepartmentReqVO reqVO) {
+
+        String name=reqVO.getDepartmentName();
+        String address=reqVO.getDepartmentAddress();
+
+        DepartmentEntity department=iDepartmentRepository.findByNameAndAddress(name,address );
+
+        if (department!=null){
+            return BaseResponse.errormsg("该科室已存在！");
+        }
+        department =new DepartmentEntity();
+        department.setName(name);
+        department.setNameCode(ChineseCharacterUtil.getUpperCase(name, false));
+        department.setAddress(address);
+
+        iDepartmentRepository.saveAndFlush(department);
+
+        return BaseResponse.success();
+    }
+
+    @Override
+    public List<GetDepartmentRspVO> getDepartment() {
+
+        List<GetDepartmentRspVO> rspVO=new ArrayList<>();
+
+        List<DepartmentEntity> departmentList=iDepartmentRepository.findAll();
+
+        if (departmentList!=null&&!departmentList.isEmpty()){
+
+            rspVO.addAll(departmentList.stream().map(department -> {
+                GetDepartmentRspVO rsp=new GetDepartmentRspVO();
+                BeanUtils.copyProperties(department,rsp );
+                return rsp;
+            }).collect(Collectors.toList()));
+        }
+        return rspVO;
     }
 }

@@ -28,7 +28,7 @@ spring:
     servlet:
       content-type: text/html
     suffix: .html
-  #�Ȳ���
+  #热部署
   devtools:
     livereload:
       enabled: true

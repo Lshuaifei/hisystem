@@ -26,8 +26,8 @@ public class OutpatientQueueEntity extends BaseEntity {
     @Column(name = "description", nullable = true, length = 50)
     private String description;
 
-    @Column(name = "OutpatientQueueStatus", nullable = true, length = 2)
-    private int OutpatientQueueStatus; //   1表示正常状态，-1表示稍后处理
+    @Column(name = "outpatientQueueStatus", nullable = true, length = 2)
+    private int outpatientQueueStatus; //   1表示正常状态，-1表示稍后处理，0过期
 
     public UserEntity getUser() {
         return user;
@@ -54,11 +54,11 @@ public class OutpatientQueueEntity extends BaseEntity {
     }
 
     public int getOutpatientQueueStatus() {
-        return OutpatientQueueStatus;
+        return outpatientQueueStatus;
     }
 
     public void setOutpatientQueueStatus(int outpatientQueueStatus) {
-        OutpatientQueueStatus = outpatientQueueStatus;
+        this.outpatientQueueStatus = outpatientQueueStatus;
     }
 
     public PatientEntity getPatient() {

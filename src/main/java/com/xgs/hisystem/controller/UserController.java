@@ -3,27 +3,22 @@ package com.xgs.hisystem.controller;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
 import com.xgs.hisystem.pojo.bo.ValidationResultBO;
 import com.xgs.hisystem.pojo.vo.*;
-import com.xgs.hisystem.repository.ILoginInforRepository;
 import com.xgs.hisystem.service.IUserService;
 import com.xgs.hisystem.util.ParamsValidationUtils;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
-@Controller
-@ResponseBody
+@RestController
 @RequestMapping(value = "/user")
+@Api(tags = "用户管理API")
 public class UserController {
 
     @Autowired
     private IUserService iUserService;
-
-    @Autowired
-    private ILoginInforRepository iLoginInforRepository;
 
 
     /**
@@ -70,7 +65,7 @@ public class UserController {
      * @param reqVO
      * @return
      */
-    @RequestMapping(value = "/getLoginfor")
+    @RequestMapping(value = "/getLoginfor",method = RequestMethod.GET)
     public PageRspBO<LoginInforRspVO> getLoginfor(BasePageReqVO reqVO) {
 
         return iUserService.getLoginfor(reqVO);
@@ -136,7 +131,7 @@ public class UserController {
      * @param
      * @return
      */
-    @RequestMapping(value = "/getAllRole")
+    @PostMapping(value = "/getAllRole")
     public List<GetAllRoleRspVO> getAllRole() {
         return iUserService.getAllRole();
     }

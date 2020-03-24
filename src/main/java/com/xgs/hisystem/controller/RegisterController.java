@@ -6,6 +6,7 @@ import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.register.*;
 import com.xgs.hisystem.service.IRegisterService;
 import com.xgs.hisystem.util.ParamsValidationUtils;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/register")
+@Api(tags = "挂号管理API")
 public class RegisterController {
 
     @Autowired
@@ -98,7 +100,7 @@ public class RegisterController {
      * @return
      */
 
-    @RequestMapping(value = "/getAllRegisterDoctor")
+    @GetMapping(value = "/getAllRegisterDoctor")
     public List<RegisterDoctorRspVO> getAllRegisterDoctor(RegisterTypeReqVO reqVO) {
 
         return iRegisterService.getAllRegisterDoctor(reqVO);
@@ -128,7 +130,7 @@ public class RegisterController {
      * @param reqVO
      * @return
      */
-    @RequestMapping(value = "/getRegisterRecord")
+    @GetMapping(value = "/getRegisterRecord")
     public PageRspBO<RegisterRecordRspVO> getRegisterRecord(RegisterRecordSearchReqVO reqVO) {
 
         return iRegisterService.getRegisterRecord(reqVO);

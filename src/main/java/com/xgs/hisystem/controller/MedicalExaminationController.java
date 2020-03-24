@@ -7,6 +7,7 @@ import com.xgs.hisystem.pojo.vo.medicalExamination.PatientInforRspVO;
 import com.xgs.hisystem.pojo.vo.register.GetCardIdInforReqVO;
 import com.xgs.hisystem.service.IMedicalExaminationService;
 import com.xgs.hisystem.util.ParamsValidationUtils;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = "medicalExamination")
+@Api(tags = "体检管理API")
 public class MedicalExaminationController {
 
     @Autowired

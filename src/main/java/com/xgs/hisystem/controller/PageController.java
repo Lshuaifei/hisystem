@@ -9,9 +9,11 @@ import com.xgs.hisystem.pojo.vo.outpatient.OutpatientQueueNormalRspVO;
 import com.xgs.hisystem.service.IAdminService;
 import com.xgs.hisystem.service.IOutpatientService;
 import com.xgs.hisystem.service.IUserService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -25,6 +27,7 @@ import java.util.List;
  * @description:
  */
 @Controller
+@Api(tags = "页面跳转")
 public class PageController {
 
     @Autowired
@@ -34,7 +37,7 @@ public class PageController {
     @Autowired
     private IOutpatientService iOutpatientService;
 
-    @RequestMapping(value = "/")
+    @GetMapping(value = "/")
     public String login() {
         return "login";
     }
@@ -45,7 +48,7 @@ public class PageController {
      * @param model
      * @return
      */
-    @RequestMapping(value = "/main")
+    @GetMapping(value = "/main")
     public String main(Model model) {
         return "main";
     }
@@ -57,7 +60,7 @@ public class PageController {
      * @param model
      * @return
      */
-    @RequestMapping(value = "/fmail")
+    @GetMapping(value = "/fmail")
     public String fmail(HttpServletRequest request, Model model) {
         String email = request.getParameter("email");
         model.addAttribute("email", email);
@@ -84,18 +87,18 @@ public class PageController {
     }
 
 
-    @RequestMapping(value = "/accountset")
+    @GetMapping(value = "/accountset")
     public String AccountSet() {
         return "accountset";
     }
 
 
-    @RequestMapping("/toApply")
+    @GetMapping("/toApply")
     public String toApply() {
         return "/admin/roleApply";
     }
 
-    @RequestMapping(value = "/register")
+    @GetMapping(value = "/register")
     public String getUserID() {
         return "register/register";
     }
@@ -106,7 +109,7 @@ public class PageController {
      * @param model
      * @return
      */
-    @RequestMapping(value = "/getRoleNotice")
+    @GetMapping(value = "/getRoleNotice")
     public String getRoleNotice(Model model) {
 
         List<applyRspVO> applyRspList = iAdminService.getRoleNotice();
@@ -116,13 +119,13 @@ public class PageController {
 
     }
 
-    @RequestMapping(value = "/toUserinfo")
+    @GetMapping(value = "/toUserinfo")
     public String toUserinfo() {
         return "userInfo";
     }
 
 
-    @RequestMapping(value = "/announcement")
+    @GetMapping(value = "/announcement")
     public String announcement() {
         return "admin/announcement";
     }
@@ -133,7 +136,7 @@ public class PageController {
      * @param model
      * @return
      */
-    @RequestMapping(value = "/annDisplay")
+    @GetMapping(value = "/annDisplay")
     public String annDisplay(Model model) {
 
         List<AnnouncementVO> annList = iUserService.annDisplay();
@@ -148,7 +151,7 @@ public class PageController {
      * @param model
      * @return
      */
-    @RequestMapping(value = "/getAccountRole")
+    @GetMapping(value = "/getAccountRole")
     public String getAccountRole(Model model) {
 
         List<String> accountRoleList = iUserService.getAccountRole();
@@ -157,12 +160,12 @@ public class PageController {
         return "accountset::accountRole";
     }
 
-    @RequestMapping(value = "/registerRecord")
+    @GetMapping(value = "/registerRecord")
     public String registerRecord() {
         return "register/registerRecord";
     }
 
-    @RequestMapping(value = "/outpatient")
+    @GetMapping(value = "/outpatient")
     public String outpatient() {
         return "outpatient/outpatient";
     }
@@ -174,7 +177,7 @@ public class PageController {
      * @param model
      * @return
      */
-    @RequestMapping(value = "/getAllPatientNormal")
+    @GetMapping(value = "/getAllPatientNormal")
     public String getAllPatientNormal(Model model) {
 
         List<OutpatientQueueNormalRspVO> outpatientQueueNormalList = iOutpatientService.getAllPatientNormal();
@@ -189,7 +192,7 @@ public class PageController {
      * @param model
      * @return
      */
-    @RequestMapping(value = "/getAllPatientLater")
+    @GetMapping(value = "/getAllPatientLater")
     public String getAllPatientLater(Model model) {
 
         List<OutpatientQueueLaterRspVO> outpatientQueueLaterList = iOutpatientService.getAllPatientLater();
@@ -198,39 +201,39 @@ public class PageController {
         return "outpatient/outpatient::patientLater";
     }
 
-    @RequestMapping(value = "/storageManage")
+    @GetMapping(value = "/storageManage")
     public String storageManage() {
 
         return "drugStore/storageManage";
     }
 
-    @RequestMapping(value = "/toll")
+    @GetMapping(value = "/toll")
     public String toll() {
 
         return "toll/toll";
     }
 
-    @RequestMapping(value = "/takingdrug")
+    @GetMapping(value = "/takingdrug")
     public String takingdrug() {
 
         return "takingdrug/takingdrug";
     }
 
 
-    @RequestMapping(value = "/medicalExamination")
+    @GetMapping(value = "/medicalExamination")
     public String medicalExamination() {
 
         return "medicalExamination/medicalExamination";
     }
 
-    @RequestMapping(value = "/drugManage")
+    @GetMapping(value = "/drugManage")
     public String drugManage() {
 
         return "drugStore/drugManage";
     }
 
 
-    @RequestMapping(value = "/medicalRecord")
+    @GetMapping(value = "/medicalRecord")
     public String medicalRecord() {
 
         return "outpatient/medicalRecord";

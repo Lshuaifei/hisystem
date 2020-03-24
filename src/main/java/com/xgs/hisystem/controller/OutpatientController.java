@@ -4,6 +4,7 @@ import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.outpatient.*;
 import com.xgs.hisystem.pojo.vo.register.GetCardIdInforReqVO;
 import com.xgs.hisystem.service.IOutpatientService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/outpatient")
+@Api(tags = "门诊管理API")
 public class OutpatientController {
 
     @Autowired

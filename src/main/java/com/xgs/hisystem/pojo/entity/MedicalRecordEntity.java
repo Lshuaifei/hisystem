@@ -5,7 +5,7 @@ import javax.persistence.*;
 /**
  * @author xgs
  * @date 2019-5-8
- * @description:
+ * @description: 就诊记录
  */
 @Entity
 @Table(name = "his_medical_record")

@@ -240,15 +240,14 @@ public class RegisterServiceImpl implements IRegisterService {
     @Override
     public List<RegisterDoctorRspVO> getAllRegisterDoctor(RegisterTypeReqVO reqVO) {
 
-        if (StringUtils.isEmpty(reqVO)) {
-            return null;
-        }
         List<RegisterDoctorRspVO> registerDoctorRspList = new ArrayList<>();
-        List<UserEntity> userList = iUserRepository.findByDepartmentAndDepartmentType(reqVO.getDepartment(),
-                reqVO.getRegisterType());
+
+        List<UserEntity> userList = iUserRepository.findByDepartmentAndDepartmentType(reqVO.getDepartment(), reqVO.getRegisterType());
+
         if (userList != null && userList.size() > 0) {
             RegisterDoctorRspVO registerDoctorRspVO = new RegisterDoctorRspVO();
             userList.forEach(user -> {
+                //更新已挂号数
                 if (!DateUtil.getCurrentDateSimpleToString().equals(user.getUpdateTime())) {
                     user.setNowNum(0);
                     user.setUpdateTime(DateUtil.getCurrentDateSimpleToString());
@@ -265,8 +264,6 @@ public class RegisterServiceImpl implements IRegisterService {
                 registerDoctorRspList.add(registerDoctorRspVO);
             });
 
-        } else {
-            return null;
         }
 
         return registerDoctorRspList;
@@ -281,74 +278,60 @@ public class RegisterServiceImpl implements IRegisterService {
     @Override
     public BaseResponse<?> addRegisterInfor(RegisterInforReqVO reqVO) {
 
-        Optional<UserEntity> userDoctor = iUserRepository.findById(reqVO.getDoctorId());
-
-        if (StringUtils.isEmpty(userDoctor)) {
-            return BaseResponse.errormsg("账户登录失效，请重新登录再试！");
-        }
-        int allowNum = userDoctor.get().getAllowNum();
-        int nowNum = userDoctor.get().getNowNum();
-        if (nowNum == allowNum) {
-            return BaseResponse.errormsg("该医生已挂号人数已达上限，请刷新页面重新选择！");
-        }
-        userDoctor.get().setNowNum(nowNum + 1);
-
         try {
+
+            UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
+            if (StringUtils.isEmpty(user)) {
+                return BaseResponse.errormsg("登录信息已过期！");
+            }
+            Optional<UserEntity> userDoctor = iUserRepository.findById(reqVO.getDoctorId());
+
+            if (!userDoctor.isPresent()) {
+                return BaseResponse.errormsg("未查询到相关医生信息，请稍后重试！");
+            }
+            int allowNum = userDoctor.get().getAllowNum();
+            int nowNum = userDoctor.get().getNowNum();
+            if (nowNum == allowNum) {
+                return BaseResponse.errormsg("该医生已挂号人数已达上限，请刷新页面重新选择！");
+            }
+            //更新已挂号数量
+            userDoctor.get().setNowNum(nowNum + 1);
             iUserRepository.saveAndFlush(userDoctor.get());
-        } catch (Exception e) {
-            return BaseResponse.errormsg("挂号异常，请刷新页面重试！");
-        }
 
-        String cardId = reqVO.getCardId();
+            PatientEntity patient = iPatientRepository.findByCardId(reqVO.getCardId());
 
-        String doctorName = userDoctor.get().getUsername();
+            //保存挂号记录
+            RegisterEntity register = new RegisterEntity();
+            register.setDepartment(reqVO.getDepartment());
+            register.setDoctor(reqVO.getDoctor());
+            register.setDoctorId(user.getId());
+            register.setOperatorName(user.getUsername());
+            register.setOperatorEmail(user.getEmail());
+            register.setPatient(patient);
+            register.setPayType(reqVO.getPayType());
+            register.setRegisterType(reqVO.getRegisterType());
+            register.setTreatmentPrice(reqVO.getTreatmentPrice());
+            register.setRegisterStatus(1);
 
-        PatientEntity patient = iPatientRepository.findByCardId(cardId);
+            String registeredNum = "RE" + System.currentTimeMillis() + (int) (Math.random() * 900 + 100);
+            register.setRegisteredNum(registeredNum);
 
-        UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
-        if (StringUtils.isEmpty(user)) {
-            return null;
-        }
-        RegisterEntity register = new RegisterEntity();
-
-        register.setDepartment(reqVO.getDepartment());
-        register.setDoctor(reqVO.getDoctor());
-        register.setDoctorId(user.getId());
-        register.setOperatorName(user.getUsername());
-        register.setOperatorEmail(user.getEmail());
-        register.setPatient(patient);
-        register.setPayType(reqVO.getPayType());
-        register.setRegisterType(reqVO.getRegisterType());
-        register.setTreatmentPrice(reqVO.getTreatmentPrice());
-        register.setRegisterStatus(1);
-
-        String registeredNum = "RE" + System.currentTimeMillis() + (int) (Math.random() * 900 + 100);
-        register.setRegisteredNum(registeredNum);
-
-        try {
             iRegisterRepository.saveAndFlush(register);
-        } catch (Exception e) {
-            return BaseResponse.errormsg("挂号异常，请刷新页面重试！");
-        }
-        OutpatientQueueEntity outpatientQueue = new OutpatientQueueEntity();
 
-        RegisterEntity register_outPatient = iRegisterRepository.findByRegisteredNum(registeredNum);
+            //将患者加入门诊队列
+            OutpatientQueueEntity outpatientQueue = new OutpatientQueueEntity();
 
-        outpatientQueue.setPatient(patient);
+            outpatientQueue.setPatient(patient);
+            outpatientQueue.setRegister(register);
+            outpatientQueue.setUser(userDoctor.get());
+            outpatientQueue.setDescription(patient.getName() + '#' + userDoctor.get().getUsername());
+            outpatientQueue.setOutpatientQueueStatus(1);
 
-        outpatientQueue.setRegister(register_outPatient);
-
-        outpatientQueue.setUser(userDoctor.get());
-
-        String patientName = patient.getName();
-        outpatientQueue.setDescription(patientName + '#' + doctorName);
-
-        outpatientQueue.setOutpatientQueueStatus(1);
-
-        try {
             iOutpatientQueueRepository.saveAndFlush(outpatientQueue);
+
             return BaseResponse.success(Contants.user.SUCCESS);
         } catch (Exception e) {
+            logger.error("保存挂号记录异常！", e);
             return BaseResponse.errormsg("挂号异常，请刷新页面重试！");
         }
     }

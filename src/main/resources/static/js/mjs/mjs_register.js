@@ -139,32 +139,11 @@ function addPatientInfor() {
     })
 }
 
-var department = '';
-var registerType = '';
+var department = 0;
+var registerType = 0;
 
-$('.chosen').chosen({
-    no_results_text: "没有找到结果！",//搜索无结果时显示的提示
-    search_contains: true,   //关键字模糊搜索。设置为true，只要选项包含搜索词就会显示；设置为false，则要求从选项开头开始匹配
-    allow_single_deselect: true, //单选下拉框是否允许取消选择。如果允许，选中选项会有一个x号可以删除选项
-    disable_search: false, //禁用搜索。设置为true，则无法搜索选项。
-    disable_search_threshold: 0, //当选项少等于于指定个数时禁用搜索。
-    inherit_select_classes: true, //是否继承原下拉框的样式类，此处设为继承
-    /*placeholder_text_single: '',*/ //单选选择框的默认提示信息，当选项为空时会显示。如果原下拉框设置了data-placeholder，会覆盖这里的值。
-
-    /*max_shown_results: 7,*/ //下拉框最大显示选项数量
-    display_disabled_options: false,
-    single_backstroke_delete: false, //false表示按两次删除键才能删除选项，true表示按一次删除键即可删除
-    case_sensitive_search: false, //搜索大小写敏感。此处设为不敏感
-    group_search: false, //选项组是否可搜。此处搜索不可搜
-    include_group_label_in_selected: true //选中选项是否显示选项分组。false不显示，true显示。默认false。
-}).change(function () {
-
-    department = $(".chosen option:selected").val();
-});
-$('.select_1').chosen({disable_search: true, allow_single_deselect: true,}).change(function () {
-
-    registerType = $(".select_1 option:selected").val();
-});
+var departmentName = "";
+var registerTypeName = "";
 
 $(function () {
 
@@ -175,6 +154,47 @@ $(function () {
     //2.初始化Button的点击事件
     var oButtonInit = new ButtonInit();
     oButtonInit.Init();
+
+    $.ajax({
+        url: "/admin/getDepartment",
+        type: "post",
+        dataType: "json",
+        success: function (data) {
+            var optionHtml = '<option value=""></option>';
+            $.each(data, function (i,value) {
+                optionHtml += '<option value="' + value.code + '" >' + value.name + '</option>';
+            });
+
+            $('#departmentSelect').html(optionHtml).trigger("chosen:updated").chosen({
+                no_results_text: "没有找到结果！",
+                search_contains: true,
+                allow_single_deselect: true,
+                disable_search: false,
+                disable_search_threshold: 0, //当选项少等于于指定个数时禁用搜索。
+                inherit_select_classes: true, //是否继承原下拉框的样式类，此处设为继承
+                /*placeholder_text_single: '',*/ //单选选择框的默认提示信息，当选项为空时会显示。如果原下拉框设置了data-placeholder，会覆盖这里的值。
+
+                max_shown_results: 5, //下拉框最大显示选项数量
+                display_disabled_options: false,
+                single_backstroke_delete: false, //false表示按两次删除键才能删除选项，true表示按一次删除键即可删除
+                case_sensitive_search: false, //搜索大小写敏感。此处设为不敏感
+                group_search: false, //选项组是否可搜。此处搜索不可搜
+                include_group_label_in_selected: true //选中选项是否显示选项分组。false不显示，true显示。默认false。
+            }).change(function () {
+
+                //选择科室
+                department = $("#departmentSelect option:selected").val();
+                departmentName=$("#departmentSelect option:selected").text();
+            });
+        }
+    })
+});
+
+//选择挂号类型
+$('#departmentTypeSelect').chosen({disable_search: true, allow_single_deselect: true,}).change(function () {
+
+    registerType = $("#departmentTypeSelect option:selected").val();
+    registerTypeName= $("#departmentTypeSelect option:selected").text();
 });
 
 
@@ -183,7 +203,7 @@ function getRegisterDoctor() {
     var name = $("#name").val();
     //患者姓名作为限制
     if (name == null || name == '') {
-        swal("请先读取就诊卡！", "", "error")
+        swal("请先读取就诊卡！", "", "error");
         return false;
     }
 
@@ -401,8 +421,8 @@ function addRegisterInfor() {
     var RegisterInforReqVO = {
         cardId: cardId,
         doctorId: doctorId,
-        department: department,
-        registerType: registerType,
+        department: departmentName,
+        registerType: registerTypeName,
         doctor: doctorName,
         treatmentPrice: treatmentPrice,
         payType: payType
@@ -420,8 +440,8 @@ function addRegisterInfor() {
     swal
     ({
             title: "请确认挂号信息",
-            text: "卡号:<span style='color: #2C9FAF'>" + cardId + "</span>&emsp;科室:<span style='color: #2C9FAF'>" + department + "</span>" +
-                "<br>类型:<span style='color: #2C9FAF'>" + registerType + "</span>&emsp;医生:<span style='color: #2C9FAF'>" + doctorName + "</span>" +
+            text: "卡号:<span style='color: #2C9FAF'>" + cardId + "</span>&emsp;科室:<span style='color: #2C9FAF'>" + departmentName + "</span>" +
+                "<br>类型:<span style='color: #2C9FAF'>" + registerTypeName + "</span>&emsp;医生:<span style='color: #2C9FAF'>" + doctorName + "</span>" +
                 "<br>地址:<span style='color: #2C9FAF'>" + workAddress + "</span>",
             type: "info",
             html: true,

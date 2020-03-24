@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50528
 File Encoding         : 65001
 
-Date: 2020-03-10 15:58:36
+Date: 2020-03-24 16:19:09
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS `his_announcement`;
 CREATE TABLE `his_announcement` (
   `id` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
-  `contents` varchar(500) NOT NULL,
+  `contents` text NOT NULL,
   `create_datetime` varchar(64) NOT NULL,
   `ann_status` int(10) NOT NULL DEFAULT '0',
   `ann_date` varchar(64) NOT NULL,
@@ -35,6 +35,34 @@ CREATE TABLE `his_announcement` (
 INSERT INTO `his_announcement` VALUES ('402880e86a1fb6e1016a1fc02da00000', '医院', '  医院（Hospital）一词是来自于拉丁文原意为“客人”，因为一开始设立\n时，是供人避难，还备有休息间，使来者舒适，有招待意图。后来，才\n逐渐成为满足人类医疗需求，提供医疗服务的专业机构，收容和治疗病\n人的服务场所。', '2019-04-15 14:47:29', '1', '2019-05-16');
 INSERT INTO `his_announcement` VALUES ('402880e86a24ccfc016a24d2934c0003', 'hello', '  医院（Hospital）一词是来自于拉丁文原意为“客人”，因为一开始设立\n时，是供人避难，还备有休息间，使来者舒适，有招待意图。后来，才\n逐渐成为满足人类医疗需求，提供医疗服务的专业机构，收容和治疗病\n人的服务场所。', '2019-04-16 14:25:41', '1', '2019-05-16');
 INSERT INTO `his_announcement` VALUES ('402880e86a251778016a2530a2ca0004', '12', '1、当你在\n2、地方\n3、各个地方晃过上帝很过分\n4、大V收拾\n5、电焊工和规范化的\n6、给第三方还不停的\n人的服务场所。', '2019-04-16 16:08:25', '1', '2019-05-16');
+
+-- ----------------------------
+-- Table structure for his_department
+-- ----------------------------
+DROP TABLE IF EXISTS `his_department`;
+CREATE TABLE `his_department` (
+  `id` varchar(255) NOT NULL,
+  `create_datetime` varchar(20) NOT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `code` tinyint(10) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `name_code` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`code`,`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of his_department
+-- ----------------------------
+INSERT INTO `his_department` VALUES ('4028b881710a252501710a28ffd50000', '2020-03-24 09:29:51', '门诊大楼二楼D区', '1', '呼吸内科', 'HXNK');
+INSERT INTO `his_department` VALUES ('4028b881710b2cba01710b308fac0000', '2020-03-24 14:17:43', '门诊大楼二楼D区', '2', '消化内科', 'XHNK');
+INSERT INTO `his_department` VALUES ('4028b881710b2cba01710b30d0900001', '2020-03-24 14:18:00', '门诊大楼二楼D区', '3', '泌尿内科', 'MNNK');
+INSERT INTO `his_department` VALUES ('4028b881710b2cba01710b318bbb0002', '2020-03-24 14:18:48', '门诊大楼二楼D区', '4', '心内科', 'XNK');
+INSERT INTO `his_department` VALUES ('4028b881710b2cba01710b3218c00003', '2020-03-24 14:19:24', '门诊大楼二楼D区', '5', '神经内科', 'SJNK');
+INSERT INTO `his_department` VALUES ('4028b881710b2cba01710b3250a40004', '2020-03-24 14:19:39', '门诊大楼二楼A区', '6', '小儿科', 'XEK');
+INSERT INTO `his_department` VALUES ('4028b881710b2cba01710b3271370005', '2020-03-24 14:19:47', '门诊大楼二楼A区', '7', '感染科', 'GRK');
+INSERT INTO `his_department` VALUES ('4028b881710b2cba01710b32aae60006', '2020-03-24 14:20:02', '门诊大楼二楼B区', '8', '肝胆外科', 'GDWK');
+INSERT INTO `his_department` VALUES ('4028b881710b2cba01710b32dad20007', '2020-03-24 14:20:14', '门诊大楼二楼B区', '9', '泌尿外科', 'MNWK');
+INSERT INTO `his_department` VALUES ('4028b881710b2cba01710b332fbf0008', '2020-03-24 14:20:36', '门诊大楼二楼C区', '10', '急诊科', 'JZK');
 
 -- ----------------------------
 -- Table structure for his_drug
@@ -184,6 +212,7 @@ INSERT INTO `his_medical_examination` VALUES ('402881ea6aca4965016aca61ee6b0009'
 INSERT INTO `his_medical_examination` VALUES ('4028b8816b2829c9016b28335e9f0008', '2019-06-05 23:13:03', '11', '11', '11', '11', '11', '1559747520517', '402881ea6aca4965016aca6a54d0000a');
 INSERT INTO `his_medical_examination` VALUES ('4028b8816b3a5928016b3a776d190003', '2019-06-09 12:20:33', '120', '35', '70', '60', '10', '1560054030690', '8ad8a0ec6a0a7e7b016a0a7ed6e50000');
 INSERT INTO `his_medical_examination` VALUES ('4028b88170c26daa0170c26f9c7f0003', '2020-03-10 11:14:19', null, null, null, null, '0', '1583810030640', null);
+INSERT INTO `his_medical_examination` VALUES ('4028b881710b6fb501710b73123d0004', '2020-03-24 15:30:22', null, null, null, null, '0', '1585034982927', null);
 
 -- ----------------------------
 -- Table structure for his_medical_record
@@ -196,7 +225,7 @@ CREATE TABLE `his_medical_record` (
   `diagnosis_result` varchar(255) DEFAULT NULL,
   `drug_cost` double(50,0) DEFAULT NULL,
   `medical_order` varchar(255) DEFAULT NULL,
-  `prescription` varchar(1000) DEFAULT NULL,
+  `prescription` text,
   `prescription_num` varchar(255) NOT NULL,
   `register_id` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
@@ -216,6 +245,7 @@ INSERT INTO `his_medical_record` VALUES ('4028b8816b2829c9016b28335e870007', '20
 INSERT INTO `his_medical_record` VALUES ('4028b8816b3a5928016b3a776d010002', '2019-06-09 12:20:33', '', null, '0', null, null, '1560054030690', '4028b8816b3a5928016b3a66e5ab0000');
 INSERT INTO `his_medical_record` VALUES ('4028b881703d608b01703d676e420002', '2020-02-13 15:15:53', 'haha', '病毒性感冒', '405', 'fff', '<ol>\n\n                                        <li>罗痛定片<span style=\"margin-left:100px\">30mg*20/瓶</span></li><div style=\"margin: 10px 0 10px 5px;\">用法：<sapn>30mg</sapn><sapn style=\"margin-left:40px\">口服</sapn><sapn style=\"margin-left:60px\">每日两次</sapn></div><li>拉米夫定<span style=\"margin-left:100px\">100mg*14/盒</span></li><div style=\"margin: 10px 0 10px 5px;\">用法：<sapn>100mg</sapn><sapn style=\"margin-left:40px\">口服</sapn><sapn style=\"margin-left:60px\">每日三次</sapn></div><li>拉米夫定<span style=\"margin-left:100px\">100mg*14/盒</span></li><div style=\"margin: 10px 0 10px 5px;\">用法：<sapn>100mg</sapn><sapn style=\"margin-left:40px\">口服</sapn><sapn style=\"margin-left:60px\">每日三次</sapn></div></ol>', '1581578073591', '4028b881703d608b01703d64f45b0000');
 INSERT INTO `his_medical_record` VALUES ('4028b88170c26daa0170c26f9c690002', '2020-03-10 11:14:19', '咳嗽', '病毒性感冒', '16', '多喝水', '<ol>\n\n                                        <li>布洛芬缓释片<span style=\"margin-left:100px\">0.3g*20/盒</span></li><div style=\"margin: 10px 0 10px 5px;\">用法：<sapn>0.3g</sapn><sapn style=\"margin-left:40px\">口服</sapn><sapn style=\"margin-left:60px\">每日三次</sapn></div><li>复方氨酚烷胺<span style=\"margin-left:100px\">0.3g*10/板</span></li><div style=\"margin: 10px 0 10px 5px;\">用法：<sapn>0.3g</sapn><sapn style=\"margin-left:40px\">口服</sapn><sapn style=\"margin-left:60px\">每日三次</sapn></div></ol>', '1583810030640', '4028b88170c26daa0170c26ede340000');
+INSERT INTO `his_medical_record` VALUES ('4028b881710b6fb501710b7312200003', '2020-03-24 15:30:22', 'test', 'rerea', '10', 'ter', '<ol>\n\n                                        <li>罗痛定片<span style=\"margin-left:100px\">30mg*20/瓶</span></li><div style=\"margin: 10px 0 10px 5px;\">用法：<sapn>10mg</sapn><sapn style=\"margin-left:40px\">口服</sapn><sapn style=\"margin-left:60px\">每日两次</sapn></div><li>罗痛定片<span style=\"margin-left:100px\">30mg*20/瓶</span></li><div style=\"margin: 10px 0 10px 5px;\">用法：<sapn>10mg</sapn><sapn style=\"margin-left:40px\">口服</sapn><sapn style=\"margin-left:60px\">每日两次</sapn></div></ol>', '1585034982927', '4028b881710b6fb501710b70c5130000');
 INSERT INTO `his_medical_record` VALUES ('ff8080816abf9422016ac020b246000e', '2019-05-16 18:12:09', 'ddd', '病毒性感冒', '5', 'ddd', '<ol><li>贝洛酯片<span style=\"margin-left:100px\">0.5g*50/瓶</span></li><div style=\"margin: 10px 0 10px 5px;\">用法：<sapn>0.5</sapn><sapn style=\"margin-left:40px\">口服</sapn><sapn style=\"margin-left:60px\">每日一次</sapn></div></ol>', '1558001525790', 'ff8080816abf9422016ac02071f0000c');
 
 -- ----------------------------
@@ -242,6 +272,8 @@ CREATE TABLE `his_outpatient_queue` (
 -- ----------------------------
 -- Records of his_outpatient_queue
 -- ----------------------------
+INSERT INTO `his_outpatient_queue` VALUES ('4028b881710b6fb501710b70c58a0001', '2020-03-24 15:27:52', '0', '张花花#彭医生', '4028b881710b6fb501710b70c5130000', '8ad8a0ec6a0a7e7b016a0a7ed6e50000', '402880ea6a77a772016a77a7f63c0000');
+INSERT INTO `his_outpatient_queue` VALUES ('4028b881710b968e01710b984fa30002', '2020-03-24 16:11:03', '1', '慕容清#李医生', '4028b881710b968e01710b984f970001', '402880ea6a7df7d6016a7e5806bf0006', '402880ea6a7df7d6016a7e35dec80000');
 
 -- ----------------------------
 -- Table structure for his_patient
@@ -333,6 +365,8 @@ INSERT INTO `his_register` VALUES ('4028b881703d608b01703d64f45b0000', '2020-02-
 INSERT INTO `his_register` VALUES ('4028b88170512873017051424e1d0000', '2020-02-17 11:47:44', '呼吸内科', '彭医生', '现金', '普通门诊', '2.0', '402880ea6a77a772016a77a7f63c0000', '1208585122@qq.com', '薛管理', '-1', '0', 'RE1581911264787607', '8ad8a0ec6a06851e016a069172fa0002', '0');
 INSERT INTO `his_register` VALUES ('4028b88170b819f80170b832161d0000', '2020-03-08 11:30:55', '呼吸内科', '彭医生', '现金', '普通门诊', '2.0', '402880ea6a77a772016a77a7f63c0000', '1208585122@qq.com', '薛管理', '-1', '0', 'RE1583638255130223', '8ad8a0ec6a06851e016a069172fa0002', '0');
 INSERT INTO `his_register` VALUES ('4028b88170c26daa0170c26ede340000', '2020-03-10 11:13:30', '呼吸内科', '彭医生', '现金', '普通门诊', '2.0', '402880ea6a7df7d6016a7e35dec80000', '1208585122@qq.com', '薛管理', '1', '1', 'RE1583810010670876', '8ad8a0ec6a06851e016a069172fa0002', '1');
+INSERT INTO `his_register` VALUES ('4028b881710b6fb501710b70c5130000', '2020-03-24 15:27:52', '急诊科', '彭医生', '现金', '急诊', '5.0', '402880ea6a77a772016a77a7f63c0000', '1208585122@qq.com', '薛管理', '1', '1', 'RE1585034872071815', '8ad8a0ec6a06851e016a069172fa0002', '0');
+INSERT INTO `his_register` VALUES ('4028b881710b968e01710b984f970001', '2020-03-24 16:11:03', '呼吸内科', '李医生', '支付宝', '普通门诊', '3.0', '402880ea6a7df7d6016a7e35dec80000', 'register@shospital.com', '王挂号', '1', '0', 'RE1585037463440596', '402880e86a24ccfc016a24cd6b240000', '0');
 INSERT INTO `his_register` VALUES ('ff8080816abf9422016abf9880500000', '2019-05-16 15:43:23', '呼吸内科', 'm_doctor', '现金', '普通门诊', '2.0', '402880ea6a77a772016a77a7f63c0000', '1208585122@qq.com', 'sen', '1', '1', 'RE1557992603716985', '', '0');
 INSERT INTO `his_register` VALUES ('ff8080816abf9422016ac02071f0000c', '2019-05-16 18:11:52', '呼吸内科', 'm_doctor', '支付宝', '普通门诊', '2.0', '402880ea6a77a772016a77a7f63c0000', 'register@shospital.com', 'register', '1', '1', 'RE1558001512931274', '', '0');
 
@@ -400,8 +434,8 @@ CREATE TABLE `his_user` (
   `phone` varchar(64) DEFAULT NULL,
   `birthday` varchar(64) DEFAULT NULL,
   `sex` varchar(20) DEFAULT NULL,
-  `allow_num` int(10) DEFAULT NULL,
-  `department` varchar(30) DEFAULT NULL,
+  `allow_num` int(10) NOT NULL DEFAULT '0',
+  `department` tinyint(10) DEFAULT NULL,
   `grade` varchar(10) DEFAULT NULL,
   `treatment_price` varchar(10) DEFAULT NULL,
   `work_address` varchar(30) DEFAULT NULL,
@@ -409,8 +443,8 @@ CREATE TABLE `his_user` (
   `work_status` varchar(10) DEFAULT NULL,
   `email_status` int(11) DEFAULT NULL,
   `validate_code` varchar(255) DEFAULT NULL,
-  `department_type` varchar(10) DEFAULT NULL,
-  `now_num` int(11) DEFAULT NULL,
+  `department_type` tinyint(10) DEFAULT NULL,
+  `now_num` int(10) NOT NULL DEFAULT '0',
   `update_time` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -418,18 +452,19 @@ CREATE TABLE `his_user` (
 -- ----------------------------
 -- Records of his_user
 -- ----------------------------
-INSERT INTO `his_user` VALUES ('402880e86a24ccfc016a24cd6b240000', 'register@shospital.com', '王挂号', '123', 'b03ecbe66599f4451225edf293ffc8ae', '50db0e033e10810bc1a3c8fc6d2de7f9', '2019-04-16 14:20:03', null, null, null, null, null, null, null, null, null, null, null, null, '1', null, null, null, null);
-INSERT INTO `his_user` VALUES ('402880e86a24ccfc016a24e8e12a000b', 'register_2@shospital.com', 'register_2', '123', '7e93221630869a886899755ad3ae9fff', '611b5b68776ee4a8cb297a716ccc0b55', '2019-04-16 14:49:00', null, null, null, null, null, null, null, null, null, null, null, null, '1', null, null, null, null);
-INSERT INTO `his_user` VALUES ('402880ea6a7df7d6016a7e5806bf0006', 'm_doctor_2@shospital.com', '李医生', '123', '97c7a1fc1f3e8c2e0c40d7b13b13a994', 'a45abce549ccbe83c5b229232e12ad5b', '2019-05-03 23:37:39', null, null, null, null, null, '10', '消化内科', null, '3.0', '三楼311', null, null, '1', 'A45ABCE549CCBE83C5B229232E12AD5B', '普通门诊', '0', '2020-02-16');
-INSERT INTO `his_user` VALUES ('402880ea6a7df7d6016a7e5ce3810008', 'm_doctor_3@shospital.com', '张医生', '123', '6669a63f1921092662fa61c7346ef578', '1f9c8b259edc93053702bc1af5ebc9a0', '2019-05-03 23:42:57', null, null, null, null, null, '3', '急诊科', null, '5.0', '一楼101', null, null, '1', '1F9C8B259EDC93053702BC1AF5EBC9A0', '急诊', '0', '2019-06-04');
-INSERT INTO `his_user` VALUES ('402881ea6abf196a016abf2fbb5e0003', 'm_druggist_1@shospital.com', '黄药剂', '123', 'ebc444f9cf5d0362d2b574406bf6a37d', 'bcaf9c29f362cda8b2b9d8031b799078', '2019-05-16 13:48:55', null, null, null, null, null, null, null, null, null, null, null, null, '1', 'BCAF9C29F362CDA8B2B9D8031B799078', null, null, '2019-06-05');
-INSERT INTO `his_user` VALUES ('402881ea6abf196a016abf40b8400005', 'm_tollCollector_1@shospital.com', '赵收费', '123', '732c0809461dd032d9d068dc9a30d93f', 'eb1f263c26e8c1ad016d0a38e9798bf9', '2019-05-16 14:07:30', null, null, null, null, null, null, null, null, null, null, null, null, '1', 'EB1F263C26E8C1AD016D0A38E9798BF9', null, null, null);
-INSERT INTO `his_user` VALUES ('402881ea6aca4965016aca6a54d0000a', 'm_technologyDoc_1@shospital.com', '孙检查', '123', 'f907bfea4569408325280fff74600cc3', 'ec1f7da3ecbc4781ebb67a02a7304093', '2019-05-18 18:08:47', null, null, null, null, null, null, null, null, null, null, null, null, '1', 'EC1F7DA3ECBC4781EBB67A02A7304093', null, null, null);
-INSERT INTO `his_user` VALUES ('4028b8816b01e30d016b01f2941f0000', 'drugStoreAdmin_1@shospital.com', '邓药管', '123', '1bc6b0bc8a97edf39264438ebd36455c', '35eb9694392fe78cca6cca2578dba9e1', '2019-05-29 12:56:43', null, null, null, null, null, null, null, null, null, null, null, null, '1', '35EB9694392FE78CCA6CCA2578DBA9E1', null, null, null);
-INSERT INTO `his_user` VALUES ('4028b8816f893698016f89381e6f0000', '120858512@qq.com', '1208585122@qq.com', '123', '655d863d004307a011038d13acb8563f', '7cd0ef05285af1a8f6fd6bc0b529b112', '2020-01-09 15:32:33', null, null, null, null, null, null, null, null, null, null, null, null, '1', '7CD0EF05285AF1A8F6FD6BC0B529B112', null, null, null);
-INSERT INTO `his_user` VALUES ('4028b881704ca64801704cabd5e90000', 'ww@qq.com', 'm,m', '123', '7e8adb252a840734aedafde1c7f935be', '9ff420cae1872b1cfacb038c5cd78df5', '2020-02-16 14:24:54', null, null, null, null, null, null, null, null, null, null, null, null, '0', '9FF420CAE1872B1CFACB038C5CD78DF5', null, null, null);
-INSERT INTO `his_user` VALUES ('8ad8a0ec6a06851e016a069172fa0002', '1208585122@qq.com', '薛管理', '123', '3b6859e0f808a88b350b9878cd4e8ff5', '0d97c0c016d4759268b75a25d6eb4eb5', '2019-04-10 17:25:56', 'wwwww', '团员', '15202843353', '1996-09-24', '男', null, null, null, null, null, null, null, '1', null, null, null, '2020-03-10');
-INSERT INTO `his_user` VALUES ('8ad8a0ec6a0a7e7b016a0a7ed6e50000', 'm_doctor@shospital.com', '彭医生', '123', '53cde41aa04572f1bbbb1184195c492c', '171a609704cecaa4e78ec7d51b71fd8c', '2019-04-11 11:44:05', null, null, null, null, null, '10', '呼吸内科', null, '2.0', '三楼302', null, null, '1', null, '普通门诊', '1', '2020-03-10');
+INSERT INTO `his_user` VALUES ('402880e86a24ccfc016a24cd6b240000', 'register@shospital.com', '王挂号', '123', 'b03ecbe66599f4451225edf293ffc8ae', '50db0e033e10810bc1a3c8fc6d2de7f9', '2019-04-16 14:20:03', null, null, null, null, null, '0', null, null, null, null, null, null, '1', null, null, '0', '2020-03-24');
+INSERT INTO `his_user` VALUES ('402880e86a24ccfc016a24e8e12a000b', 'register_2@shospital.com', 'register_2', '123', '7e93221630869a886899755ad3ae9fff', '611b5b68776ee4a8cb297a716ccc0b55', '2019-04-16 14:49:00', null, null, null, null, null, '0', null, null, null, null, null, null, '1', null, null, '0', null);
+INSERT INTO `his_user` VALUES ('402880ea6a7df7d6016a7e5806bf0006', 'm_doctor_2@shospital.com', '李医生', '123', '97c7a1fc1f3e8c2e0c40d7b13b13a994', 'a45abce549ccbe83c5b229232e12ad5b', '2019-05-03 23:37:39', null, null, null, null, null, '10', '1', '2', '3.0', '三楼311', null, null, '1', 'A45ABCE549CCBE83C5B229232E12AD5B', '1', '1', '2020-03-24');
+INSERT INTO `his_user` VALUES ('402880ea6a7df7d6016a7e5ce3810008', 'm_doctor_3@shospital.com', '张医生', '123', '6669a63f1921092662fa61c7346ef578', '1f9c8b259edc93053702bc1af5ebc9a0', '2019-05-03 23:42:57', null, null, null, null, null, '3', '2', '3', '2.0', '一楼101', null, null, '1', '1F9C8B259EDC93053702BC1AF5EBC9A0', '1', '0', '2019-06-04');
+INSERT INTO `his_user` VALUES ('402881ea6abf196a016abf2fbb5e0003', 'm_druggist_1@shospital.com', '黄药剂', '123', 'ebc444f9cf5d0362d2b574406bf6a37d', 'bcaf9c29f362cda8b2b9d8031b799078', '2019-05-16 13:48:55', null, null, null, null, null, '0', null, null, null, null, null, null, '1', 'BCAF9C29F362CDA8B2B9D8031B799078', null, '0', '2019-06-05');
+INSERT INTO `his_user` VALUES ('402881ea6abf196a016abf40b8400005', 'm_tollCollector_1@shospital.com', '赵收费', '123', '732c0809461dd032d9d068dc9a30d93f', 'eb1f263c26e8c1ad016d0a38e9798bf9', '2019-05-16 14:07:30', null, null, null, null, null, '0', null, null, null, null, null, null, '1', 'EB1F263C26E8C1AD016D0A38E9798BF9', null, '0', null);
+INSERT INTO `his_user` VALUES ('402881ea6aca4965016aca6a54d0000a', 'm_technologyDoc_1@shospital.com', '孙检查', '123', 'f907bfea4569408325280fff74600cc3', 'ec1f7da3ecbc4781ebb67a02a7304093', '2019-05-18 18:08:47', null, null, null, null, null, '0', null, null, null, null, null, null, '1', 'EC1F7DA3ECBC4781EBB67A02A7304093', null, '0', null);
+INSERT INTO `his_user` VALUES ('4028b8816b01e30d016b01f2941f0000', 'drugStoreAdmin_1@shospital.com', '邓药管', '123', '1bc6b0bc8a97edf39264438ebd36455c', '35eb9694392fe78cca6cca2578dba9e1', '2019-05-29 12:56:43', null, null, null, null, null, '0', null, null, null, null, null, null, '1', '35EB9694392FE78CCA6CCA2578DBA9E1', null, '0', null);
+INSERT INTO `his_user` VALUES ('4028b8816f893698016f89381e6f0000', '120858512@qq.com', '1208585122@qq.com', '123', '655d863d004307a011038d13acb8563f', '7cd0ef05285af1a8f6fd6bc0b529b112', '2020-01-09 15:32:33', null, null, null, null, null, '0', null, null, null, null, null, null, '1', '7CD0EF05285AF1A8F6FD6BC0B529B112', null, '0', null);
+INSERT INTO `his_user` VALUES ('4028b881704ca64801704cabd5e90000', 'ww@qq.com', 'm,m', '123', '7e8adb252a840734aedafde1c7f935be', '9ff420cae1872b1cfacb038c5cd78df5', '2020-02-16 14:24:54', null, null, null, null, null, '0', null, null, null, null, null, null, '0', '9FF420CAE1872B1CFACB038C5CD78DF5', null, '0', null);
+INSERT INTO `his_user` VALUES ('4028b88170e675fa0170e676bbd60000', '12@ee.com', 'qw', '123', '66c42a07fa1a095440a10b93f343aea4', 'd00cb3aa23fe3cd5273f49d15dea7fa2', '2020-03-17 11:08:25', null, null, null, null, null, '0', null, null, null, null, null, null, '0', 'D00CB3AA23FE3CD5273F49D15DEA7FA2', null, '0', null);
+INSERT INTO `his_user` VALUES ('8ad8a0ec6a06851e016a069172fa0002', '1208585122@qq.com', '薛管理', '123', '3b6859e0f808a88b350b9878cd4e8ff5', '0d97c0c016d4759268b75a25d6eb4eb5', '2019-04-10 17:25:56', 'wwwww', '团员', '15202843353', '1996-09-24', '男', '0', null, null, null, null, null, null, '1', null, null, '0', '2020-03-10');
+INSERT INTO `his_user` VALUES ('8ad8a0ec6a0a7e7b016a0a7ed6e50000', 'm_doctor@shospital.com', '彭医生', '123', '53cde41aa04572f1bbbb1184195c492c', '171a609704cecaa4e78ec7d51b71fd8c', '2019-04-11 11:44:05', null, null, null, null, null, '10', '10', '1', '5.0', '三楼302', null, null, '1', null, '0', '1', '2020-03-24');
 
 -- ----------------------------
 -- Table structure for his_user_role
@@ -466,5 +501,6 @@ INSERT INTO `his_user_role` VALUES ('4028b8816b01e30d016b01f294580001', '4028b88
 INSERT INTO `his_user_role` VALUES ('4028b8816f893698016f89381eb40001', '4028b8816f893698016f89381e6f0000', '8ad8a0ec6a06851e016a068b90480001', '120858512@qq.com#mdoctor', '2020-01-09 15:32:34', '1');
 INSERT INTO `his_user_role` VALUES ('4028b881704ca64801704cabd6400001', '4028b881704ca64801704cabd5e90000', '8ad8a0ec6a06851e016a068b90480001', 'ww@qq.com#mdoctor', '2020-02-16 14:24:54', '-1');
 INSERT INTO `his_user_role` VALUES ('4028b88170c344250170c344aeb20000', '402881ea6abf196a016abf2fbb5e0003', '402880ea6a7df7d6016a7e4b18130003', 'm_druggist_1@shospital.com#technologyDoc', '2020-03-10 15:07:03', '0');
+INSERT INTO `his_user_role` VALUES ('4028b88170e675fa0170e6781a9b0001', '4028b88170e675fa0170e676bbd60000', '402880ea6a7df7d6016a7e480e360001', '12@ee.com#druggist', '2020-03-17 11:08:26', '0');
 INSERT INTO `his_user_role` VALUES ('8ad8a0ec6a06851e016a069173580003', '8ad8a0ec6a06851e016a069172fa0002', '8ad8a0ec6a06851e016a068ab7b30000', '1208585122@qq.com#admin', '2019-04-10 17:25:56', '1');
 INSERT INTO `his_user_role` VALUES ('8ad8a0ec6a0a7e7b016a0a7ed7630001', '8ad8a0ec6a0a7e7b016a0a7ed6e50000', '8ad8a0ec6a06851e016a068b90480001', 'm_doctor@shospital.com#mdoctor', '2019-08-11 11:44:05', '1');

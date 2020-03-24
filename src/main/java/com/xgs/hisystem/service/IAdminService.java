@@ -35,4 +35,8 @@ public interface IAdminService {
     BaseResponse<?> showAnnouncement(String id);
 
     BaseResponse<?> hiddenAnnouncement(String id);
+
+    BaseResponse<?> addDepartment(AddDepartmentReqVO reqVO);
+
+    List<GetDepartmentRspVO> getDepartment();
 }

@@ -58,11 +58,12 @@ public class UserEntity extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OutpatientQueueEntity> outpatientQueueList;  //门诊病人队列
 
-    @Column(name = "department", nullable = true, length = 30)
-    private String department;  //所属科室
+    @Column(name = "department", nullable = true, length = 10)
+    private Integer department;  //所属科室
 
+    /*科室类型 0急诊 1普通门诊*/
     @Column(name = "departmentType", nullable = true, length = 10)
-    private String departmentType; //科室类型
+    private Integer departmentType;
 
     @Column(name = "grade", nullable = true, length = 10)
     private String grade;     //医生等级
@@ -83,10 +84,10 @@ public class UserEntity extends BaseEntity {
     private String updateTime;
 
     @Column(name = "allowNum", nullable = true, length = 10)
-    private Integer allowNum;
+    private int allowNum;
 
     @Column(name = "nowNum", nullable = true, length = 10)
-    private Integer nowNum;
+    private int nowNum;
 
     public String getEmail() {
         return email;
@@ -184,12 +185,20 @@ public class UserEntity extends BaseEntity {
         this.loginInforList = loginInforList;
     }
 
-    public String getDepartment() {
+    public Integer getDepartment() {
         return department;
     }
 
-    public void setDepartment(String department) {
+    public void setDepartment(Integer department) {
         this.department = department;
+    }
+
+    public Integer getDepartmentType() {
+        return departmentType;
+    }
+
+    public void setDepartmentType(Integer departmentType) {
+        this.departmentType = departmentType;
     }
 
     public String getGrade() {
@@ -232,19 +241,19 @@ public class UserEntity extends BaseEntity {
         this.workDateTime = workDateTime;
     }
 
-    public Integer getAllowNum() {
+    public int getAllowNum() {
         return allowNum;
     }
 
-    public void setAllowNum(Integer allowNum) {
+    public void setAllowNum(int allowNum) {
         this.allowNum = allowNum;
     }
 
-    public Integer getNowNum() {
+    public int getNowNum() {
         return nowNum;
     }
 
-    public void setNowNum(Integer nowNum) {
+    public void setNowNum(int nowNum) {
         this.nowNum = nowNum;
     }
 
@@ -262,14 +271,6 @@ public class UserEntity extends BaseEntity {
 
     public void setValidateCode(String validateCode) {
         this.validateCode = validateCode;
-    }
-
-    public String getDepartmentType() {
-        return departmentType;
-    }
-
-    public void setDepartmentType(String departmentType) {
-        this.departmentType = departmentType;
     }
 
     public List<OutpatientQueueEntity> getOutpatientQueueList() {

@@ -7,6 +7,7 @@ import com.xgs.hisystem.pojo.vo.toll.TollMedicalRecordRspVO;
 import com.xgs.hisystem.pojo.vo.toll.TollRspVO;
 import com.xgs.hisystem.pojo.vo.toll.cardRspVO;
 import com.xgs.hisystem.service.ITollService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/toll")
+@Api(tags = "收费管理API")
 public class TollController {
 
     @Autowired
@@ -37,7 +39,7 @@ public class TollController {
      * @param tollStatus
      * @return
      */
-    @RequestMapping(value = "/getAllMedicalRecord")
+    @GetMapping(value = "/getAllMedicalRecord")
     public List<TollRspVO> getAllMedicalRecord(@RequestParam String cardId,
                                                @RequestParam String tollStatus) {
 

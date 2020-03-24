@@ -7,7 +7,7 @@ import javax.persistence.Table;
 /**
  * @author xgs
  * @date 2019-5-18
- * @description:
+ * @description: 体检
  */
 @Entity
 @Table(name = "his_medicalExamination")

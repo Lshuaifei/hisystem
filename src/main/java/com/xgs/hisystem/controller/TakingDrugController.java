@@ -3,6 +3,7 @@ package com.xgs.hisystem.controller;
 import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.takingdrug.MedicalRecordRspVO;
 import com.xgs.hisystem.service.ITakingDrugService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = "/takingdrug")
+@Api(tags = "拿药管理API")
 public class TakingDrugController {
 
     @Autowired

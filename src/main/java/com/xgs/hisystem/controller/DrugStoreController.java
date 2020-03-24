@@ -8,6 +8,7 @@ import com.xgs.hisystem.pojo.vo.drugStorage.DrugRspVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugSearchReqVO;
 import com.xgs.hisystem.service.IDrugStoreService;
 import com.xgs.hisystem.util.ParamsValidationUtils;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/drugstore")
+@Api(tags = "药品管理API")
 public class DrugStoreController {
 
     @Autowired
@@ -31,7 +33,7 @@ public class DrugStoreController {
      * @param reqVO
      * @return
      */
-    @RequestMapping(value = "/addNewDrug")
+    @PostMapping(value = "/addNewDrug")
     public String addNewDrug(@RequestBody DrugReqVO reqVO) {
         ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
         if (validateBo.isHasErrors()) {
@@ -120,7 +122,7 @@ public class DrugStoreController {
      * @param reqVO
      * @return
      */
-    @RequestMapping(value = "/getAllDrug")
+    @GetMapping(value = "/getAllDrug")
     public PageRspBO<DrugRspVO> getAllDrug(DrugSearchReqVO reqVO) {
 
         return iDrugStoreService.getAllDrug(reqVO);
@@ -132,7 +134,7 @@ public class DrugStoreController {
      * @param reqVO
      * @return
      */
-    @RequestMapping(value = "/updateDrug")
+    @PostMapping(value = "/updateDrug")
     public String updateDrug(@RequestBody DrugReqVO reqVO) {
         BaseResponse baseResponse = iDrugStoreService.updateDrug(reqVO);
         return baseResponse.getMessage();
@@ -144,7 +146,7 @@ public class DrugStoreController {
      * @param drugName
      * @return
      */
-    @RequestMapping(value = "/deleteDrug")
+    @PostMapping(value = "/deleteDrug")
     public String deleteDrug(@RequestParam String drugName) {
         BaseResponse baseResponse = iDrugStoreService.deleteDrug(drugName);
         return baseResponse.getMessage();

@@ -5,18 +5,24 @@ import com.xgs.hisystem.pojo.bo.ValidationResultBO;
 import com.xgs.hisystem.pojo.vo.*;
 import com.xgs.hisystem.service.IAdminService;
 import com.xgs.hisystem.util.ParamsValidationUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author xgs
  * @date 2019/4/3
  * @description:
  */
-@Controller
-@ResponseBody
+@RestController
 @RequestMapping(value = "/admin")
+@Api(tags = "管理员操作API")
 public class AdminController {
 
     @Autowired
@@ -78,7 +84,7 @@ public class AdminController {
      * @param
      * @return
      */
-    @RequestMapping(value = "/getRoleApply")
+    @GetMapping(value = "/getRoleApply")
     public PageRspBO<applyRspVO> getRoleApply(BasePageReqVO reqVO) {
 
 
@@ -115,7 +121,7 @@ public class AdminController {
         return baseResponse.getMessage();
     }
 
-    @RequestMapping(value = "/getAnnouncement")
+    @GetMapping(value = "/getAnnouncement")
     public PageRspBO<AnnouncementVO> getAnnouncement(BasePageReqVO reqVO) {
 
 
@@ -167,5 +173,22 @@ public class AdminController {
         BaseResponse baseResponse = iadminService.hiddenAnnouncement(id);
 
         return baseResponse.getMessage();
+    }
+
+    @PostMapping(value = "/adddepartment")
+    @ApiOperation(value = "添加科室", httpMethod = "POST", notes = "添加科室")
+    @ApiImplicitParam(name = "reqVO",value = "添加科室", dataType = "AddDepartmentReqVO")
+    public BaseResponse<?> addDepartment(@RequestBody AddDepartmentReqVO reqVO) {
+        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
+        if (validateBo.isHasErrors()) {
+            return BaseResponse.errormsg(validateBo.getErrorMsg().values().toString());
+        }
+        return iadminService.addDepartment(reqVO);
+    }
+
+    @PostMapping(value = "/getDepartment")
+    @ApiOperation(value = "获取所有科室", httpMethod = "POST", notes = "获取所有科室")
+    public List<GetDepartmentRspVO> getDepartment() {
+        return iadminService.getDepartment();
     }
 }

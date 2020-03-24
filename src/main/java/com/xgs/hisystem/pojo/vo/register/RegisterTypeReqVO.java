@@ -7,23 +7,23 @@ package com.xgs.hisystem.pojo.vo.register;
  */
 public class RegisterTypeReqVO {
 
-    private String department;
+    private Integer department;
 
-    private String registerType;
+    private Integer registerType;
 
-    public String getDepartment() {
+    public Integer getDepartment() {
         return department;
     }
 
-    public void setDepartment(String department) {
+    public void setDepartment(Integer department) {
         this.department = department;
     }
 
-    public String getRegisterType() {
+    public Integer getRegisterType() {
         return registerType;
     }
 
-    public void setRegisterType(String registerType) {
+    public void setRegisterType(Integer registerType) {
         this.registerType = registerType;
     }
 }

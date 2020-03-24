@@ -41,7 +41,7 @@ public class Swagger2Config {
     }
 	
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("RESTful APIs").description("api文档结构")
-                .termsOfServiceUrl("https://gitee.com/sensay/hisystem").contact(new Contact("sensay", "", "")).version("1.0").build();
+        return new ApiInfoBuilder().title("Hisystem APIs").description("如需通过swagger测试，请先调/user/dologin接口登录")
+                .termsOfServiceUrl("https://gitee.com/sensay/hisystem").contact(new Contact("sensay", "https://gitee.com/sensay/hisystem", "")).version("1.0").build();
     }
 }
