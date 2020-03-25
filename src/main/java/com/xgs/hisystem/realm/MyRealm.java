@@ -1,6 +1,8 @@
 package com.xgs.hisystem.realm;
 
+import com.xgs.hisystem.pojo.entity.RoleEntity;
 import com.xgs.hisystem.pojo.entity.UserEntity;
+import com.xgs.hisystem.repository.IRoleRespository;
 import com.xgs.hisystem.repository.IUserRepository;
 
 import org.apache.shiro.authc.AuthenticationException;
@@ -15,10 +17,14 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 public class MyRealm extends AuthorizingRealm {
 
     @Autowired
     private IUserRepository iUserRepository;
+    @Autowired
+    private IRoleRespository iRoleRespository;
 
     //授权
     @Override
@@ -29,9 +35,15 @@ public class MyRealm extends AuthorizingRealm {
             return null;
         }
         SimpleAuthorizationInfo authorizationInfo=new SimpleAuthorizationInfo();
-        user.getRoleList().forEach(role->{
-            authorizationInfo.addRole(role.getRole());
-        });
+
+        List<RoleEntity> roleList = iRoleRespository.findByUserIdAndRoleStatus(user.getId());
+
+        if (roleList != null && !roleList.isEmpty()) {
+            roleList.forEach(role -> {
+                authorizationInfo.addRole(role.getRole());
+            });
+        }
+
         return authorizationInfo;
     }
 
