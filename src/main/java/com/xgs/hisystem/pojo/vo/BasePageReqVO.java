@@ -9,7 +9,7 @@ public class BasePageReqVO {
 
     private int pageSize;
 
-    private int PageNumber;
+    private int pageNumber;
 
     public int getPageSize() {
         return pageSize;
@@ -20,10 +20,10 @@ public class BasePageReqVO {
     }
 
     public int getPageNumber() {
-        return PageNumber;
+        return pageNumber;
     }
 
     public void setPageNumber(int pageNumber) {
-        PageNumber = pageNumber;
+        this.pageNumber = pageNumber;
     }
 }

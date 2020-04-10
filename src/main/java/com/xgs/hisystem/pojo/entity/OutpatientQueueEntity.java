@@ -5,10 +5,10 @@ import javax.persistence.*;
 /**
  * @author xgs
  * @date 2019-5-6
- * @description:
+ * @description: 就诊队列表
  */
 @Entity
-@Table(name = "his_outpatient_queue")
+@Table(name = "his_outpatient_queue",indexes = {@Index(name = "his_outpatient_queue_index",columnList = "register_id,patient_id")})
 public class OutpatientQueueEntity extends BaseEntity {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, optional = false)

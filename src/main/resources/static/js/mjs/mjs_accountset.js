@@ -151,15 +151,15 @@ function changePassword() {
 
         success: function (data) {
 
-            if (data == "修改成功") {
+            if (null != data && data.status === 1) {
 
-                swal(data, "", "success");
+                swal(data.message, "", "success");
                 /*防止重复提交*/
                 $("#changePassword").attr("disabled", true);
 
                 setTimeout("$('#changePassword').removeAttr('disabled')", 6000);
             } else {
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
 
         }
@@ -178,10 +178,11 @@ function addAnotherRole() {
         contentType: 'application/json',
         data: JSON.stringify(AccountRoleVO),
         success: function (data) {
-            if (data == "SUCCESS") {
+
+            if (null != data && data.status === 1) {
                 swal("角色添加成功，请等待管理员审核！", "", "success")
             } else {
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
 
         }

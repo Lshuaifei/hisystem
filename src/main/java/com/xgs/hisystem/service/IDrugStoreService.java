@@ -1,7 +1,7 @@
 package com.xgs.hisystem.service;
 
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
-import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugReqVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugRspVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugSearchReqVO;
@@ -15,11 +15,11 @@ import java.util.List;
  */
 public interface IDrugStoreService {
 
-    BaseResponse<?> addNewDrug(DrugReqVO reqVO);
+    BaseResponse<String> addNewDrug(DrugReqVO reqVO);
 
-    BaseResponse<?> addDrugType(String drugType);
+    BaseResponse<String> addDrugType(String drugType);
 
-    BaseResponse<?> addEfficacyClassification(String efficacyClassification);
+    BaseResponse<String> addEfficacyClassification(String efficacyClassification);
 
     List<String> getAllDrugType();
 
@@ -27,11 +27,11 @@ public interface IDrugStoreService {
 
     DrugRspVO getDrugInfor(String drug);
 
-    BaseResponse<?> addStorageQuantity(String drug, String addStorageQuantity);
+    BaseResponse<String> addStorageQuantity(String drug, String addStorageQuantity);
 
     PageRspBO<DrugRspVO> getAllDrug(DrugSearchReqVO reqVO);
 
-    BaseResponse<?> updateDrug(DrugReqVO reqVO);
+    BaseResponse<String> updateDrug(DrugReqVO reqVO);
 
-    BaseResponse<?> deleteDrug(String drugName);
+    BaseResponse<String> deleteDrug(String drugName);
 }

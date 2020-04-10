@@ -9,6 +9,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.List;
 
+/**
+ * @author XGS
+ * @date 2020/3/28
+ * @desciption 角色表
+ */
+
 @Entity
 @Table(name = "his_role")
 @DynamicInsert(true)

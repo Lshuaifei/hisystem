@@ -1,11 +1,13 @@
 package com.xgs.hisystem.controller;
 
-import com.xgs.hisystem.pojo.vo.BaseResponse;
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.outpatient.*;
 import com.xgs.hisystem.pojo.vo.register.GetCardIdInforReqVO;
 import com.xgs.hisystem.service.IOutpatientService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,10 +44,9 @@ public class OutpatientController {
      */
 
     @PostMapping(value = "/changePatientInfor")
-    public String changePatientInfor(@RequestBody OtherPatientInforReqVO reqVO) {
+    public BaseResponse<String> changePatientInfor(@RequestBody OtherPatientInforReqVO reqVO) {
 
-        BaseResponse baseResponse = iOutpatientService.changePatientInfor(reqVO);
-        return baseResponse.getMessage();
+        return  iOutpatientService.changePatientInfor(reqVO);
     }
 
     /**
@@ -55,11 +56,9 @@ public class OutpatientController {
      * @return
      */
     @PostMapping(value = "/ProcessLaterMedicalRecord")
-    public String processLaterMedicalRecord(@RequestBody MedicalRecordReqVO reqVO) {
+    public BaseResponse<String> processLaterMedicalRecord(@RequestBody MedicalRecordReqVO reqVO) {
 
-        BaseResponse baseResponse = iOutpatientService.processLaterMedicalRecord(reqVO);
-
-        return baseResponse.getMessage();
+        return iOutpatientService.processLaterMedicalRecord(reqVO);
 
     }
 
@@ -105,10 +104,9 @@ public class OutpatientController {
      * @return
      */
     @PostMapping(value = "/addMedicalRecord")
-    public String addMedicalRecord(@RequestBody MedicalRecordReqVO reqVO) {
-        BaseResponse baseResponse = iOutpatientService.addMedicalRecord(reqVO);
+    public BaseResponse<String> addMedicalRecord(@RequestBody @Validated MedicalRecordReqVO reqVO) {
 
-        return baseResponse.getMessage();
+        return iOutpatientService.addMedicalRecord(reqVO);
     }
 
     /**
@@ -122,6 +120,12 @@ public class OutpatientController {
     public medicalExaminationInfoRspVO getMedicalExamination(@RequestParam String prescriptionNum) {
 
         return iOutpatientService.getMedicalExamination(prescriptionNum);
+    }
+
+    @PostMapping(value = "/getalloutpatientqueue")
+    @ApiOperation(value = "获取当前医生下所有门诊队列患者", httpMethod = "POST", notes = "获取当前医生下所有门诊队列患者")
+    public List<GetAllOutpatientQueueRspVO> getAllOutpatientQueue() {
+        return iOutpatientService.getAllOutpatientQueue();
     }
 
 }

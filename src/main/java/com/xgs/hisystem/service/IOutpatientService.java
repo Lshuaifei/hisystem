@@ -1,6 +1,6 @@
 package com.xgs.hisystem.service;
 
-import com.xgs.hisystem.pojo.vo.BaseResponse;
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.outpatient.*;
 import com.xgs.hisystem.pojo.vo.register.GetCardIdInforReqVO;
 
@@ -15,13 +15,9 @@ public interface IOutpatientService {
 
     PatientInforRspVO getCardIdInfor(GetCardIdInforReqVO reqVO) throws Exception;
 
-    BaseResponse<?> changePatientInfor(OtherPatientInforReqVO reqVO);
+    BaseResponse<String> changePatientInfor(OtherPatientInforReqVO reqVO);
 
-    List<OutpatientQueueNormalRspVO> getAllPatientNormal();
-
-    List<OutpatientQueueLaterRspVO> getAllPatientLater();
-
-    BaseResponse<?> processLaterMedicalRecord(MedicalRecordReqVO reqVO);
+    BaseResponse<String> processLaterMedicalRecord(MedicalRecordReqVO reqVO);
 
     PatientInforRspVO restorePatientInfor(String registerId) throws Exception;
 
@@ -29,8 +25,10 @@ public interface IOutpatientService {
 
     DrugRspVO getDrugInfor(String drug);
 
-    BaseResponse<?> addMedicalRecord(MedicalRecordReqVO reqVO);
+    BaseResponse<String> addMedicalRecord(MedicalRecordReqVO reqVO);
 
     medicalExaminationInfoRspVO getMedicalExamination(String prescriptionNum);
+
+    List<GetAllOutpatientQueueRspVO> getAllOutpatientQueue();
 
 }

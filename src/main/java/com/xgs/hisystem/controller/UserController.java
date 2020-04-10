@@ -1,13 +1,13 @@
 package com.xgs.hisystem.controller;
 
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
-import com.xgs.hisystem.pojo.bo.ValidationResultBO;
 import com.xgs.hisystem.pojo.vo.*;
 import com.xgs.hisystem.service.IUserService;
-import com.xgs.hisystem.util.ParamsValidationUtils;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,15 +29,9 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/dologin", method = RequestMethod.POST)
-    public String doLogin(@RequestBody UserLoginReqVO reqVO, Model model) {
+    public BaseResponse<String> doLogin(@RequestBody @Validated UserLoginReqVO reqVO, Model model) {
 
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
-        if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().values().toString();
-        }
-        BaseResponse baseResponse = iUserService.doLogin(reqVO);
-
-        return baseResponse.getMessage();
+        return iUserService.doLogin(reqVO);
     }
 
     /**
@@ -47,15 +41,9 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/doregister", method = RequestMethod.POST)
-    public String registered(@RequestBody UserRegisterReqVO reqVO, Model model) {
+    public BaseResponse<String> registered(@RequestBody @Validated UserRegisterReqVO reqVO, Model model) {
 
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
-        if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().values().toString();
-        }
-        BaseResponse baseResponse = iUserService.saveUserAndSendEmail(reqVO);
-
-        return baseResponse.getMessage();
+        return iUserService.saveUserAndSendEmail(reqVO);
     }
 
 
@@ -78,15 +66,9 @@ public class UserController {
      * @return
      */
     @PostMapping(value = "/changePassword")
-    public String changePassword(@RequestBody ChangePasswordReqVO reqVO) {
+    public BaseResponse<String> changePassword(@RequestBody @Validated ChangePasswordReqVO reqVO) {
 
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
-        if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().values().toString();
-        }
-        BaseResponse baseResponse = iUserService.changePassword(reqVO);
-
-        return baseResponse.getMessage();
+        return iUserService.changePassword(reqVO);
     }
 
     /**
@@ -101,15 +83,9 @@ public class UserController {
     }
 
     @PostMapping(value = "/changeUserInfo")
-    public String changeUserInfo(@RequestBody UserInfoVO reqVO) {
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
-        if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().values().toString();
-        }
+    public BaseResponse<String> changeUserInfo(@RequestBody @Validated UserInfoVO reqVO) {
 
-        BaseResponse baseResponse = iUserService.changeUserInfo(reqVO);
-
-        return baseResponse.getMessage();
+        return  iUserService.changeUserInfo(reqVO);
     }
 
     @PostMapping(value = "/getAnnContent")
@@ -119,10 +95,9 @@ public class UserController {
     }
 
     @PostMapping(value = "/addAnotherRole")
-    public String addAnotherRole(@RequestBody AccountRoleVO reqVO) {
+    public BaseResponse<String> addAnotherRole(@RequestBody @Validated AccountRoleVO reqVO) {
 
-        BaseResponse baseResponse = iUserService.addAnotherRole(reqVO);
-        return baseResponse.getMessage();
+        return iUserService.addAnotherRole(reqVO);
     }
 
 

@@ -71,8 +71,8 @@
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">toller:</h6>
-                    <a class="collapse-item" th:href="@{/toll}">划价收费</a>
-                    <!--<a class="collapse-item" href="#">Other</a>-->
+                    <a class="collapse-item" th:href="@{/outpatientToll}">门诊收费</a>
+                    <a class="collapse-item" th:href="@{/examinationToll}">体检收费</a>
                 </div>
             </div>
         </li>
@@ -93,6 +93,21 @@
             </div>
         </li>
 
+        <li class="nav-item" shiro:hasAnyRoles="admin,technologyDoc">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#technologyId"
+               aria-expanded="true" aria-controls="collapseUtilities">
+                <img class="png" th:src="@{/images/icon/technology.png}">
+                <span>&nbsp;体检管理</span>
+            </a>
+            <div id="technologyId" class="collapse" aria-labelledby="headingUtilities"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">drugStore:</h6>
+                    <a class="collapse-item" th:href="@{/medicalExamination}">普通体检</a>
+                </div>
+            </div>
+        </li>
+
         <!--药库管理-->
         <li class="nav-item" shiro:hasAnyRoles="admin,drugStoreAdmin">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#storageManageId"
@@ -108,21 +123,6 @@
                     <a class="collapse-item" th:href="@{/storageManage}">入库管理</a>
                     <!--<a class="collapse-item" th:href="@{/#}">出库管理</a>-->
                     <!--<a class="collapse-item" href="#">Other</a>-->
-                </div>
-            </div>
-        </li>
-
-        <li class="nav-item" shiro:hasAnyRoles="admin,technologyDoc">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#technologyId"
-               aria-expanded="true" aria-controls="collapseUtilities">
-                <img class="png" th:src="@{/images/icon/technology.png}">
-                <span>&nbsp;体检管理</span>
-            </a>
-            <div id="technologyId" class="collapse" aria-labelledby="headingUtilities"
-                 data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">drugStore:</h6>
-                    <a class="collapse-item" th:href="@{/medicalExamination}">身体检查</a>
                 </div>
             </div>
         </li>

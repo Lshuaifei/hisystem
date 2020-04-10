@@ -1,11 +1,11 @@
 package com.xgs.hisystem.service.impl;
 
-import com.xgs.hisystem.config.Contants;
+import com.xgs.hisystem.config.HisConstants;
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
 import com.xgs.hisystem.pojo.entity.DrugEntity;
 import com.xgs.hisystem.pojo.entity.DrugTypeEntity;
 import com.xgs.hisystem.pojo.entity.EfficacyClassificationEntity;
-import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugReqVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugRspVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugSearchReqVO;
@@ -46,67 +46,80 @@ public class DrugStoreServiceImpl implements IDrugStoreService {
     private IEfficacyClassificationRepository iEfficacyClassificationRepository;
 
     @Override
-    public BaseResponse<?> addNewDrug(DrugReqVO reqVO) {
-
-        DrugEntity drug = new DrugEntity();
-        drug.setName(reqVO.getName());
-        drug.setDrugType(reqVO.getDrugType());
-        drug.setEfficacyClassification(reqVO.getEfficacyClassification());
-        drug.setLimitStatus(Integer.parseInt(reqVO.getLimitStatus()));
-        drug.setManufacturer(reqVO.getManufacturer());
-        drug.setSpecification(reqVO.getSpecification());
-        drug.setUnit(reqVO.getUnit());
-        drug.setPrice(Double.valueOf(reqVO.getPrice().toString()));
-        drug.setWholesalePrice(Double.valueOf(reqVO.getWholesalePrice().toString()));
-        drug.setStorageQuantity(Integer.parseInt(reqVO.getStorageQuantity()));
-        drug.setProductionDate(reqVO.getProductionDate());
-        drug.setQualityDate(reqVO.getQualityDate());
+    public BaseResponse<String> addNewDrug(DrugReqVO reqVO) {
 
         try {
+            DrugEntity drug = new DrugEntity();
+            drug.setName(reqVO.getName());
+            drug.setDrugType(reqVO.getDrugType());
+            drug.setEfficacyClassification(reqVO.getEfficacyClassification());
+            drug.setLimitStatus(Integer.parseInt(reqVO.getLimitStatus()));
+            drug.setManufacturer(reqVO.getManufacturer());
+            drug.setSpecification(reqVO.getSpecification());
+            drug.setUnit(reqVO.getUnit());
+            drug.setPrice(Double.valueOf(reqVO.getPrice().toString()));
+            drug.setWholesalePrice(Double.valueOf(reqVO.getWholesalePrice().toString()));
+            drug.setStorageQuantity(Integer.parseInt(reqVO.getStorageQuantity()));
+            drug.setProductionDate(reqVO.getProductionDate());
+            drug.setQualityDate(reqVO.getQualityDate());
+
             iDrugRepository.saveAndFlush(drug);
-            return BaseResponse.errormsg(Contants.user.SUCCESS);
+            return BaseResponse.success();
         } catch (Exception e) {
-            return BaseResponse.errormsg("系统异常，请稍后重试！");
+            e.printStackTrace();
+            return BaseResponse.error("新增药品异常，请稍后重试！");
         }
     }
 
     @Override
-    public BaseResponse<?> addDrugType(String drugType) {
+    public BaseResponse<String> addDrugType(String drugType) {
 
-        DrugTypeEntity drugTypeEntityCheck = iDrugTypeRepository.findByDrugType(drugType);
-
-        if (drugTypeEntityCheck != null) {
-            return BaseResponse.errormsg("该剂型已存在！");
+        if (StringUtils.isEmpty(drugType)) {
+            return BaseResponse.error("请输入您要新增的剂型！");
         }
 
-        DrugTypeEntity drugTypeEntity = new DrugTypeEntity();
-        drugTypeEntity.setDrugType(drugType);
-
         try {
+            DrugTypeEntity drugTypeEntityCheck = iDrugTypeRepository.findByDrugType(drugType);
+
+            if (drugTypeEntityCheck != null) {
+                return BaseResponse.error("该剂型已存在！");
+            }
+
+            DrugTypeEntity drugTypeEntity = new DrugTypeEntity();
+            drugTypeEntity.setDrugType(drugType);
+
+
             iDrugTypeRepository.saveAndFlush(drugTypeEntity);
-            return BaseResponse.success(Contants.user.SUCCESS);
+            return BaseResponse.success();
         } catch (Exception e) {
-            return BaseResponse.success(Contants.user.FAIL);
+            e.printStackTrace();
+            return BaseResponse.error("新增药品类型异常，请稍后重试！");
         }
     }
 
     @Override
-    public BaseResponse<?> addEfficacyClassification(String efficacyClassification) {
+    public BaseResponse<String> addEfficacyClassification(String efficacyClassification) {
 
-        EfficacyClassificationEntity efficacyClassificationEntityCheck = iEfficacyClassificationRepository.findByEfficacyClassification(efficacyClassification);
-
-        if (efficacyClassificationEntityCheck != null) {
-            return BaseResponse.errormsg("该药品功效已存在！");
+        if (StringUtils.isEmpty(efficacyClassification)) {
+            return BaseResponse.error("请输入您要新增的功效！");
         }
 
-        EfficacyClassificationEntity efficacyClassificationEntity = new EfficacyClassificationEntity();
-        efficacyClassificationEntity.setEfficacyClassification(efficacyClassification);
-
         try {
+            EfficacyClassificationEntity efficacyClassificationEntityCheck = iEfficacyClassificationRepository.findByEfficacyClassification(efficacyClassification);
+
+            if (efficacyClassificationEntityCheck != null) {
+                return BaseResponse.error("该药品功效已存在！");
+            }
+
+            EfficacyClassificationEntity efficacyClassificationEntity = new EfficacyClassificationEntity();
+            efficacyClassificationEntity.setEfficacyClassification(efficacyClassification);
+
+
             iEfficacyClassificationRepository.saveAndFlush(efficacyClassificationEntity);
-            return BaseResponse.success(Contants.user.SUCCESS);
+            return BaseResponse.success();
         } catch (Exception e) {
-            return BaseResponse.success(Contants.user.FAIL);
+            e.printStackTrace();
+            return BaseResponse.error("新增药品功效异常，请稍后重试！");
         }
     }
 
@@ -154,18 +167,18 @@ public class DrugStoreServiceImpl implements IDrugStoreService {
     }
 
     @Override
-    public BaseResponse<?> addStorageQuantity(String drug, String addStorageQuantity) {
+    public BaseResponse<String> addStorageQuantity(String drug, String addStorageQuantity) {
 
         if (StringUtils.isEmpty(drug)) {
-            return BaseResponse.errormsg("请先选择添加的药品！");
+            return BaseResponse.error("请先选择添加的药品！");
         }
         if (StringUtils.isEmpty(addStorageQuantity)) {
-            return BaseResponse.errormsg("请填写入库量！");
+            return BaseResponse.error("请填写入库量！");
         }
 
         DrugEntity drugEntity = iDrugRepository.findByName(drug);
         if (StringUtils.isEmpty(drugEntity)) {
-            return BaseResponse.errormsg("药品信息有误，请稍后重试！");
+            return BaseResponse.error("药品信息有误，请稍后重试！");
         }
 
         try {
@@ -174,13 +187,14 @@ public class DrugStoreServiceImpl implements IDrugStoreService {
                 drugEntity.setStorageQuantity(drugEntity.getStorageQuantity() + Integer.parseInt(addStorageQuantity));
 
                 iDrugRepository.saveAndFlush(drugEntity);
-                return BaseResponse.success(Contants.user.SUCCESS);
+                return BaseResponse.success(HisConstants.USER.SUCCESS);
 
             } else {
                 return BaseResponse.success("库存量不能为非整数！");
             }
         } catch (Exception e) {
-            return BaseResponse.errormsg("系统异常，请稍后重试！");
+            e.printStackTrace();
+            return BaseResponse.error("新增库存异常，请稍后重试！");
         }
     }
 
@@ -214,7 +228,7 @@ public class DrugStoreServiceImpl implements IDrugStoreService {
                     predicateList.add(cb.equal(root.get("efficacyClassification"), reqVO.getEfficacyClassification_search()));
                 }
                 if (!StringUtils.isEmpty(reqVO.getLimitStatus_search())) {
-                    if (reqVO.getLimitStatus_search().equals("0")) {
+                    if (HisConstants.COMMON_STATUS_ZERO.equals(reqVO.getLimitStatus_search())) {
                         predicateList.add(cb.equal(root.get("limitStatus"), 0));
                     } else {
                         predicateList.add(cb.equal(root.get("limitStatus"), 1));
@@ -262,51 +276,52 @@ public class DrugStoreServiceImpl implements IDrugStoreService {
     }
 
     @Override
-    public BaseResponse<?> updateDrug(DrugReqVO reqVO) {
-
-        DrugEntity drug = iDrugRepository.findByName(reqVO.getName());
-        if (StringUtils.isEmpty(drug)) {
-            return BaseResponse.errormsg("系统异常，请稍后重试！");
-        }
-        drug.setName(reqVO.getName());
-        if (!StringUtils.isEmpty(reqVO.getDrugType())) {
-            drug.setDrugType(reqVO.getDrugType());
-        }
-        if (!StringUtils.isEmpty(reqVO.getEfficacyClassification())) {
-            drug.setEfficacyClassification(reqVO.getEfficacyClassification());
-        }
-        if (!StringUtils.isEmpty(reqVO.getLimitStatus())) {
-            drug.setLimitStatus(Integer.parseInt(reqVO.getLimitStatus()));
-        }
-        drug.setManufacturer(reqVO.getManufacturer());
-        drug.setSpecification(reqVO.getSpecification());
-        drug.setUnit(reqVO.getUnit());
-        drug.setPrice(Double.valueOf(reqVO.getPrice().toString()));
-        drug.setWholesalePrice(Double.valueOf(reqVO.getWholesalePrice().toString()));
-        drug.setProductionDate(reqVO.getProductionDate());
-        drug.setQualityDate(reqVO.getQualityDate());
+    public BaseResponse<String> updateDrug(DrugReqVO reqVO) {
 
         try {
+            DrugEntity drug = iDrugRepository.findByName(reqVO.getName());
+            if (StringUtils.isEmpty(drug)) {
+                return BaseResponse.error("未查询到相关药品！");
+            }
+            drug.setName(reqVO.getName());
+            if (!StringUtils.isEmpty(reqVO.getDrugType())) {
+                drug.setDrugType(reqVO.getDrugType());
+            }
+            if (!StringUtils.isEmpty(reqVO.getEfficacyClassification())) {
+                drug.setEfficacyClassification(reqVO.getEfficacyClassification());
+            }
+            if (!StringUtils.isEmpty(reqVO.getLimitStatus())) {
+                drug.setLimitStatus(Integer.parseInt(reqVO.getLimitStatus()));
+            }
+            drug.setManufacturer(reqVO.getManufacturer());
+            drug.setSpecification(reqVO.getSpecification());
+            drug.setUnit(reqVO.getUnit());
+            drug.setPrice(Double.valueOf(reqVO.getPrice().toString()));
+            drug.setWholesalePrice(Double.valueOf(reqVO.getWholesalePrice().toString()));
+            drug.setProductionDate(reqVO.getProductionDate());
+            drug.setQualityDate(reqVO.getQualityDate());
+
+
             iDrugRepository.saveAndFlush(drug);
-            return BaseResponse.errormsg(Contants.user.SUCCESS);
+            return BaseResponse.success();
         } catch (Exception e) {
-            return BaseResponse.errormsg("系统异常，请稍后重试！");
+            e.printStackTrace();
+            return BaseResponse.error("更新药品信息异常，请稍后重试！");
         }
     }
 
     @Override
-    public BaseResponse<?> deleteDrug(String drugName) {
-
-        DrugEntity drugEntity = iDrugRepository.findByName(drugName);
-        if (StringUtils.isEmpty(drugEntity)) {
-            return BaseResponse.errormsg("系统异常，请稍后重试！");
-        }
+    public BaseResponse<String> deleteDrug(String drugName) {
 
         try {
+            DrugEntity drugEntity = iDrugRepository.findByName(drugName);
+            if (StringUtils.isEmpty(drugEntity)) {
+                return BaseResponse.error("未查询到相关药品，请稍后重试！");
+            }
             iDrugRepository.delete(drugEntity);
-            return BaseResponse.errormsg(Contants.user.SUCCESS);
+            return BaseResponse.success();
         } catch (Exception e) {
-            return BaseResponse.errormsg("系统异常，请稍后重试！");
+            return BaseResponse.error("删除药品异常，请稍后重试！");
         }
     }
 }

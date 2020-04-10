@@ -5,16 +5,23 @@ Split(['#outpatient-one', '#outpatient-two', '#outpatient-three'], {
     minSize: [380, 760, 410]
 });
 
+window.onload = function () {
 
+    refreshQueue();
+
+    getAllDrug();
+};
+
+<!--控制队列-->
 $(".showbar").on('click', function () {
     $('.widget-bar').toggleClass('on1');
     $('.showbar').toggleClass('on2');
 });
 
 function getCardIdInfor(command) {
-    var GetCardIdInforReqVO={
-        command:command, //0:表示读卡器输入卡号 1:表示手动输入卡号
-        cardId:$("#cardId").val()
+    var GetCardIdInforReqVO = {
+        command: command, //0:表示读卡器输入卡号 1:表示手动输入卡号
+        cardId: $("#cardId").val()
     };
     $.ajax({
         url: "/outpatient/getCardIdInfor",
@@ -42,6 +49,8 @@ function getCardIdInfor(command) {
                 $("#pastHistory").val(data.pastHistory);
                 $("#familyHistory").val(data.familyHistory);
 
+                $("#queueId").val(data.queueId);
+
             } else {
                 swal(data.message, "", "error")
             }
@@ -53,7 +62,7 @@ function changePatientInfor() {
 
     var cardId = $("#cardId").val();
 
-    if (cardId == null || cardId == '') {
+    if (cardId == null || cardId === '') {
         swal("请先读取就诊卡！", "", "error");
 
         return false;
@@ -74,10 +83,11 @@ function changePatientInfor() {
         contentType: "application/json",
         data: JSON.stringify(OtherPatientInforReqVO),
         success: function (data) {
-            if (data == "SUCCESS") {
+
+            if (data !== null && data.status === 1) {
                 swal("信息提交成功！", "", "success")
             } else {
-                swal("信息提交异常！请稍后重试", "", "error")
+                swal(data.message, "", "error")
             }
         }
     })
@@ -85,11 +95,8 @@ function changePatientInfor() {
 
 var drug = '';
 
-$(function () {
-    $("#allPatientNormal").load('/getAllPatientNormal');
-
-    $("#allPatientLater").load('/getAllPatientLater');
-
+//获取所有药品
+function getAllDrug() {
 
     $.ajax({
         url: "/outpatient/getAllDrug",
@@ -100,9 +107,7 @@ $(function () {
             $.each(data, function (i) {
                 optionHtml += '<option value="' + data[i] + '" >' + data[i] + '</option>';
             });
-            $('.drugSelect').html(optionHtml);
-            $('.drugSelect').trigger("chosen:updated");
-            $('.drugSelect').chosen({
+            $('.drugSelect').html(optionHtml).trigger("chosen:updated").chosen({
                 no_results_text: "没有找到结果！",
                 search_contains: true,
                 allow_single_deselect: true,
@@ -134,13 +139,35 @@ $(function () {
             });
         }
     })
+}
 
-});
 
+//获取当前医生下所有门诊队列患者
 function refreshQueue() {
-    $("#allPatientNormal").load('/getAllPatientNormal');
 
-    $("#allPatientLater").load('/getAllPatientLater');
+    $.ajax({
+        url: "/outpatient/getalloutpatientqueue",
+        type: "post",
+        dataType: "json",
+        success: function (data) {
+
+            var html = '';
+            $.each(data, function (i, value) {
+                html += '<tr class="alloutpatientqueue">';
+                html += '<th>' + (i + 1) + '</th>';
+                html += '<td>' + value.cardId + '</td>';
+                html += '<td>' + value.patientName + '</td>';
+
+                if (-1 === value.status) {
+
+                    //registerId需要加引号，需要用\"转义
+                    html += "<td>" + "<button class='btn btn-info mybutton' onclick='restorePatientInfor(\"" + value.registerId + "\")'>恢复</button>"
+                }
+                html += ' </tr>'
+            });
+            $('#alloutpatientqueue').html(html)
+        }
+    });
 }
 
 var drugMethod = '';
@@ -158,11 +185,17 @@ $('.drugNum').chosen({disable_search: true, allow_single_deselect: true,}).chang
     drugNum = $(".drugNum option:selected").val();
 });
 
+/**
+ * @return {boolean}
+ */
 function ProcessLater() {
 
+    var name = $("#name").val();
     var cardId = $("#cardId").val();
+    var prescriptionNum = $("#prescriptionNum").val();
+    var queueId = $("#queueId").val();
 
-    if (cardId == null || cardId == '') {
+    if (cardId == null || cardId === '') {
         swal("请先读取就诊卡！", "", "error");
         return false;
     }
@@ -171,15 +204,21 @@ function ProcessLater() {
     var MedicalRecordReqVO = {
         cardId: cardId,
         conditionDescription: $("#conditionDescr").val(),
-        prescriptionNum: $("#prescriptionNum").val()
+        prescriptionNum: prescriptionNum,
+        queueId: queueId
+
     };
 
     swal({
-            title: "稍后处理只会保存病历主诉信息，请确认您的操作！",
+            title: "稍后处理只会保存病历主诉信息，门诊体检需患者提供处方号，请确认您的操作！",
+            text: "<div id='printId'>姓名:<span style='color: #2C9FAF'>" + name + "</span>&emsp;卡号:<span style='color: #2C9FAF'>" + cardId + "</span>" +
+                "<br>处方号:<span style='color: #2C9FAF'>" + prescriptionNum + "</span></div><a class='mybutton-print' href='#' onclick='printPrescriptionNum()'>打印</a>",
+            html: true,
             type: "info",
             showCancelButton: true,
             closeOnConfirm: false,
             showLoaderOnConfirm: true
+
         }, function () {
             $.ajax({
                 url: "/outpatient/ProcessLaterMedicalRecord",
@@ -188,11 +227,9 @@ function ProcessLater() {
                 data: JSON.stringify(MedicalRecordReqVO),
                 success: function (data) {
 
-                    if (data == "SUCCESS") {
+                    if (data !== null && data.status === 1) {
 
                         setTimeout(function () {
-
-
                             swal({
                                 title: "操作成功，如要恢复，请点击右侧栏进行操作",
                                 type: "success",
@@ -202,11 +239,10 @@ function ProcessLater() {
                                     window.location.reload()
                                 }, 500)
                             });
-
                         }, 1000)
 
                     } else {
-                        swal("系统异常，请稍后重试！", "", "error")
+                        swal(data.message, "", "error")
                     }
                 }
             });
@@ -214,7 +250,19 @@ function ProcessLater() {
 
         }
     );
+}
 
+/**打印**/
+function printPrescriptionNum() {
+
+    Print('#printId', {
+        onStart: function () {
+            console.log('onStart', new Date())
+        },
+        onEnd: function () {
+            console.log('onEnd', new Date())
+        }
+    })
 }
 
 function restorePatientInfor(registerId) {
@@ -244,9 +292,9 @@ function restorePatientInfor(registerId) {
 
                 $("#conditionDescr").val(data.conditionDescription);
 
-                $("#allPatientNormal").load('/getAllPatientNormal');
+                $("#queueId").val(data.queueId);
 
-                $("#allPatientLater").load('/getAllPatientLater');
+                refreshQueue();
             } else {
                 swal(data.message, "", "error")
             }
@@ -269,25 +317,25 @@ function addDrugs() {
     var price = parseInt($("#price").val());
     var specification = $("#specification").val();
 
-    if (drug == null || drug == '') {
+    if (drug == null || drug === '') {
         swal("请先选择药品！", "", "error");
         return false;
     }
-    if (usage == null || usage == '') {
+    if (usage == null || usage === '') {
         swal("请填写药品每次剂量！", "", "error");
         return false;
     }
 
-    if (drugMethod == null || drugMethod == '') {
+    if (drugMethod == null || drugMethod === '') {
         swal("请选择药品服用方式！", "", "error");
         return false;
     }
 
-    if (drugNum == null || drugNum == '') {
+    if (drugNum == null || drugNum === '') {
         swal("请选择药品每日服用次数！", "", "error");
         return false;
     }
-    if (cardId == null || cardId == '') {
+    if (cardId == null || cardId === '') {
         swal("请先读取就诊卡！", "", "error");
         return false;
     }
@@ -319,20 +367,21 @@ function addMedicalRecord() {
     var cardId = $("#cardId").val();
     var diagnosisResult = $("#diagnosisResult").val();
     var medicalOrder = $("#medicalOrder").val();
+    var queueId = $("#queueId").val();
 
-    if (cardId == null || cardId == '') {
+    if (cardId == null || cardId === '') {
         swal("请先读取就诊卡！", "", "error");
         return false;
     }
-    if (drug == null || drug == '') {
+    if (drug == null || drug === '') {
         swal("请选择药品！", "", "error");
         return false;
     }
-    if (diagnosisResult == null || diagnosisResult == '') {
+    if (diagnosisResult == null || diagnosisResult === '') {
         swal("请填写初步诊断！", "", "error");
         return false;
     }
-    if (medicalOrder == null || medicalOrder == '') {
+    if (medicalOrder == null || medicalOrder === '') {
         swal("请填写医嘱！", "", "error");
         return false;
     }
@@ -344,7 +393,8 @@ function addMedicalRecord() {
         prescription: $("#drugs").html().trim(),
         medicalOrder: medicalOrder,
         drugCost: allPrice,
-        diagnosisResult: diagnosisResult
+        diagnosisResult: diagnosisResult,
+        queueId: queueId
     };
     swal({
 
@@ -363,7 +413,8 @@ function addMedicalRecord() {
                 contentType: "application/json",
                 data: JSON.stringify(MedicalRecordReqVO),
                 success: function (data) {
-                    if (data == "SUCCESS") {
+
+                    if (data !== null && data.status === 1) {
                         swal({
                             title: "病历信息提交成功,本次就诊完成！",
                             type: "success",
@@ -372,7 +423,7 @@ function addMedicalRecord() {
                             window.location.reload()
                         });
                     } else {
-                        swal("系统异常,请稍后重试！", "", "error")
+                        swal(data.message, "", "error")
                     }
                 }
             })
@@ -383,6 +434,7 @@ function addMedicalRecord() {
 
 }
 
+/**获取体检信息**/
 function getMedicalExamination() {
 
     var prescriptionNum = $("#prescriptionNum").val();
@@ -407,5 +459,6 @@ function getMedicalExamination() {
             }
         }
     })
+
 
 }

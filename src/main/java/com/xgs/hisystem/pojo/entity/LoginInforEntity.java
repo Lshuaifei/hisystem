@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 /**
  * @author xgs
- * @Description:
+ * @Description: 登录信息表
  * @date 2019/3/22
  */
 @Entity

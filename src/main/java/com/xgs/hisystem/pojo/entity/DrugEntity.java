@@ -7,12 +7,13 @@ import javax.persistence.Table;
 /**
  * @author xgs
  * @date 2019-5-11
- * @description:
+ * @description: 药物表
  */
 @Entity
 @Table(name = "his_drug")
 public class DrugEntity extends BaseEntity {
 
+    /*药物编号*/
     @Column(name = "num", nullable = false, length = 50)
     private double num = System.currentTimeMillis();
 

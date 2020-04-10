@@ -1,13 +1,10 @@
 package com.xgs.hisystem.task;
 
-import com.alibaba.fastjson.JSON;
-import com.xgs.hisystem.config.Contants;
+import com.xgs.hisystem.config.HisConstants;
 import com.xgs.hisystem.pojo.entity.LoginInforEntity;
 import com.xgs.hisystem.pojo.entity.UserEntity;
-import com.xgs.hisystem.pojo.vo.getAddress.GetAddressRspVO;
 import com.xgs.hisystem.repository.ILoginInforRepository;
 import com.xgs.hisystem.repository.IUserRepository;
-import com.xgs.hisystem.service.impl.AdminServiceImpl;
 import com.xgs.hisystem.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -59,7 +55,7 @@ public class AsyncTask {
 
                 RestTemplate restTemplate = new RestTemplate();
                 //获取地理位置
-                String url = Contants.url.ADDRESS_URL ;
+                String url = HisConstants.URL.ADDRESS_URL ;
                 String resultAddress = restTemplate.getForObject(url, String.class);
 
                 logger.info("登录获取地址，url={},返回={}",url,resultAddress);

@@ -27,6 +27,16 @@ public class medicalExaminationInfoReqVO {
     @NotBlank(message = "请填写检查费用")
     private String examinationCost;
 
+    /**
+     * 队列Id
+     */
+    private String queueId;
+
+    /**
+     * 处方号
+     */
+    private String prescriptionNum;
+
     public String getBodyTemperature() {
         return bodyTemperature;
     }
@@ -73,5 +83,21 @@ public class medicalExaminationInfoReqVO {
 
     public void setCardId(String cardId) {
         this.cardId = cardId;
+    }
+
+    public String getQueueId() {
+        return queueId;
+    }
+
+    public void setQueueId(String queueId) {
+        this.queueId = queueId;
+    }
+
+    public String getPrescriptionNum() {
+        return prescriptionNum;
+    }
+
+    public void setPrescriptionNum(String prescriptionNum) {
+        this.prescriptionNum = prescriptionNum;
     }
 }

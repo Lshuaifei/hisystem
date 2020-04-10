@@ -3,9 +3,10 @@
 <head>
     <head th:replace="common/common_css :: css(~{::link})">
     </head>
-    <title>划价收费</title>
+    <title>门诊收费</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/chosen.min.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{css/mcss/mcss_toll.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{css/mcss/mcss_outpatientToll.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{css/mcss/mcss_notice.css}"/>
     <link type="text/css" rel="stylesheet" th:href="@{/css/preloader.css}">
 </head>
 <body>
@@ -119,6 +120,10 @@
 
                             <div class="CardIdInfor">
                                 卡号<input type="text" style="width: 140px"  id="cardId">
+                                <div class="my-tooltip">
+                                    <img class="png" th:src="@{/images/icon/notice.png}">
+                                    <div class="tooltip">手动输入就诊卡号后，只需点击最右侧搜索按钮，选择收费状态便可查询。读取就诊卡需配合IC读卡器来使用！</div>
+                                </div>
                                 <div class="mybtn1">
                                     <button class="btn btn-info" onclick="getCardIdInfor()">读取就诊卡</button>
                                 </div>
@@ -207,7 +212,7 @@
     <script type="text/javascript" th:src="@{/js/jquery.jqprint-0.3.js}"></script>
     <script th:src="@{/sb-admin-2/bootstrap/bootstrap-table.min.js}"></script>
     <script th:src="@{/sb-admin-2/bootstrap/bootstrap-table-zh-CN.js}"></script>
-    <script type="text/javascript" th:src="@{/js/mjs/mjs_toll.js}"></script>
+    <script type="text/javascript" th:src="@{/js/mjs/mjs_outpatientToll.js}"></script>
     <script type="text/javascript" th:src="@{/js/Print.js}"></script>
 </div>
 </body>

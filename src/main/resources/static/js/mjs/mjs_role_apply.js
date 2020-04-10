@@ -107,7 +107,7 @@ var TableInit = function () {
 
 
 var ButtonInit = function () {
-    var oInit = new Object();
+    var oInit = {};
     var postdata = {};
 
     oInit.Init = function () {

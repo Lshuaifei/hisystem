@@ -1,6 +1,6 @@
 package com.xgs.hisystem.service;
 
-import com.xgs.hisystem.pojo.vo.BaseResponse;
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.medicalExamination.medicalExaminationInfoReqVO;
 import com.xgs.hisystem.pojo.vo.medicalExamination.PatientInforRspVO;
 import com.xgs.hisystem.pojo.vo.register.GetCardIdInforReqVO;
@@ -14,5 +14,5 @@ public interface IMedicalExaminationService {
 
     PatientInforRspVO getCardIdInfor(GetCardIdInforReqVO reqVO) throws Exception;
 
-    BaseResponse<?> saveMedicalExaminationInfo(medicalExaminationInfoReqVO reqVO);
+    BaseResponse<String> saveMedicalExaminationInfo(medicalExaminationInfoReqVO reqVO);
 }

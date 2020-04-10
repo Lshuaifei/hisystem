@@ -6,6 +6,13 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * @author XGS
+ * @date 2020/3/28
+ * @desciption 医护人员信息表
+ */
+
+
 @Entity
 @Table(name = "his_user")
 @DynamicInsert(true)

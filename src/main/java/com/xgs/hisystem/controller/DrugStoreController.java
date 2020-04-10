@@ -1,15 +1,14 @@
 package com.xgs.hisystem.controller;
 
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
-import com.xgs.hisystem.pojo.bo.ValidationResultBO;
-import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugReqVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugRspVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugSearchReqVO;
 import com.xgs.hisystem.service.IDrugStoreService;
-import com.xgs.hisystem.util.ParamsValidationUtils;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,14 +33,8 @@ public class DrugStoreController {
      * @return
      */
     @PostMapping(value = "/addNewDrug")
-    public String addNewDrug(@RequestBody DrugReqVO reqVO) {
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
-        if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().values().toString();
-        }
-
-        BaseResponse baseResponse = iDrugStoreService.addNewDrug(reqVO);
-        return baseResponse.getMessage();
+    public BaseResponse<String> addNewDrug(@RequestBody @Validated DrugReqVO reqVO) {
+        return iDrugStoreService.addNewDrug(reqVO);
     }
 
     /**
@@ -51,10 +44,9 @@ public class DrugStoreController {
      * @return
      */
     @PostMapping(value = "/addDrugType")
-    public String addDrugType(@RequestParam String drugType) {
+    public BaseResponse<String> addDrugType(@RequestParam String drugType) {
 
-        BaseResponse baseResponse = iDrugStoreService.addDrugType(drugType);
-        return baseResponse.getMessage();
+        return iDrugStoreService.addDrugType(drugType);
     }
 
     /**
@@ -64,10 +56,9 @@ public class DrugStoreController {
      * @return
      */
     @PostMapping(value = "/addEfficacyClassification")
-    public String addEfficacyClassification(@RequestParam String efficacyClassification) {
+    public BaseResponse<String> addEfficacyClassification(@RequestParam String efficacyClassification) {
 
-        BaseResponse baseResponse = iDrugStoreService.addEfficacyClassification(efficacyClassification);
-        return baseResponse.getMessage();
+        return iDrugStoreService.addEfficacyClassification(efficacyClassification);
     }
 
     /**
@@ -98,8 +89,7 @@ public class DrugStoreController {
      */
     @PostMapping(value = "/getDrugInfor")
     public DrugRspVO getDrugInfor(@RequestParam String drug) {
-        DrugRspVO drugRspVO = iDrugStoreService.getDrugInfor(drug);
-        return drugRspVO;
+        return iDrugStoreService.getDrugInfor(drug);
     }
 
     /**
@@ -110,10 +100,9 @@ public class DrugStoreController {
      * @return
      */
     @PostMapping(value = "/addStorageQuantity")
-    public String addStorageQuantity(@RequestParam String drug, @RequestParam String addStorageQuantity) {
-        BaseResponse baseResponse = iDrugStoreService.addStorageQuantity(drug, addStorageQuantity);
+    public BaseResponse<String> addStorageQuantity(@RequestParam String drug, @RequestParam String addStorageQuantity) {
 
-        return baseResponse.getMessage();
+        return iDrugStoreService.addStorageQuantity(drug, addStorageQuantity);
     }
 
     /**
@@ -135,9 +124,9 @@ public class DrugStoreController {
      * @return
      */
     @PostMapping(value = "/updateDrug")
-    public String updateDrug(@RequestBody DrugReqVO reqVO) {
-        BaseResponse baseResponse = iDrugStoreService.updateDrug(reqVO);
-        return baseResponse.getMessage();
+    public BaseResponse<String> updateDrug(@RequestBody @Validated DrugReqVO reqVO) {
+
+        return iDrugStoreService.updateDrug(reqVO);
     }
 
     /**
@@ -147,9 +136,9 @@ public class DrugStoreController {
      * @return
      */
     @PostMapping(value = "/deleteDrug")
-    public String deleteDrug(@RequestParam String drugName) {
-        BaseResponse baseResponse = iDrugStoreService.deleteDrug(drugName);
-        return baseResponse.getMessage();
+    public BaseResponse<String> deleteDrug(@RequestParam String drugName) {
+
+        return iDrugStoreService.deleteDrug(drugName);
     }
 
 

@@ -45,19 +45,22 @@ function changeUserInfo() {
         data: JSON.stringify(userInfor),
         success: function (data) {
 
-            /*异步刷新导航栏用户昵称*/
-            $("#head_username").html(username);
+            if (data !== null && data.status === 1) {
 
-            $('.modalxa').html(data);
-            $('.modalx').fadeIn();
-            setTimeout(function () {
-                $('.modalx').fadeOut();
-            }, 3000);
+                swal({
+                    title: "修改成功！",
+                    type: "success",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    showLoaderOnConfirm: true
+                });
+                /*异步刷新导航栏用户昵称*/
+                $("#head_username").html(username);
+            } else {
 
-            /*防止重复提交*/
-            $("#userInfoset").attr("disabled", true);
+                swal(data.message, "", "error")
+            }
 
-            setTimeout("$('#userInfoset').removeAttr('disabled')", 6000);
         }
     })
 }

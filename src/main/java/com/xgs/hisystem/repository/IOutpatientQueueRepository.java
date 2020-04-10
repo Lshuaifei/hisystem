@@ -13,7 +13,7 @@ public interface IOutpatientQueueRepository extends BaseRepository<OutpatientQue
 
     OutpatientQueueEntity findByPatientId(String id);
 
-    List<OutpatientQueueEntity> findByUserId(String userid);
+    List<OutpatientQueueEntity> findByUserIdOrderByCreateDatetimeAsc(String userid);
 
     OutpatientQueueEntity findByRegisterId(String registerId);
 }

@@ -8,7 +8,7 @@ Split(['#myprescription', '#takingDrugOperation'], {
 function getMedicalRecord() {
     var prescriptionNum = $("#prescriptionNum_input").val();
 
-    if (prescriptionNum == null || prescriptionNum == '') {
+    if (prescriptionNum == null || prescriptionNum === '') {
         swal("请填写处方号！", "", "error");
         return false;
     }
@@ -46,7 +46,7 @@ function saveTakingDrugInfo() {
 
     var prescriptionNum = $("#prescriptionNum_input").val();
 
-    if (prescriptionNum == null || prescriptionNum == '') {
+    if (prescriptionNum == null || prescriptionNum === '') {
         swal("请填写处方号！", "", "error");
         return false;
     }
@@ -59,7 +59,8 @@ function saveTakingDrugInfo() {
         },
         success: function (data) {
 
-            if (data == "SUCCESS") {
+            if (data !== null && data.status === 1) {
+
                 swal({
                     title: "提交成功！",
                     type: "success",
@@ -69,10 +70,8 @@ function saveTakingDrugInfo() {
                 }, function () {
                     window.location.reload()
                 })
-            } else if (data == "FAIL") {
-                swal("系统异常，请稍后重试！", "", "error")
             } else {
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
         }
 

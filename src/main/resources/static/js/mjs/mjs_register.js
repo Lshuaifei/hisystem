@@ -2,9 +2,9 @@ $(window).preloader();
 
 function getCardIdInfor(command) {
 
-    var GetCardIdInforReqVO={
-        command:command, //0:表示读卡器输入卡号 1:表示手动输入卡号
-        cardId:$("#cardId").val()
+    var GetCardIdInforReqVO = {
+        command: command, //0:表示读卡器输入卡号 1:表示手动输入卡号
+        cardId: $("#cardId").val()
     };
     $.ajax({
         url: "/register/getCardIdInfor",
@@ -30,13 +30,15 @@ function getDefaultGetCardId() {
         url: "/register/getDefaultGetCardId",
         type: "post",
         success: function (data) {
-            if (data == "fail") {
+
+            if (data !== null && data.status === 1) {
+                $("#cardId_1").val(data.data)
+            }
+            if (data.message === "fail") {
                 swal("读卡失败！请刷新页面重试", "", "error")
 
-            } else if (data == "none") {
+            } else if (data.message === "none") {
                 swal("未识别到卡片！", "", "error")
-            } else {
-                $("#cardId_1").val(data)
             }
         }
     })
@@ -94,17 +96,17 @@ function addPatientInfor() {
         data: JSON.stringify(PatientInforReqVO),
         success: function (data) {
 
-            if (data == "SUCCESS") {
+            if (data !== null && data.status === 1) {
                 swal("办理成功！", "", "success");
                 cancel();
                 window.location.hash = "#";
-            } else if (data == "FAIL") {
+            } else if (data.message === "FAIL") {
                 swal("办理异常！请刷新页面重新操作", "", "error");
                 cancel()
-            } else if (data == "ACTIVATED") {
+            } else if (data.message === "ACTIVATED") {
                 swal("该就诊卡已被激活！", "", "error");
-                cardId: $("#cardId_1").val()
-            } else if (data == "COVER") {
+                $("#cardId_1").val()
+            } else if (data.message === "COVER") {
                 swal({
                     title: "该患者已有就诊卡，点击“确认”进行补办操作！",
                     type: "info",
@@ -118,7 +120,8 @@ function addPatientInfor() {
                         contentType: 'application/json',
                         data: JSON.stringify(PatientInforReqVO),
                         success: function (data) {
-                            if (data == "SUCCESS") {
+
+                            if (data !== null && data.status === 1) {
                                 setTimeout(function () {
                                     swal("就诊卡补办成功！", "", "success");
                                     cancel();
@@ -133,7 +136,7 @@ function addPatientInfor() {
                     })
                 });
             } else {
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
         }
     })
@@ -143,7 +146,6 @@ var department = 0;
 var registerType = 0;
 
 var departmentName = "";
-var registerTypeName = "";
 
 $(function () {
 
@@ -161,8 +163,8 @@ $(function () {
         dataType: "json",
         success: function (data) {
             var optionHtml = '<option value=""></option>';
-            $.each(data, function (i,value) {
-                optionHtml += '<option value="' + value.code + '" >' + value.name + '</option>';
+            $.each(data, function (i, value) {
+                optionHtml += '<option value="' + value.code + '" id="' + value.type + '">' + value.name + '</option>';
             });
 
             $('#departmentSelect').html(optionHtml).trigger("chosen:updated").chosen({
@@ -181,20 +183,22 @@ $(function () {
                 group_search: false, //选项组是否可搜。此处搜索不可搜
                 include_group_label_in_selected: true //选中选项是否显示选项分组。false不显示，true显示。默认false。
             }).change(function () {
-
                 //选择科室
                 department = $("#departmentSelect option:selected").val();
-                departmentName=$("#departmentSelect option:selected").text();
+                departmentName = $("#departmentSelect option:selected").text();
+
+                //科室类型
+                registerType = $("#departmentSelect option:selected").attr("id");
+
+                if ("0" === registerType) {
+                    $("#departmentTypeSelect").val("普通门诊");
+                }
+                if ("1" === registerType) {
+                    $("#departmentTypeSelect").val("急诊");
+                }
             });
         }
     })
-});
-
-//选择挂号类型
-$('#departmentTypeSelect').chosen({disable_search: true, allow_single_deselect: true,}).change(function () {
-
-    registerType = $("#departmentTypeSelect option:selected").val();
-    registerTypeName= $("#departmentTypeSelect option:selected").text();
 });
 
 
@@ -202,17 +206,13 @@ function getRegisterDoctor() {
 
     var name = $("#name").val();
     //患者姓名作为限制
-    if (name == null || name == '') {
+    if (name == null || name === '') {
         swal("请先读取就诊卡！", "", "error");
         return false;
     }
 
-    if (department == null || department == '') {
+    if (department == null || department === '') {
         swal("请选择科室！", "", "error");
-        return false;
-    }
-    if (registerType == null || registerType == '') {
-        swal("请选择就诊类型！", "", "error");
         return false;
     }
 
@@ -235,7 +235,7 @@ var doctorName = '';
 var workAddress = '';
 
 var TableInit = function () {
-    var oTableInit = new Object();
+    var oTableInit = {};
     //初始化Table
     oTableInit.Init = function () {
         $('#RegisterDoctor').bootstrapTable({
@@ -331,7 +331,7 @@ var TableInit = function () {
 
 
 var ButtonInit = function () {
-    var oInit = new Object();
+    var oInit = {};
     var postdata = {};
 
     oInit.Init = function () {
@@ -343,7 +343,7 @@ var ButtonInit = function () {
 
 //操作
 function addFunctionAlty(value, row, index) {
-    if (row.allowNum == row.nowNum) {
+    if (row.allowNum === row.nowNum) {
         return [
 
             '<button id="btn_register" disabled="disabled" class="btn btn-outline-primary" >选择</button>  '
@@ -359,7 +359,7 @@ function addFunctionAlty(value, row, index) {
 
 window.operateEvents = {
 
-    // 挂号
+    //选择医生
     "click #btn_register": function (e, value, row, index) {
 
         doctorId = row.id;
@@ -369,7 +369,7 @@ window.operateEvents = {
 
         cardId = $("#cardId").val();
 
-        if (cardId == null || cardId == '') {
+        if (cardId == null || cardId === '') {
             swal("请先读取就诊卡！", "", "error");
             return false;
         }
@@ -388,16 +388,17 @@ window.operateEvents = {
     }
 };
 
+/**支付方式**/
 var payType = '';
 
 $('.payType').chosen({disable_search: true}).change(function () {
     payType = $(".payType option:selected").val();
-    if (payType == "现金") {
+    if (payType === "现金") {
         $("#money").css("display", "block");
         $("#apay").css("display", "none");
         $("#payMoney").val("");
         $("#Change").val("")
-    } else if (payType == "支付宝") {
+    } else if (payType === "支付宝") {
         $("#money").css("display", "none");
         $("#apay").css("display", "block")
     } else {
@@ -406,6 +407,7 @@ $('.payType').chosen({disable_search: true}).change(function () {
     }
 });
 
+/**计算找零**/
 function getChange() {
     var a = $("#registerPriice").val();
     var m = $("#payMoney").val();
@@ -414,25 +416,28 @@ function getChange() {
     $("#Change").val(x)
 }
 
+
 function addRegisterInfor() {
 
     cardId = $("#cardId").val();
 
+    var registerTypeName = $("#departmentTypeSelect").val();
+
     var RegisterInforReqVO = {
         cardId: cardId,
         doctorId: doctorId,
-        department: departmentName,
+        department: department,
         registerType: registerTypeName,
         doctor: doctorName,
         treatmentPrice: treatmentPrice,
         payType: payType
     };
-    if (cardId == null || cardId == '') {
+    if (cardId == null || cardId === '') {
         swal("请先读取就诊卡！", "", "error");
         return false;
     }
 
-    if (treatmentPrice == null || treatmentPrice == '') {
+    if (treatmentPrice == null || treatmentPrice === '') {
         swal("请选择挂号医生！！", "", "error");
         return false;
     }
@@ -449,6 +454,7 @@ function addRegisterInfor() {
             closeOnConfirm: false,
             showLoaderOnConfirm: true
         },
+
         function () {
 
             $.ajax({
@@ -457,7 +463,8 @@ function addRegisterInfor() {
                 contentType: 'application/json',
                 data: JSON.stringify(RegisterInforReqVO),
                 success: function (data) {
-                    if (data == "SUCCESS") {
+
+                    if (data !== null && data.status === 1) {
                         setTimeout(function () {
                             swal({
                                     title: "提交成功！",
@@ -469,12 +476,10 @@ function addRegisterInfor() {
                                     }, 500)
 
                                 });
-
-
                         }, 1500);
 
                     } else {
-                        swal(data, "", "error")
+                        swal(data.message, "", "error")
                     }
                 }
             })

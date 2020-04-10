@@ -37,7 +37,7 @@ $(function () {
 });
 
 var TableInit = function () {
-    var oTableInit = new Object();
+    var oTableInit = {};
     //初始化Table
     oTableInit.Init = function () {
         $('#MedicalRecord').bootstrapTable({
@@ -131,7 +131,7 @@ var TableInit = function () {
     return oTableInit;
 };
 var ButtonInit = function () {
-    var oInit = new Object();
+    var oInit = {};
     var postdata = {};
 
     oInit.Init = function () {
@@ -219,13 +219,13 @@ $('.payType').chosen({disable_search: true}).change(function () {
 
     payType = $(".payType option:selected").val();
 
-    if (payType == "现金") {
+    if (payType === "现金") {
         $("#money").css("display", "block");
         $("#apay").css("display", "none");
         $("#payMoney").val("");
         $("#Change").val("")
     }
-    else if (payType == "支付宝") {
+    else if (payType === "支付宝") {
         $("#money").css("display", "none");
         $("#apay").css("display", "block")
     } else {
@@ -253,22 +253,22 @@ function saveTollInfo() {
     };
 
 
-    if (cardId == null || cardId == '') {
+    if (cardId == null || cardId === '') {
         swal("请先读取就诊卡！", "", "error");
         return false;
     }
 
-    if (total == null || total == '') {
+    if (total == null || total === '') {
         swal("请选择收费的处方笺！", "", "error");
         return false;
     }
-    if (payType == null||payType=='') {
+    if (payType == null||payType==='') {
         swal("请先付款，再提交！", "", "error");
         return false;
     }
-    if (payType == "现金") {
+    if (payType === "现金") {
         var change=$("#Change").val();
-        if (change==null||change=='') {
+        if (change==null||change==='') {
             swal("请先付款，再提交！", "", "error");
             return false;
         }
@@ -279,7 +279,8 @@ function saveTollInfo() {
         contentType: "application/json",
         data: JSON.stringify(SaveTollInfoReqVO),
         success: function (data) {
-            if (data == "SUCCESS") {
+
+            if (data !== null && data.status === 1) {
                 swal({
                     title: "提交成功！",
                     type: "success",
@@ -290,7 +291,7 @@ function saveTollInfo() {
                     window.location.reload()
                 })
             } else {
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
         }
 

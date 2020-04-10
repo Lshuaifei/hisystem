@@ -13,7 +13,7 @@ public class BaseResponse<T> {
     public static final Integer RESPONSE_SUCCESS=1;//成功
     public static final Integer RESPONSE_FAIL=0;//失败
 
-    public static <T> BaseResponse<T> errormsg(String msg){
+    public static <T> BaseResponse<T> error(String msg){
         BaseResponse<T> res = new BaseResponse<T>();
         res.setStatus(RESPONSE_FAIL);
         res.setMessage(msg);

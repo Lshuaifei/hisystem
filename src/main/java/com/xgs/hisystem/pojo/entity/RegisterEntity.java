@@ -5,10 +5,10 @@ import javax.persistence.*;
 /**
  * @author xgs
  * @date 2019/4/22
- * @description:
+ * @description: 挂号记录表
  */
 @Entity
-@Table(name = "his_register")
+@Table(name = "his_register",indexes = {@Index(name = "his_register_index",columnList = "patient_id")})
 public class RegisterEntity extends BaseEntity {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, optional = false)
@@ -39,14 +39,23 @@ public class RegisterEntity extends BaseEntity {
     @Column(name = "operatorEmail", nullable = false, length = 50)
     private String operatorEmail;   //操作员
 
+    /**
+     * 挂号状态。-1:过期，1:挂号成功
+     */
     @Column(name = "registerStatus", nullable = false, length = 2)
-    private int registerStatus; //挂号状态
+    private int registerStatus;
 
+    /**
+     * 就诊状态,包括门诊，体检。0:未就诊，1:已就诊
+     */
     @Column(name = "treatmentStatus", nullable = false, length = 2)
-    private int treatmentStatus;//门诊状态
+    private int treatmentStatus;
 
+    /**
+     * 收费状态。0:未收费，1:已收费
+     */
     @Column(name = "chargeStatus", nullable = false, length = 2)
-    private int chargeStatus;//收费状态
+    private int chargeStatus;
 
     @Column(name = "registeredNum", nullable = false, length = 50)
     private String registeredNum;  //挂号编号

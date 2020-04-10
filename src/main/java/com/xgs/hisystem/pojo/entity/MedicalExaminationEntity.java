@@ -1,39 +1,38 @@
 package com.xgs.hisystem.pojo.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author xgs
  * @date 2019-5-18
- * @description: 体检
+ * @description: 体检信息表
  */
 @Entity
 @Table(name = "his_medicalExamination")
 public class MedicalExaminationEntity extends BaseEntity {
 
-    @Column(name = "bodyTemperature", nullable = true, length = 50)
+    @Column(name = "bodyTemperature", nullable = true, length = 10)
     private String bodyTemperature; //体温
 
-    @Column(name = "pulse", nullable = true, length = 50)
+    @Column(name = "pulse", nullable = true, length = 10)
     private String pulse;   //脉搏
 
-    @Column(name = "heartRate", nullable = true, length = 50)
+    @Column(name = "heartRate", nullable = true, length = 10)
     private String heartRate;  //心率
 
-    @Column(name = "bloodPressure", nullable = true, length = 50)
+    @Column(name = "bloodPressure", nullable = true, length = 10)
     private String bloodPressure;  //血压
 
-    @Column(name = "examinationCost", nullable = true, length = 50)
-    private double examinationCost;
+    @Column(name = "examinationCost", nullable = true, length = 10)
+    private double examinationCost; //费用
 
+    @Column(name = "prescriptionNum", nullable = true, length = 64)
+    private String prescriptionNum; //处方号
 
-    @Column(name = "prescriptionNum", nullable = false, length = 100)
-    private String prescriptionNum;
+    @OneToOne
+    @JoinColumn(name = "registerId", referencedColumnName = "id")
+    private RegisterEntity register;
 
-    @Column(name = "examinationOperator", nullable = true, length = 255)
-    private String examinationOperator;  //体检操作员
 
     public String getBodyTemperature() {
         return bodyTemperature;
@@ -83,11 +82,11 @@ public class MedicalExaminationEntity extends BaseEntity {
         this.prescriptionNum = prescriptionNum;
     }
 
-    public String getExaminationOperator() {
-        return examinationOperator;
+    public RegisterEntity getRegister() {
+        return register;
     }
 
-    public void setExaminationOperator(String examinationOperator) {
-        this.examinationOperator = examinationOperator;
+    public void setRegister(RegisterEntity register) {
+        this.register = register;
     }
 }

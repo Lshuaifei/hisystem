@@ -1,11 +1,8 @@
 package com.xgs.hisystem.service;
 
-import com.xgs.hisystem.pojo.vo.BaseResponse;
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.register.GetCardIdInforReqVO;
-import com.xgs.hisystem.pojo.vo.toll.SaveTollInfoReqVO;
-import com.xgs.hisystem.pojo.vo.toll.TollMedicalRecordRspVO;
-import com.xgs.hisystem.pojo.vo.toll.TollRspVO;
-import com.xgs.hisystem.pojo.vo.toll.cardRspVO;
+import com.xgs.hisystem.pojo.vo.toll.*;
 
 import java.util.List;
 
@@ -22,5 +19,9 @@ public interface ITollService {
 
     TollMedicalRecordRspVO getMedicalRecord(String cardId, String registerId) throws Exception;
 
-    BaseResponse<?> saveTollInfo(SaveTollInfoReqVO reqVO);
+    BaseResponse<String> saveTollInfo(SaveTollInfoReqVO reqVO);
+
+    BaseResponse<GetExaminationTollInfoRspVO> getExaminationTollInfo(GetCardIdInforReqVO reqVO);
+
+    BaseResponse<String> saveExaminationTollInfo(String registerId);
 }

@@ -30,9 +30,7 @@ $(function () {
             $.each(data, function (i) {
                 optionHtml += '<option value="' + data[i] + '" >' + data[i] + '</option>';
             });
-            $('.drugTypeSelect').html(optionHtml);
-            $('.drugTypeSelect').trigger("chosen:updated");
-            $('.drugTypeSelect').chosen({
+            $('.drugTypeSelect').html(optionHtml).trigger("chosen:updated").chosen({
                 no_results_text: "没有找到结果！",
                 search_contains: true,
                 allow_single_deselect: true,
@@ -55,9 +53,7 @@ $(function () {
 
             /*搜索下拉框*/
 
-            $('.drugTypeSelect_search').html(optionHtml);
-            $('.drugTypeSelect_search').trigger("chosen:updated");
-            $('.drugTypeSelect_search').chosen({
+            $('.drugTypeSelect_search').html(optionHtml).trigger("chosen:updated").chosen({
                 no_results_text: "没有找到结果！",
                 search_contains: true,
                 allow_single_deselect: true,
@@ -91,9 +87,7 @@ $(function () {
             $.each(data, function (i) {
                 optionHtml += '<option value="' + data[i] + '" >' + data[i] + '</option>';
             });
-            $('.efficacyClassificationSelect').html(optionHtml);
-            $('.efficacyClassificationSelect').trigger("chosen:updated");
-            $('.efficacyClassificationSelect').chosen({
+            $('.efficacyClassificationSelect').html(optionHtml).trigger("chosen:updated").chosen({
                 no_results_text: "没有找到结果！",
                 search_contains: true,
                 allow_single_deselect: true,
@@ -115,9 +109,7 @@ $(function () {
             });
 
             /*搜索下拉框*/
-            $('.efficacyClassificationSelect_search').html(optionHtml);
-            $('.efficacyClassificationSelect_search').trigger("chosen:updated");
-            $('.efficacyClassificationSelect_search').chosen({
+            $('.efficacyClassificationSelect_search').html(optionHtml).trigger("chosen:updated").chosen({
                 no_results_text: "没有找到结果！",
                 search_contains: true,
                 allow_single_deselect: true,
@@ -149,9 +141,7 @@ $(function () {
             $.each(data, function (i) {
                 optionHtml += '<option value="' + data[i] + '" >' + data[i] + '</option>';
             });
-            $('.drugSelect').html(optionHtml);
-            $('.drugSelect').trigger("chosen:updated");
-            $('.drugSelect').chosen({
+            $('.drugSelect').html(optionHtml).trigger("chosen:updated").chosen({
                 no_results_text: "没有找到结果！",
                 search_contains: true,
                 allow_single_deselect: true,
@@ -188,7 +178,7 @@ $('.limitStatusSelect').chosen({disable_search: true, allow_single_deselect: tru
 });
 
 var TableInit = function () {
-    var oTableInit = new Object();
+    var oTableInit = {};
     //初始化Table
     oTableInit.Init = function () {
         $('#AllDrug').bootstrapTable({
@@ -326,7 +316,7 @@ var TableInit = function () {
     return oTableInit;
 };
 var ButtonInit = function () {
-    var oInit = new Object();
+    var oInit = {};
     var postdata = {};
 
     oInit.Init = function () {
@@ -421,7 +411,7 @@ function updateDrug() {
         data: JSON.stringify(DrugReqVO),
         success: function (data) {
 
-            if (data == "SUCCESS") {
+            if (data !== null && data.status === 1) {
                 swal({
                     title: "修改成功！",
                     type: "success",
@@ -434,7 +424,7 @@ function updateDrug() {
                     $("#AllDrug").bootstrapTable('refresh');
                 })
             } else {
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
         }
     })
@@ -450,7 +440,7 @@ function deleteDrug() {
         },
         success: function (data) {
 
-            if (data == "SUCCESS") {
+            if (data !== null && data.status === 1) {
                 swal({
                     title: "删除成功！",
                     type: "success",
@@ -464,7 +454,7 @@ function deleteDrug() {
                 })
             } else {
 
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
         }
     })

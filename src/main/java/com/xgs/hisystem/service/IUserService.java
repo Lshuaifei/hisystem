@@ -1,5 +1,6 @@
 package com.xgs.hisystem.service;
 
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
 import com.xgs.hisystem.pojo.vo.*;
 
@@ -8,19 +9,19 @@ import java.util.List;
 
 public interface IUserService {
 
-    BaseResponse<?> doLogin(UserLoginReqVO reqVO);
+    BaseResponse<String> doLogin(UserLoginReqVO reqVO);
 
-    BaseResponse<?> saveUserAndSendEmail(UserRegisterReqVO reqVO);
+    BaseResponse<String> saveUserAndSendEmail(UserRegisterReqVO reqVO);
 
-    BaseResponse<?> activation(String email, String validateCode) throws ParseException;
+    BaseResponse<String> activation(String email, String validateCode) throws ParseException;
 
     PageRspBO<LoginInforRspVO> getLoginfor(BasePageReqVO reqVO);
 
-    BaseResponse<?> changePassword(ChangePasswordReqVO reqVO);
+    BaseResponse<String> changePassword(ChangePasswordReqVO reqVO);
 
     List<UserInfoVO> getUserInfo();
 
-    BaseResponse<?> changeUserInfo(UserInfoVO reqVO);
+    BaseResponse<String> changeUserInfo(UserInfoVO reqVO);
 
     List<AnnouncementVO> annDisplay();
 
@@ -28,7 +29,7 @@ public interface IUserService {
 
     List<String> getAccountRole();
 
-    BaseResponse<?> addAnotherRole(AccountRoleVO reqVO);
+    BaseResponse<String> addAnotherRole(AccountRoleVO reqVO);
 
     List<GetAllRoleRspVO> getAllRole();
 }

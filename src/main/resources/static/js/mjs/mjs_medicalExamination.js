@@ -1,9 +1,14 @@
 $(window).preloader();
 
+window.onload = function () {
+
+    refreshQueue();
+};
+
 function getCardIdInfor(command) {
-    var GetCardIdInforReqVO={
-        command:command, //0:表示读卡器输入卡号 1:表示手动输入卡号
-        cardId:$("#cardId").val()
+    var GetCardIdInforReqVO = {
+        command: command, //0:表示读卡器输入卡号 1:表示手动输入卡号
+        cardId: $("#cardId").val()
     };
     $.ajax({
         url: "/medicalExamination/getCardIdInfor",
@@ -16,7 +21,8 @@ function getCardIdInfor(command) {
                 $("#name").val(data.name);
                 $("#sex").val(data.sex);
                 $("#nationality").val(data.nationality);
-                $("#age").val(data.age)
+                $("#age").val(data.age);
+                $("#queueId").val(data.queueId);
             } else {
                 swal(data.message, "", "error")
             }
@@ -32,7 +38,9 @@ function savemedicalExaminationInfo() {
         pulse: $("#pulse").val(),
         heartRate: $("#heartRate").val(),
         bloodPressure: $("#bloodPressure").val(),
-        examinationCost: $("#examinationCost").val()
+        examinationCost: $("#examinationCost").val(),
+        prescriptionNum:$("#prescriptionNum").val(),
+        queueId: $("#queueId").val()
     };
 
     $.ajax({
@@ -41,7 +49,8 @@ function savemedicalExaminationInfo() {
         data: JSON.stringify(medicalExaminationInfoReqVO),
         contentType: "application/json",
         success: function (data) {
-            if (data == "SUCCESS") {
+
+            if (data !== null && data.status === 1) {
                 swal({
                     title: "保存成功！",
                     type: "success",
@@ -50,14 +59,38 @@ function savemedicalExaminationInfo() {
                         window.location.reload()
                     }, 500)
                 })
-
-
-            } else if (data == "FAIL") {
-                swal("系统异常，请稍后重试！", "", "error")
             } else {
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
         }
     })
 
+}
+
+<!--控制队列侧边栏-->
+$(".showbar").on('click', function () {
+    $('.widget-bar').toggleClass('on1');
+    $('.showbar').toggleClass('on2');
+});
+
+//获取当前医生下所有门诊队列患者
+function refreshQueue() {
+
+    $.ajax({
+        url: "/outpatient/getalloutpatientqueue",
+        type: "post",
+        dataType: "json",
+        success: function (data) {
+
+            var html = '';
+            $.each(data, function (i, value) {
+                html += '<tr class="alloutpatientqueue">';
+                html += '<th>' + (i + 1) + '</th>';
+                html += '<td>' + value.cardId + '</td>';
+                html += '<td>' + value.patientName + '</td>';
+                html += ' </tr>'
+            });
+            $('#alloutpatientqueue').html(html)
+        }
+    });
 }

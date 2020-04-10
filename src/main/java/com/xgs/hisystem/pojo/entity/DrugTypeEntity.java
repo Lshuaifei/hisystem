@@ -7,7 +7,7 @@ import javax.persistence.Table;
 /**
  * @author xgs
  * @date 2019-5-23
- * @description:
+ * @description: 药物类型：注射剂、片剂、胶囊、、、
  */
 @Entity
 @Table(name = "his_drugType")

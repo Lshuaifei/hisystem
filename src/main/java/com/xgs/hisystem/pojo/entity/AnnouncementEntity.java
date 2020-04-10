@@ -7,7 +7,7 @@ import javax.persistence.Table;
 /**
  * @author xgs
  * @date 2019/4/11
- * @description:
+ * @description: 公告表
  */
 @Entity
 @Table(name = "his_announcement")

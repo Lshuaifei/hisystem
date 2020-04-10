@@ -1,11 +1,10 @@
 package com.xgs.hisystem.controller;
 
-import com.xgs.hisystem.pojo.vo.AccountRoleVO;
+import com.xgs.hisystem.config.HisConstants;
+import com.xgs.hisystem.config.ServerConfig;
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.AnnouncementVO;
-import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.applyRspVO;
-import com.xgs.hisystem.pojo.vo.outpatient.OutpatientQueueLaterRspVO;
-import com.xgs.hisystem.pojo.vo.outpatient.OutpatientQueueNormalRspVO;
 import com.xgs.hisystem.service.IAdminService;
 import com.xgs.hisystem.service.IOutpatientService;
 import com.xgs.hisystem.service.IUserService;
@@ -35,7 +34,7 @@ public class PageController {
     @Autowired
     private IAdminService iAdminService;
     @Autowired
-    private IOutpatientService iOutpatientService;
+    private ServerConfig serverConfig;
 
     @GetMapping(value = "/")
     public String login() {
@@ -64,6 +63,7 @@ public class PageController {
     public String fmail(HttpServletRequest request, Model model) {
         String email = request.getParameter("email");
         model.addAttribute("email", email);
+        model.addAttribute("url", serverConfig.getUrl());
         return "email/fmail";
     }
 
@@ -79,7 +79,10 @@ public class PageController {
     public String activation(String email, String validateCode, Model model) throws ParseException {
 
         BaseResponse baseResponse = iUserService.activation(email, validateCode);
-        if (baseResponse.getStatus().equals(1)) {
+
+        model.addAttribute("url", serverConfig.getUrl());
+
+        if (HisConstants.COMMON_STATUS_ONE.equals(baseResponse.getStatus())) {
             return "email/dmail";
         } else {
             return "error";
@@ -88,7 +91,7 @@ public class PageController {
 
 
     @GetMapping(value = "/accountset")
-    public String AccountSet() {
+    public String accountSet() {
         return "accountset";
     }
 
@@ -171,46 +174,22 @@ public class PageController {
     }
 
 
-    /**
-     * 门诊医生当天所有普通病人
-     *
-     * @param model
-     * @return
-     */
-    @GetMapping(value = "/getAllPatientNormal")
-    public String getAllPatientNormal(Model model) {
-
-        List<OutpatientQueueNormalRspVO> outpatientQueueNormalList = iOutpatientService.getAllPatientNormal();
-        model.addAttribute("outpatientQueueNormalList", outpatientQueueNormalList);
-
-        return "outpatient/outpatient::patientNormal";
-    }
-
-    /**
-     * 稍后处理病人
-     *
-     * @param model
-     * @return
-     */
-    @GetMapping(value = "/getAllPatientLater")
-    public String getAllPatientLater(Model model) {
-
-        List<OutpatientQueueLaterRspVO> outpatientQueueLaterList = iOutpatientService.getAllPatientLater();
-        model.addAttribute("outpatientQueueLaterList", outpatientQueueLaterList);
-
-        return "outpatient/outpatient::patientLater";
-    }
-
     @GetMapping(value = "/storageManage")
     public String storageManage() {
 
         return "drugStore/storageManage";
     }
 
-    @GetMapping(value = "/toll")
-    public String toll() {
+    @GetMapping(value = "/outpatientToll")
+    public String outpatientToll() {
 
-        return "toll/toll";
+        return "toll/outpatientToll";
+    }
+
+    @GetMapping(value = "/examinationToll")
+    public String examinationToll() {
+
+        return "toll/examinationToll";
     }
 
     @GetMapping(value = "/takingdrug")

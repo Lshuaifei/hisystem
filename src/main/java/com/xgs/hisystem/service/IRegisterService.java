@@ -1,7 +1,7 @@
 package com.xgs.hisystem.service;
 
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
-import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.register.*;
 
 import java.util.List;
@@ -17,17 +17,17 @@ public interface IRegisterService {
 
     IDcardRspVO getIDcardInfor();
 
-    BaseResponse<?> getDefaultGetCardId();
+    BaseResponse<String> getDefaultGetCardId();
 
-    BaseResponse<?> addPatientInfor(PatientInforReqVO reqVO) throws Exception;
+    BaseResponse<String> addPatientInfor(PatientInforReqVO reqVO) throws Exception;
 
-    BaseResponse<?> coverCardId(PatientInforReqVO reqVO);
+    BaseResponse<String> coverCardId(PatientInforReqVO reqVO);
 
     List<RegisterDoctorRspVO> getAllRegisterDoctor(RegisterTypeReqVO reqVO);
 
     /* BaseResponse<?> changeRegisterNum(String id, String cardId);*/
 
-    BaseResponse<?> addRegisterInfor(RegisterInforReqVO reqVO);
+    BaseResponse<String> addRegisterInfor(RegisterInforReqVO reqVO);
 
     PageRspBO<RegisterRecordRspVO> getRegisterRecord(RegisterRecordSearchReqVO reqVO);
 }

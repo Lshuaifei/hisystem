@@ -11,7 +11,7 @@ $(function () {
     oButtonInit.Init();
 });
 var TableInit = function () {
-    var oTableInit = new Object();
+    var oTableInit = {};
     //初始化Table
     oTableInit.Init = function () {
         $('#medicalRecord').bootstrapTable({
@@ -127,7 +127,7 @@ $(".endTime").flatpickr({
 
 
 var ButtonInit = function () {
-    var oInit = new Object();
+    var oInit = {};
     var postdata = {};
 
     oInit.Init = function () {

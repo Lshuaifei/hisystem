@@ -1,8 +1,8 @@
 package com.xgs.hisystem.service.impl;
 
-import com.xgs.hisystem.config.Contants;
+import com.xgs.hisystem.config.HisConstants;
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.entity.*;
-import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.takingdrug.MedicalRecordRspVO;
 import com.xgs.hisystem.repository.IMedicalExaminationRepository;
 import com.xgs.hisystem.repository.IMedicalRecordRepository;
@@ -43,9 +43,9 @@ public class TakingDrugServiceImpl implements ITakingDrugService {
             recordRspVO.setMessage("该处方号未查询到任何信息！");
             return recordRspVO;
         }
-        TollTakeDrugInfoEntity tollTakeDrugInfo=iTollTakeDrugInfoRepository.findByPrescriptionNumAndTakingDrugStatus(medicalRecord.getPrescriptionNum(),0 );
+        TollTakeDrugInfoEntity tollTakeDrugInfo = iTollTakeDrugInfoRepository.findByPrescriptionNumAndTakingDrugStatus(medicalRecord.getPrescriptionNum(), 0);
 
-        if (tollTakeDrugInfo==null) {
+        if (tollTakeDrugInfo == null) {
             recordRspVO.setMessage("该处方未查询到最新划价收费信息！");
             return recordRspVO;
         }
@@ -74,38 +74,39 @@ public class TakingDrugServiceImpl implements ITakingDrugService {
     }
 
     @Override
-    public BaseResponse<?> saveTakingDrugInfo(String prescriptionNum) {
+    public BaseResponse<String> saveTakingDrugInfo(String prescriptionNum) {
 
 
         if (StringUtils.isEmpty(prescriptionNum)) {
 
-            return BaseResponse.errormsg("请填写处方号！");
+            return BaseResponse.error("请填写处方号！");
         }
 
-        MedicalRecordEntity medicalRecord = iMedicalRecordRepository.findByPrescriptionNum(prescriptionNum);
-
-        if (StringUtils.isEmpty(medicalRecord)) {
-
-            return BaseResponse.errormsg("未查询到相关就诊记录！");
-        }
-        TollTakeDrugInfoEntity tollTakeDrugInfo=iTollTakeDrugInfoRepository.findByPrescriptionNumAndTakingDrugStatus(medicalRecord.getPrescriptionNum(),0 );
-
-        if (tollTakeDrugInfo==null) {
-            return BaseResponse.errormsg("该处方未查询到最新划价收费信息！");
-        }
-        UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
-        if (user==null) {
-            return BaseResponse.errormsg("登录信息已过期，请重新登录！");
-        }
-        tollTakeDrugInfo.setTakingDrugDateTime(DateUtil.getCurrentDateToString());
-        tollTakeDrugInfo.setTakingDrugOperator(user.getId());
-        tollTakeDrugInfo.setTakingDrugStatus(1);
         try {
+            MedicalRecordEntity medicalRecord = iMedicalRecordRepository.findByPrescriptionNum(prescriptionNum);
+
+            if (StringUtils.isEmpty(medicalRecord)) {
+
+                return BaseResponse.error("未查询到相关就诊记录！");
+            }
+            TollTakeDrugInfoEntity tollTakeDrugInfo = iTollTakeDrugInfoRepository.findByPrescriptionNumAndTakingDrugStatus(medicalRecord.getPrescriptionNum(), 0);
+
+            if (tollTakeDrugInfo == null) {
+                return BaseResponse.error("该处方未查询到最新划价收费信息！");
+            }
+            UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
+            if (user == null) {
+                return BaseResponse.error("登录信息已过期，请重新登录！");
+            }
+            tollTakeDrugInfo.setTakingDrugDateTime(DateUtil.getCurrentDateToString());
+            tollTakeDrugInfo.setTakingDrugOperator(user.getId());
+            tollTakeDrugInfo.setTakingDrugStatus(1);
+
             iTollTakeDrugInfoRepository.saveAndFlush(tollTakeDrugInfo);
-            return BaseResponse.success(Contants.user.SUCCESS);
+            return BaseResponse.success();
         } catch (Exception e) {
-            logger.error("处方号={},保存划价收费—拿药信息异常！msg={}", prescriptionNum,e.toString());
-            return BaseResponse.errormsg("操作异常，请稍后重试！");
+            logger.error("处方号={},保存划价收费—拿药信息异常！", prescriptionNum, e);
+            return BaseResponse.error("操作异常，请稍后重试！");
         }
 
     }

@@ -10,4 +10,6 @@ import com.xgs.hisystem.pojo.entity.MedicalExaminationEntity;
 public interface IMedicalExaminationRepository extends BaseRepository<MedicalExaminationEntity> {
 
     MedicalExaminationEntity findByPrescriptionNum(String prescriptionNum);
+
+    MedicalExaminationEntity findByRegisterId(String registerId);
 }

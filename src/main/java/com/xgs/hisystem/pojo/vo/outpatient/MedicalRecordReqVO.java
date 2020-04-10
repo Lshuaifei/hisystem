@@ -1,6 +1,7 @@
 package com.xgs.hisystem.pojo.vo.outpatient;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author xgs
@@ -24,11 +25,16 @@ public class MedicalRecordReqVO {
     @NotBlank(message = "请填写医嘱！")
     private String medicalOrder; //医嘱
 
-    @NotBlank(message = "请选择处方药！")
+    @NotNull(message = "请选择处方药！")
     private double drugCost; //药物总费用
 
     @NotBlank(message = "请填写初步诊断！")
     private String diagnosisResult;  //初步诊断结果
+
+    /**
+     * 队列Id
+     */
+    private String queueId;
 
     public String getCardId() {
         return cardId;
@@ -84,5 +90,14 @@ public class MedicalRecordReqVO {
 
     public void setDiagnosisResult(String diagnosisResult) {
         this.diagnosisResult = diagnosisResult;
+    }
+
+
+    public String getQueueId() {
+        return queueId;
+    }
+
+    public void setQueueId(String queueId) {
+        this.queueId = queueId;
     }
 }

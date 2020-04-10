@@ -1,5 +1,6 @@
 package com.xgs.hisystem.service;
 
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
 import com.xgs.hisystem.pojo.vo.*;
 
@@ -12,31 +13,31 @@ import java.util.List;
  */
 public interface IAdminService {
 
-    BaseResponse<?> createRole(RoleVO roleVO);
+    BaseResponse<String> createRole(RoleVO roleVO);
 
-    BaseResponse<?> addRole(AddRoleVO addRoleVO);
+    BaseResponse<String> addRole(AddRoleVO addRoleVO);
 
     PageRspBO<applyRspVO> getRoleApply(BasePageReqVO reqVO);
 
-    BaseResponse<?> saveUserAndSendEmailTemp(UserRegisterReqVO reqVO);
+    BaseResponse<String> saveUserAndSendEmailTemp(UserRegisterReqVO reqVO);
 
     List<applyRspVO> getRoleNotice();
 
     BaseResponse<?> changeRoleStatus(String status, String email);
 
-    BaseResponse<?> addAnnouncement(AnnouncementVO reqVO);
+    BaseResponse<String> addAnnouncement(AnnouncementVO reqVO);
 
     PageRspBO<AnnouncementVO> getAnnouncement(BasePageReqVO reqVO);
 
-    BaseResponse<?> changeAnnouncement(AnnouncementVO announcementVO);
+    BaseResponse<String> changeAnnouncement(AnnouncementVO announcementVO);
 
-    BaseResponse<?> deleteAnnouncement(String id);
+    BaseResponse<String> deleteAnnouncement(String id);
 
-    BaseResponse<?> showAnnouncement(String id);
+    BaseResponse<String> showAnnouncement(String id);
 
-    BaseResponse<?> hiddenAnnouncement(String id);
+    BaseResponse<String> hiddenAnnouncement(String id);
 
-    BaseResponse<?> addDepartment(AddDepartmentReqVO reqVO);
+    BaseResponse<String> addDepartment(AddDepartmentReqVO reqVO);
 
     List<GetDepartmentRspVO> getDepartment();
 }

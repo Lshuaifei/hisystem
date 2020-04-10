@@ -1,16 +1,14 @@
 package com.xgs.hisystem.controller;
 
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
-import com.xgs.hisystem.pojo.bo.ValidationResultBO;
 import com.xgs.hisystem.pojo.vo.*;
 import com.xgs.hisystem.service.IAdminService;
-import com.xgs.hisystem.util.ParamsValidationUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,13 +33,9 @@ public class AdminController {
      * @return
      */
     @RequestMapping(value = "/createRole", method = RequestMethod.POST)
-    public String createRole(@RequestBody RoleVO roleVO) {
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(roleVO);
-        if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().values().toString();
-        }
-        BaseResponse baseResponse = iadminService.createRole(roleVO);
-        return baseResponse.getMessage();
+    public BaseResponse<String> createRole(@RequestBody @Validated RoleVO roleVO) {
+
+        return iadminService.createRole(roleVO);
 
     }
 
@@ -52,13 +46,9 @@ public class AdminController {
      * @return
      */
     @RequestMapping(value = "/adduser", method = RequestMethod.POST)
-    public String saveUserAndSendEmailTemp(@RequestBody UserRegisterReqVO reqVO) {
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
-        if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().values().toString();
-        }
-        BaseResponse baseResponse = iadminService.saveUserAndSendEmailTemp(reqVO);
-        return baseResponse.getMessage();
+    public BaseResponse<String> saveUserAndSendEmailTemp(@RequestBody @Validated UserRegisterReqVO reqVO) {
+
+        return iadminService.saveUserAndSendEmailTemp(reqVO);
     }
 
     /**
@@ -68,12 +58,8 @@ public class AdminController {
      * @return
      */
     @RequestMapping(value = "/addRole", method = RequestMethod.POST)
-    public BaseResponse addRole(@RequestBody AddRoleVO addRoleVO) {
+    public BaseResponse<String> addRole(@RequestBody @Validated AddRoleVO addRoleVO) {
 
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(addRoleVO);
-        if (validateBo.isHasErrors()) {
-            return BaseResponse.errormsg(validateBo.getErrorMsg().toString());
-        }
         return iadminService.addRole(addRoleVO);
     }
 
@@ -86,7 +72,6 @@ public class AdminController {
      */
     @GetMapping(value = "/getRoleApply")
     public PageRspBO<applyRspVO> getRoleApply(BasePageReqVO reqVO) {
-
 
         return iadminService.getRoleApply(reqVO);
 
@@ -112,77 +97,46 @@ public class AdminController {
      * @return
      */
     @PostMapping(value = "/addAnnouncement")
-    public String addAnnouncement(@RequestBody AnnouncementVO reqVO) {
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
-        if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().values().toString();
-        }
-        BaseResponse baseResponse = iadminService.addAnnouncement(reqVO);
-        return baseResponse.getMessage();
+    public BaseResponse<String> addAnnouncement(@RequestBody @Validated AnnouncementVO reqVO) {
+
+        return iadminService.addAnnouncement(reqVO);
     }
 
     @GetMapping(value = "/getAnnouncement")
     public PageRspBO<AnnouncementVO> getAnnouncement(BasePageReqVO reqVO) {
 
-
         return iadminService.getAnnouncement(reqVO);
     }
 
     @PostMapping(value = "/changeAnnouncement")
-    public String changeAnnouncement(@RequestBody AnnouncementVO announcementVO) {
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(announcementVO);
-        if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().values().toString();
-        }
+    public BaseResponse<String> changeAnnouncement(@RequestBody @Validated AnnouncementVO announcementVO) {
 
-        BaseResponse baseResponse = iadminService.changeAnnouncement(announcementVO);
-        return baseResponse.getMessage();
+        return iadminService.changeAnnouncement(announcementVO);
     }
 
     @PostMapping(value = "/deleteAnnouncement")
-    public String deleteAnnouncement(@RequestParam String id) {
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(id);
-        if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().values().toString();
-        }
+    public BaseResponse<String> deleteAnnouncement(@RequestParam String id) {
 
-        BaseResponse baseResponse = iadminService.deleteAnnouncement(id);
-
-        return baseResponse.getMessage();
+        return iadminService.deleteAnnouncement(id);
     }
 
     @PostMapping(value = "/showAnnouncement")
-    public String showAnnouncement(@RequestParam String id) {
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(id);
-        if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().values().toString();
-        }
+    public BaseResponse<String> showAnnouncement(@RequestParam String id) {
 
-        BaseResponse baseResponse = iadminService.showAnnouncement(id);
-
-        return baseResponse.getMessage();
+        return iadminService.showAnnouncement(id);
     }
 
     @PostMapping(value = "/hiddenAnnouncement")
-    public String hiddenAnnouncement(@RequestParam String id) {
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(id);
-        if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().values().toString();
-        }
+    public BaseResponse<String> hiddenAnnouncement(@RequestParam String id) {
 
-        BaseResponse baseResponse = iadminService.hiddenAnnouncement(id);
-
-        return baseResponse.getMessage();
+        return iadminService.hiddenAnnouncement(id);
     }
 
     @PostMapping(value = "/adddepartment")
     @ApiOperation(value = "添加科室", httpMethod = "POST", notes = "添加科室")
     @ApiImplicitParam(name = "reqVO",value = "添加科室", dataType = "AddDepartmentReqVO")
-    public BaseResponse<?> addDepartment(@RequestBody AddDepartmentReqVO reqVO) {
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
-        if (validateBo.isHasErrors()) {
-            return BaseResponse.errormsg(validateBo.getErrorMsg().values().toString());
-        }
+    public BaseResponse<String> addDepartment(@RequestBody @Validated AddDepartmentReqVO reqVO) {
+
         return iadminService.addDepartment(reqVO);
     }
 

@@ -76,7 +76,7 @@
     margin-left: 8%;
 }
 
-.textbox .department-search {
+.textbox .cardId-search {
     margin-left: 2%;
 }
 
@@ -131,20 +131,6 @@ input {
     margin: 20px 0 0 235px;
 }
 
-/*患者队列侧边栏*/
-.widget-bar {
-    position: fixed;
-    overflow-y: auto;
-    top: 70px;
-    right: -310px;
-    width: 310px;
-    height: 100%;
-    z-index: 999;
-    transition: all 0.3s ease-in-out;
-    background-color: rgba(132, 128, 129, 0.9);
-    /* background-color: whitesmoke;*/
-    color: #FFFFFF;
-}
 
 .mybutton {
     width: 58px;
@@ -158,10 +144,25 @@ input {
     height: 36px;
 }
 
+/*队列侧边栏*/
+.widget-bar {
+    position: fixed;
+    overflow-y: auto;
+    top: 70px;
+    right: -310px;
+    width: 310px;
+    height: 100%;
+    z-index: 999;
+    transition: all 0.3s ease-in-out;
+    background-color: rgba(130, 139, 156, 0.7);
+    /* background-color: whitesmoke;*/
+    color: #FFFFFF;
+}
+
 .widget-bar h3 {
     font-size: 20px;
     font-weight: 600;
-    color: wheat;
+    color: #ffffff;
     margin: 11px;
 }
 
@@ -177,10 +178,10 @@ input {
     position: fixed;
     right: 0;
     top: 450px;
-    background-color: lightslategray;
-    border: 1px solid lightslategray;
+    background-color: #36b9cc;
+    border: 1px solid #36b9cc;
     transition: all 0.3s ease-in-out;
-    border-radius: 20%;
+    border-radius: 10%;
     width: 2.3rem;
     height: 2.3rem;
     outline: none !important;
@@ -199,21 +200,24 @@ input {
     color: #fff;
 }
 
-.allpatient {
+.alloutpatientqueue {
     text-align: center;
     font-size: 17px;
     font-weight: 600;
     color: #FFFFFF;
 }
 
-.allpatient th {
+.alloutpatientqueue th {
     width: 40px;
 }
 
-.allpatient td {
+.alloutpatientqueue td {
     width: 110px;
     height: 70px;
 }
+/*队列侧边栏*/
+
+
 
 .testResult {
 
@@ -246,4 +250,17 @@ input {
     width: 180px;
 }
 
+.mybutton-print {
+    height: 1.7rem;
+    line-height: 1.5rem;
+    padding: 0 11px;
+    background: rgb(140, 212, 245);
+    border: 1px rgb(140, 212, 245) solid;
+    border-radius: 3px;
+    color: #fff;
+    display: inline-block;
+    text-decoration: none;
+    font-size: 14px;
+    outline: none;
+}
 

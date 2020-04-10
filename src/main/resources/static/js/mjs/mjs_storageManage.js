@@ -15,9 +15,7 @@ $(function () {
             $.each(data, function (i) {
                 optionHtml += '<option value="' + data[i] + '" >' + data[i] + '</option>';
             });
-            $('.drugTypeSelect').html(optionHtml);
-            $('.drugTypeSelect').trigger("chosen:updated");
-            $('.drugTypeSelect').chosen({
+            $('.drugTypeSelect').html(optionHtml).trigger("chosen:updated").chosen({
                 no_results_text: "没有找到结果！",
                 search_contains: true,
                 allow_single_deselect: true,
@@ -48,9 +46,7 @@ $(function () {
             $.each(data, function (i) {
                 optionHtml += '<option value="' + data[i] + '" >' + data[i] + '</option>';
             });
-            $('.efficacyClassificationSelect').html(optionHtml);
-            $('.efficacyClassificationSelect').trigger("chosen:updated");
-            $('.efficacyClassificationSelect').chosen({
+            $('.efficacyClassificationSelect').html(optionHtml).trigger("chosen:updated").chosen({
                 no_results_text: "没有找到结果！",
                 search_contains: true,
                 allow_single_deselect: true,
@@ -82,9 +78,7 @@ $(function () {
             $.each(data, function (i) {
                 optionHtml += '<option value="' + data[i] + '" >' + data[i] + '</option>';
             });
-            $('.drugSelect').html(optionHtml);
-            $('.drugSelect').trigger("chosen:updated");
-            $('.drugSelect').chosen({
+            $('.drugSelect').html(optionHtml).trigger("chosen:updated").chosen({
                 no_results_text: "没有找到结果！",
                 search_contains: true,
                 allow_single_deselect: true,
@@ -155,7 +149,7 @@ function addNewDrug() {
         data: JSON.stringify(DrugReqVO),
         success: function (data) {
 
-            if (data == "SUCCESS") {
+            if (data !== null && data.status === 1) {
                 swal({
                     title: "提交成功！",
                     type: "success",
@@ -166,7 +160,7 @@ function addNewDrug() {
                     window.location.reload()
                 })
             } else {
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
         }
     })
@@ -175,7 +169,7 @@ function addNewDrug() {
 function addDrugType() {
     var drugType = $("#add_drug_type").val();
 
-    if (drugType == null || drugType == '') {
+    if (drugType == null || drugType === '') {
         swal("请填写剂型！", "", "error")
     }
 
@@ -186,13 +180,12 @@ function addDrugType() {
             "drugType": drugType
         },
         success: function (data) {
-            if (data == "SUCCESS") {
+
+            if (data !== null && data.status === 1) {
                 swal("添加成功！", "", "success");
 
-            } else if (data == "FAIL") {
-                swal("系统异常！请稍后重试", "", "error")
             } else {
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
 
         }
@@ -203,7 +196,7 @@ function addDrugType() {
 function addEfficacyClassification() {
     var efficacyClassification = $("#add_efficacyClassification").val();
 
-    if (efficacyClassification == null || efficacyClassification == '') {
+    if (efficacyClassification == null || efficacyClassification === '') {
         swal("请填写药品功效！", "", "error")
     }
 
@@ -214,13 +207,11 @@ function addEfficacyClassification() {
             "efficacyClassification": efficacyClassification
         },
         success: function (data) {
-            if (data == "SUCCESS") {
-                swal("添加成功！", "", "success");
 
-            } else if (data == "FAIL") {
-                swal("系统异常！请稍后重试", "", "error")
+            if (data !== null && data.status === 1) {
+                swal("添加成功！", "", "success");
             } else {
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
 
         }
@@ -249,7 +240,7 @@ function addStorageQuantity() {
         },
         success: function (data) {
 
-            if (data == "SUCCESS") {
+            if (data !== null && data.status === 1) {
                 swal("入库成功！", "", "success");
                 $.ajax({
                     url: "/drugstore/getDrugInfor",
@@ -267,7 +258,7 @@ function addStorageQuantity() {
                     }
                 })
             } else {
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
 
         }

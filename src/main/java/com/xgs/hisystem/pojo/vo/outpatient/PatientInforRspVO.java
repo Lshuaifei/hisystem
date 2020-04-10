@@ -35,6 +35,11 @@ public class PatientInforRspVO {
 
     private String date;
 
+    /**
+     * 队列Id
+     */
+    private String queueId;
+
     private String message;
 
     public int getAge() {
@@ -155,5 +160,14 @@ public class PatientInforRspVO {
 
     public void setPrescriptionNum(String prescriptionNum) {
         this.prescriptionNum = prescriptionNum;
+    }
+
+
+    public String getQueueId() {
+        return queueId;
+    }
+
+    public void setQueueId(String queueId) {
+        this.queueId = queueId;
     }
 }

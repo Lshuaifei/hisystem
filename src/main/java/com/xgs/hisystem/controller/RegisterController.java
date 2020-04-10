@@ -1,14 +1,12 @@
 package com.xgs.hisystem.controller;
 
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
-import com.xgs.hisystem.pojo.bo.ValidationResultBO;
-import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.register.*;
 import com.xgs.hisystem.service.IRegisterService;
-import com.xgs.hisystem.util.ParamsValidationUtils;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,9 +51,9 @@ public class RegisterController {
      * @return
      */
     @PostMapping(value = "/getDefaultGetCardId")
-    public String getDefaultGetCardId() {
-        BaseResponse baseResponse = iRegisterService.getDefaultGetCardId();
-        return baseResponse.getMessage();
+    public BaseResponse<String> getDefaultGetCardId() {
+
+        return iRegisterService.getDefaultGetCardId();
     }
 
     /**
@@ -66,14 +64,9 @@ public class RegisterController {
      * @throws Exception
      */
     @PostMapping(value = "/addPatientInfor")
-    public String addPatientInfor(@RequestBody PatientInforReqVO reqVO) throws Exception {
+    public BaseResponse<String> addPatientInfor(@RequestBody @Validated PatientInforReqVO reqVO) throws Exception {
 
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
-        if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().values().toString();
-        }
-        BaseResponse baseResponse = iRegisterService.addPatientInfor(reqVO);
-        return baseResponse.getMessage();
+        return iRegisterService.addPatientInfor(reqVO);
     }
 
     /**
@@ -83,14 +76,9 @@ public class RegisterController {
      * @return
      */
     @PostMapping(value = "/coverCardId")
-    public String coverCardId(@RequestBody PatientInforReqVO reqVO) {
+    public BaseResponse<String> coverCardId(@RequestBody @Validated PatientInforReqVO reqVO) {
 
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
-        if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().values().toString();
-        }
-        BaseResponse baseResponse = iRegisterService.coverCardId(reqVO);
-        return baseResponse.getMessage();
+        return iRegisterService.coverCardId(reqVO);
     }
 
     /**
@@ -114,14 +102,9 @@ public class RegisterController {
      */
 
     @PostMapping(value = "/addRegisterInfor")
-    public String addRegisterInfor(@RequestBody RegisterInforReqVO reqVO) {
-        ValidationResultBO validateBo = ParamsValidationUtils.validateEntity(reqVO);
-        if (validateBo.isHasErrors()) {
-            return validateBo.getErrorMsg().values().toString();
-        }
+    public BaseResponse<String> addRegisterInfor(@RequestBody @Validated RegisterInforReqVO reqVO) {
 
-        BaseResponse baseResponse = iRegisterService.addRegisterInfor(reqVO);
-        return baseResponse.getMessage();
+        return iRegisterService.addRegisterInfor(reqVO);
     }
 
     /**

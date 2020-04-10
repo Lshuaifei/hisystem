@@ -1,23 +1,26 @@
 package com.xgs.hisystem.service.impl;
 
-import com.xgs.hisystem.config.Contants;
+import com.xgs.hisystem.config.HisConstants;
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.entity.*;
-import com.xgs.hisystem.pojo.vo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.medicalExamination.medicalExaminationInfoReqVO;
 import com.xgs.hisystem.pojo.vo.medicalExamination.PatientInforRspVO;
 import com.xgs.hisystem.pojo.vo.register.GetCardIdInforReqVO;
-import com.xgs.hisystem.repository.IMedicalExaminationRepository;
-import com.xgs.hisystem.repository.IMedicalRecordRepository;
-import com.xgs.hisystem.repository.IOutpatientQueueRepository;
-import com.xgs.hisystem.repository.IPatientRepository;
+import com.xgs.hisystem.repository.*;
+import com.xgs.hisystem.service.IGetPatientInfoService;
 import com.xgs.hisystem.service.IMedicalExaminationService;
 import com.xgs.hisystem.util.DateUtil;
 import org.apache.shiro.SecurityUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import static com.xgs.hisystem.util.card.Card.defaultGetCardId;
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author xgs
@@ -28,109 +31,135 @@ import static com.xgs.hisystem.util.card.Card.defaultGetCardId;
 public class MedicalExaminationServiceImpl implements IMedicalExaminationService {
 
     @Autowired
-    private IPatientRepository iPatientRepository;
-
-    @Autowired
     private IMedicalExaminationRepository iMedicalExaminationRepository;
     @Autowired
     private IOutpatientQueueRepository iOutpatientQueueRepository;
     @Autowired
     private IMedicalRecordRepository iMedicalRecordRepository;
+    @Autowired
+    private IRegisterRepository iRegisterRepository;
+    @Autowired
+    private IGetPatientInfoService iGetPatientInfoService;
 
     @Override
     public PatientInforRspVO getCardIdInfor(GetCardIdInforReqVO reqVO) throws Exception {
 
-        String myCardId = reqVO.getCardId();
-        String command = reqVO.getCommand();
-        PatientInforRspVO patientInforRspVO = new PatientInforRspVO();
-        //手动输入卡号
-        if ("1".equals(command)) {
-            if (StringUtils.isEmpty(myCardId)) {
-                patientInforRspVO.setMessage("请输入就诊卡号！");
-                return patientInforRspVO;
-            }
-        }
-        //读卡器输入
-        if ("0".equals(command)) {
-            String message = defaultGetCardId();
-            if ("fail".equals(message)) {
-                patientInforRspVO.setMessage("读卡失败！请刷新页面重试");
-                return patientInforRspVO;
-            } else if ("none".equals(message)) {
-                patientInforRspVO.setMessage("未识别到卡片！");
-                return patientInforRspVO;
-            } else {
-                myCardId = message;
-            }
-        }
-        PatientEntity patientInfor = iPatientRepository.findByCardId(myCardId);
-
-        if (StringUtils.isEmpty(patientInfor)) {
-            patientInforRspVO.setMessage("未从该卡片识别到信息！");
-            return patientInforRspVO;
-        }
-
-
-        OutpatientQueueEntity outpatientQueueEntity = iOutpatientQueueRepository.findByPatientId(patientInfor.getId());
-        if (StringUtils.isEmpty(outpatientQueueEntity)) {
-            patientInforRspVO.setMessage("请先到挂号处挂号！");
-            return patientInforRspVO;
-        }
-
-        String registerId = outpatientQueueEntity.getRegister().getId();
-
-        MedicalRecordEntity medicalRecordEntity = iMedicalRecordRepository.findByRegisterId(registerId);
-        if (StringUtils.isEmpty(medicalRecordEntity)) {
-            patientInforRspVO.setMessage("医生门诊处未处理！");
-            return patientInforRspVO;
-        }
-
-        patientInforRspVO.setAge(DateUtil.getAge(patientInfor.getBirthday()));
-        patientInforRspVO.setCardId(patientInfor.getCardId());
-        patientInforRspVO.setName(patientInfor.getName());
-        patientInforRspVO.setSex(patientInfor.getSex());
-        patientInforRspVO.setNationality(patientInfor.getNationality());
-        return patientInforRspVO;
-    }
-
-    @Override
-    public BaseResponse<?> saveMedicalExaminationInfo(medicalExaminationInfoReqVO reqVO) {
+        PatientInforRspVO rspVO = new PatientInforRspVO();
 
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
         if (StringUtils.isEmpty(user)) {
-            return null;
+            rspVO.setMessage("登录信息已过期，请重新登录！");
+            return rspVO;
+        }
+        //获取患者信息
+        BaseResponse<PatientEntity> baseResponse = iGetPatientInfoService.getPatientInfo(reqVO);
+
+        if (BaseResponse.RESPONSE_FAIL.equals(baseResponse.getStatus())) {
+            rspVO.setMessage(baseResponse.getMessage());
+            return rspVO;
+        }
+        PatientEntity patientInfor = baseResponse.getData();
+
+        List<OutpatientQueueEntity> outpatientQueues = iOutpatientQueueRepository.findAll((Specification<OutpatientQueueEntity>) (root, query, cb) -> {
+            List<Predicate> filter = new ArrayList<>();
+            filter.add(cb.equal(root.get("patient"), patientInfor));
+            //医技师患者队列状态只有正常和过期状态
+            filter.add(cb.equal(root.get("outpatientQueueStatus"), HisConstants.QUEUE.NORMAL));
+            filter.add(cb.equal(root.get("user"), user));
+            //当天
+            String nowDate = DateUtil.getCurrentDateSimpleToString();
+            filter.add(cb.between(root.get("createDatetime"), nowDate.concat(" 00:00:00"), nowDate.concat(" 23:59:59")));
+
+            return query.where(filter.toArray(new Predicate[filter.size()])).getRestriction();
+        });
+
+        if (outpatientQueues == null || outpatientQueues.isEmpty()) {
+            rspVO.setMessage("请先预约挂号！");
+            return rspVO;
         }
 
-        String patientId = iPatientRepository.findByCardId(reqVO.getCardId()).getId();
-
-
-        OutpatientQueueEntity outpatientQueueEntity = iOutpatientQueueRepository.findByPatientId(patientId);
-        if (StringUtils.isEmpty(outpatientQueueEntity)) {
-            return BaseResponse.errormsg("请先预约挂号！");
+        if (outpatientQueues.size() == 1) {
+            BeanUtils.copyProperties(patientInfor, rspVO);
+            rspVO.setAge(DateUtil.getAge(patientInfor.getBirthday()));
+            rspVO.setQueueId(outpatientQueues.get(0).getId());
+        } else {
+            rspVO.setMessage("队列信息异常，请联系管理员！");
+            return rspVO;
         }
 
-        String registerId = outpatientQueueEntity.getRegister().getId();
+        return rspVO;
+    }
 
-        MedicalRecordEntity medicalRecordEntity = iMedicalRecordRepository.findByRegisterId(registerId);
-        if (StringUtils.isEmpty(medicalRecordEntity)) {
-            return BaseResponse.errormsg("医生门诊处未处理！");
-        }
+    @Override
+    public BaseResponse<String> saveMedicalExaminationInfo(medicalExaminationInfoReqVO reqVO) {
 
-        String prescriptionNum = medicalRecordEntity.getPrescriptionNum();
-
-        MedicalExaminationEntity medicalExamination = iMedicalExaminationRepository.findByPrescriptionNum(prescriptionNum);
-
-        medicalExamination.setBloodPressure(reqVO.getBloodPressure());
-        medicalExamination.setBodyTemperature(reqVO.getBodyTemperature());
-        medicalExamination.setHeartRate(reqVO.getHeartRate());
-        medicalExamination.setPulse(reqVO.getPulse());
-        medicalExamination.setExaminationOperator(user.getId());
-        medicalExamination.setExaminationCost(Integer.parseInt(reqVO.getExaminationCost()));
         try {
+            UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
+            if (StringUtils.isEmpty(user)) {
+                return BaseResponse.error("登录信息已过期！");
+            }
+
+            //体检队列信息
+            Optional<OutpatientQueueEntity> outpatientQueueTemp = iOutpatientQueueRepository.findById(reqVO.getQueueId());
+
+            if (!outpatientQueueTemp.isPresent()) {
+                return BaseResponse.error("队列信息异常，请联系管理员！");
+            }
+            OutpatientQueueEntity outpatientQueue = outpatientQueueTemp.get();
+
+            //挂号信息
+            RegisterEntity register = outpatientQueue.getRegister();
+
+            //体检信息
+            MedicalExaminationEntity medicalExamination = new MedicalExaminationEntity();
+
+            //校验处方号
+            String prescriptionNum = reqVO.getPrescriptionNum();
+            if (!StringUtils.isEmpty(prescriptionNum)) {
+
+                MedicalRecordEntity medicalRecord = iMedicalRecordRepository.findByPrescriptionNum(prescriptionNum);
+
+                if (medicalRecord == null) {
+                    return BaseResponse.error("未查询相关就诊记录，处方号无效！");
+                }
+                //处方号对应门诊队列信息
+                OutpatientQueueEntity queue = iOutpatientQueueRepository.findByRegisterId(medicalRecord.getRegister().getId());
+
+                if (queue == null) {
+                    return BaseResponse.error("该处方号未查询相关门诊队列信息，信息异常请联系管理员！");
+                }
+                if (outpatientQueue.getPatient() != queue.getPatient()) {
+                    return BaseResponse.error("该处方号对应患者信息与体检队列患者信息不符！");
+                }
+
+                if (HisConstants.QUEUE.LATER != queue.getOutpatientQueueStatus()) {
+
+                    return BaseResponse.error("该患者无待处理的门诊，处方号无效！");
+                }
+
+                medicalExamination.setPrescriptionNum(prescriptionNum);
+            }
+            medicalExamination.setRegister(register);
+            medicalExamination.setBloodPressure(reqVO.getBloodPressure());
+            medicalExamination.setBodyTemperature(reqVO.getBodyTemperature());
+            medicalExamination.setHeartRate(reqVO.getHeartRate());
+            medicalExamination.setPulse(reqVO.getPulse());
+            medicalExamination.setExaminationCost(Integer.parseInt(reqVO.getExaminationCost()));
+
             iMedicalExaminationRepository.saveAndFlush(medicalExamination);
-            return BaseResponse.success(Contants.user.SUCCESS);
+
+            //修改体检队列状态为过期
+            outpatientQueue.setOutpatientQueueStatus(HisConstants.QUEUE.OVERDUE);
+            iOutpatientQueueRepository.saveAndFlush(outpatientQueue);
+
+            //更新就诊状态
+            register.setTreatmentStatus(1);
+            iRegisterRepository.saveAndFlush(register);
+
+            return BaseResponse.success(HisConstants.USER.SUCCESS);
         } catch (Exception e) {
-            return BaseResponse.success(Contants.user.FAIL);
+            e.printStackTrace();
+            return BaseResponse.error("保存体检信息异常，请稍后重试！");
         }
     }
 }

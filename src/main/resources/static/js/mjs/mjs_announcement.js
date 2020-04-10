@@ -95,7 +95,7 @@ var TableInit = function () {
 
 
 var ButtonInit = function () {
-    var oInit = new Object();
+    var oInit = {};
     var postdata = {};
 
     oInit.Init = function () {
@@ -168,7 +168,7 @@ function changeAnnouncement() {
         data: JSON.stringify(AnnouncementVO),
         success: function (data) {
 
-            if (data == "SUCCESS") {
+            if (null != data && data.status === 1) {
 
                 window.location.hash = "#";
 
@@ -202,7 +202,7 @@ function addAnnouncement() {
         data: JSON.stringify(AnnouncementVO),
         success: function (data) {
 
-            if (data == "SUCCESS") {
+            if (null != data && data.status === 1) {
 
                 swal({
                         title: "添加成功！",
@@ -216,7 +216,7 @@ function addAnnouncement() {
                     });
 
             } else {
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
 
 
@@ -234,7 +234,7 @@ function deleteAnnouncement() {
         },
         success: function (data) {
 
-            if (data == "SUCCESS") {
+            if (null != data && data.status === 1) {
 
                 $("#Announcement").bootstrapTable('refresh');
             } else {
@@ -261,7 +261,7 @@ function showAnnouncement() {
         },
         success: function (data) {
 
-            if (data == "SUCCESS") {
+            if (null != data && data.status === 1) {
 
                 $("#Announcement").bootstrapTable('refresh');
             } else {
@@ -286,7 +286,7 @@ function hiddenAnnouncement() {
         },
         success: function (data) {
 
-            if (data == "SUCCESS") {
+            if (null != data && data.status === 1) {
 
                 $("#Announcement").bootstrapTable('refresh');
             } else {

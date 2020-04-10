@@ -39,7 +39,7 @@
 
                                 <div class="textbox">
                                     卡号<input type="text"  id="cardId">
-                                    <div class="department-search">
+                                    <div class="cardId-search">
                                         <button class="btn btn-success" onclick="getCardIdInfor(1)">
                                             <img class="png" th:src="@{/images/icon/search.png}">
                                         </button>
@@ -70,48 +70,15 @@
                                     <div>
                                         选择科室
                                         <select class='chosen select' id="departmentSelect" data-placeholder=' '>
-                                            <option value=""></option>
-                                            <!--<optgroup label="内科">
-                                                <option value="内科">内科</option>
-                                                <option value="呼吸内科">呼吸内科</option>
-                                                <option value="消化内科">消化内科</option>
-                                                <option value="心脏内科">心脏内科</option>
-                                            </optgroup>
-                                            <optgroup label="外科">
-                                                <option value="外科">外科</option>
-                                                <option value="泌尿外科">泌尿外科</option>
-                                                <option value="神经外科">神经外科</option>
-                                                <option value="血管外科">血管外科</option>
-                                                <option value="肛肠外科">肛肠外科</option>
-                                            </optgroup>
-                                            <optgroup label="妇产科"> 
-                                                <option value="妇产科">妇产科</option>
-                                            </optgroup>
-                                            <optgroup label="皮肤科">
-                                                <option value="皮肤科">皮肤科</option>
-                                            </optgroup>
-                                            <optgroup label="五官科">
-                                                <option value="五官科">五官科</option>
-                                            </optgroup>
-                                            <optgroup label="口腔科">
-                                                <option value="口腔科">口腔科</option>
-                                            </optgroup>
-                                            <optgroup label="急诊科">
-                                                <option value="急诊科">急诊科</option>
-                                            </optgroup>-->
+                                            <option value="" ></option>
                                         </select>
                                     </div>
 
-                                    <div style="margin-left: 25px">
-                                        挂号类型
-                                        <select class='select_1' id="departmentTypeSelect" data-placeholder=' '>
-                                            <option value=""></option>
-                                            <option value="1">普通门诊</option>
-                                            <option value="0">急诊</option>
-                                        </select>
+                                    <div style="margin-left: 50px">
+                                        挂号类型<input  id="departmentTypeSelect" readonly="readonly">
                                     </div>
 
-                                    <div class="department-search">
+                                    <div class="cardId-search">
                                         <button class="btn btn-info" onclick="getRegisterDoctor()">
                                             <img class="png" th:src="@{/images/icon/search.png}">
                                         </button>
@@ -172,24 +139,23 @@
                         <div class="mymodal_modal modal1">
                             <div style="font-size: 1.1rem">
                                 <img class="png" th:src="@{/images/icon/change.png}">&emsp;办理就诊卡
-                                <div style="color: crimson;display: inline">(暂不提供手动输入办理，可后台添加)</div>
+                                <!--<div style="color: crimson;display: inline">(暂不提供手动输入办理，可后台添加)</div>-->
                             </div>
 
                             <div class="textbox_1">
 
-                                姓名<input type="text" id="IDname" style="width: 120px" readonly="readonly">&emsp;&emsp;&emsp;&emsp;&emsp;
-                                身份证号<input type="text" id="IDcard" style="width: 320px" readonly="readonly">
+                                姓名<input type="text" id="IDname" style="width: 120px">&emsp;&emsp;&emsp;&emsp;&emsp;
+                                身份证号<input type="text" id="IDcard" style="width: 320px" >
                                 <br>
                                 <br>
-                                性别<input type="text" id="IDsex" style="width: 90px" readonly="readonly">&emsp;&emsp;
-                                民族<input type="text" id="IDnationality" style="width: 90px" readonly="readonly">&emsp;&emsp;
-                                出生日期<input type="text" id="IDbirthday" style="width:220px" readonly="readonly">
+                                性别<input type="text" id="IDsex" style="width: 90px" >&emsp;&emsp;
+                                民族<input type="text" id="IDnationality" style="width: 90px" >&emsp;&emsp;
+                                出生日期<input type="text" id="IDbirthday" style="width:220px">
                                 <br>
                                 <br>
                                 <div style="display: flex">
                                     <div style="margin-right: 100px">
-                                        住址<input type="text" id="IDaddress" style="width: 330px"
-                                                 readonly="readonly">&emsp;&emsp;&emsp;
+                                        住址<input type="text" id="IDaddress" style="width: 330px">&emsp;&emsp;&emsp;
                                     </div>
                                     <div>
                                         <button class="btn btn-outline-primary" onclick="getIDcardInfor()">
@@ -199,8 +165,7 @@
                                 </div>
                                 <div style="display: flex" class="cardid">
                                     <div style="margin-right: 230px">
-                                        卡号<input type="text" id="cardId_1" style="width: 220px"
-                                                 readonly="readonly">&emsp;&emsp;&emsp;
+                                        卡号<input type="text" id="cardId_1" style="width: 220px">&emsp;&emsp;&emsp;
                                     </div>
                                     <div>
                                         <button class="btn btn-outline-primary" onclick="getDefaultGetCardId()">

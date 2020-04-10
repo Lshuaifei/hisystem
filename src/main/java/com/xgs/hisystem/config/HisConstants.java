@@ -5,19 +5,31 @@ package com.xgs.hisystem.config;
  * @Description:
  * @date 2019/3/26
  */
-public final class Contants {
+public final class HisConstants {
 
     /**
      * 防止实例化
      **/
-    private Contants() {
+    private HisConstants() {
     }
 
-    public class url {
+
+    public static final String COMMON_STATUS_ONE = "1";
+
+    public static final String COMMON_STATUS_ZERO = "0";
+
+    public static final String COMMON_STATUS_MINUS = "-1";
+
+    public static final String IC_READ_FAIIL = "fail";
+
+    public static final String IC_READ_NONE = "none";
+
+
+    public class URL {
         public static final String ADDRESS_URL = "http://whois.pconline.com.cn/ip.jsp";
     }
 
-    public class user {
+    public class USER {
 
         public static final String USER_NOT_EXIST = "该账户不存在";
 
@@ -48,7 +60,7 @@ public final class Contants {
         public static final String ANN_EQUALS = "该公告已存在";
     }
 
-    public class register {
+    public class REGISTER {
 
         public static final String NONE = "NONE";
 
@@ -56,6 +68,24 @@ public final class Contants {
 
         public static final String ACTIVATED = "ACTIVATED"; //就诊卡已被激活
 
+    }
+
+    public class QUEUE {
+
+        /**
+         * 队列状态：稍后处理(待处理)
+         **/
+        public static final int LATER = -1;
+
+        /**
+         * 队列状态：过期
+         **/
+        public static final int OVERDUE = 0;
+
+        /**
+         * 队列状态：正常
+         **/
+        public static final int NORMAL = 1;
     }
 
 }

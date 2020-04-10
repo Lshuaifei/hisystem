@@ -1,14 +1,14 @@
 package com.xgs.hisystem.controller;
 
-import com.xgs.hisystem.pojo.vo.BaseResponse;
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.register.GetCardIdInforReqVO;
-import com.xgs.hisystem.pojo.vo.toll.SaveTollInfoReqVO;
-import com.xgs.hisystem.pojo.vo.toll.TollMedicalRecordRspVO;
-import com.xgs.hisystem.pojo.vo.toll.TollRspVO;
-import com.xgs.hisystem.pojo.vo.toll.cardRspVO;
+import com.xgs.hisystem.pojo.vo.toll.*;
 import com.xgs.hisystem.service.ITollService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -69,10 +69,22 @@ public class TollController {
      * @return
      */
     @PostMapping(value = "/saveTollInfo")
-    public String saveTollInfo(@RequestBody SaveTollInfoReqVO reqVO) {
+    public BaseResponse<String> saveTollInfo(@RequestBody @Validated SaveTollInfoReqVO reqVO) {
 
-        BaseResponse baseResponse = iTollService.saveTollInfo(reqVO);
+        return iTollService.saveTollInfo(reqVO);
+    }
 
-        return baseResponse.getMessage();
+
+    @PostMapping(value = "getexaminationtollinfo")
+    @ApiOperation(value = "获取体检收费信息", httpMethod = "POST", notes = "获取体检收费信息")
+    @ApiImplicitParam(name = "reqVO",value = "获取体检收费信息", dataType = "GetCardIdInforReqVO")
+    private BaseResponse<GetExaminationTollInfoRspVO> getExaminationTollInfo(@RequestBody GetCardIdInforReqVO reqVO){
+        return iTollService.getExaminationTollInfo(reqVO);
+    }
+
+    @PostMapping(value = "saveexaminationtollinfo")
+    @ApiOperation(value = "保存体检收费记录", httpMethod = "POST", notes = "保存体检收费记录")
+    private BaseResponse<String> saveExaminationTollInfo(@RequestParam String registerId){
+        return iTollService.saveExaminationTollInfo(registerId);
     }
 }

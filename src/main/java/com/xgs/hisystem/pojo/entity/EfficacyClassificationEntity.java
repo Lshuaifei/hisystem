@@ -7,7 +7,7 @@ import javax.persistence.Table;
 /**
  * @author xgs
  * @date 2019-5-23
- * @description:
+ * @description: 药物功效分类表
  */
 @Entity
 @Table(name = "his_efficacyClassification")

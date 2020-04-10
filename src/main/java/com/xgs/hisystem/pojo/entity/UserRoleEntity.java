@@ -6,7 +6,7 @@ import javax.persistence.Table;
 
 /**
  * @author xgs
- * @Description:
+ * @Description: 用户-角色表
  * @date 2019/3/20
  */
 @Entity
@@ -19,11 +19,13 @@ public class UserRoleEntity extends BaseEntity {
     @Column(name = "role_id")
     private String roleId;
 
-    @Column(name = "desciption")
-    private String desciption;
-
+    @Column(name = "description")
+    private String description;
+    /**
+     * 管理员审核状态 -1审核不通过 0等待审核 1通过
+     **/
     @Column(name = "role_status")
-    private Integer roleStatus;         //管理员审核状态
+    private Integer roleStatus;
 
     public String getuId() {
         return uId;
@@ -41,12 +43,12 @@ public class UserRoleEntity extends BaseEntity {
         this.roleId = roleId;
     }
 
-    public String getDesciption() {
-        return desciption;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDesciption(String desciption) {
-        this.desciption = desciption;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getRoleStatus() {

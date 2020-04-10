@@ -1,7 +1,8 @@
 package com.xgs.hisystem.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.xgs.hisystem.config.Contants;
+import com.xgs.hisystem.config.HisConstants;
+import com.xgs.hisystem.config.ServerConfig;
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
 import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.*;
@@ -28,10 +29,7 @@ import org.springframework.util.StringUtils;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,6 +58,8 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private AsyncTask asyncTask;
+    @Autowired
+    private ServerConfig serverConfig;
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -70,7 +70,7 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
-    public BaseResponse<?> doLogin(UserLoginReqVO reqVO) {
+    public BaseResponse<String> doLogin(UserLoginReqVO reqVO) {
 
         String email = reqVO.getEmail();
         String password = reqVO.getPassword();
@@ -79,7 +79,7 @@ public class UserServiceImpl implements IUserService {
 
         if (StringUtils.isEmpty(user)) {
 
-            return BaseResponse.errormsg(Contants.user.USER_NOT_EXIST);
+            return BaseResponse.error(HisConstants.USER.USER_NOT_EXIST);
         }
 
         //登录验证
@@ -88,11 +88,11 @@ public class UserServiceImpl implements IUserService {
         try {
             subject.login(token);
         } catch (AuthenticationException e) {
-            return BaseResponse.errormsg(Contants.user.PASSWORD_ERROR);
+            return BaseResponse.error(HisConstants.USER.PASSWORD_ERROR);
         }
         //验证邮箱激活状态
         if (user.getEmailStatus().equals(0)) {
-            return BaseResponse.errormsg(Contants.user.EMAIL_STATUS_INACTIVE);
+            return BaseResponse.error(HisConstants.USER.EMAIL_STATUS_INACTIVE);
         }
         //验证角色审核状态
         List<UserRoleEntity> userRoleList = iUserRoleRepository.findByUId(user.getId());
@@ -107,18 +107,18 @@ public class UserServiceImpl implements IUserService {
                     .filter(userRole -> userRole.getRoleStatus().equals(0)).count();
 
             if (unAuditStatusCount >= 1) {
-                return BaseResponse.errormsg(Contants.user.ROLE_STATUS_NOTAUDIT);
+                return BaseResponse.error(HisConstants.USER.ROLE_STATUS_NOTAUDIT);
             }
             //审核未通过
             else {
-                return BaseResponse.errormsg(Contants.user.ROLE_STATUS_NOTPASS);
+                return BaseResponse.error(HisConstants.USER.ROLE_STATUS_NOTPASS);
             }
         }
 
         //保存用户登录信息
         asyncTask.saveLoginInfor(reqVO.getIp(), reqVO.getBroswer(), email);
 
-        return BaseResponse.success(Contants.user.SUCCESS);
+        return BaseResponse.success(HisConstants.USER.SUCCESS);
     }
 
 
@@ -130,66 +130,71 @@ public class UserServiceImpl implements IUserService {
      */
     @Transactional
     @Override
-    public BaseResponse<?> saveUserAndSendEmail(UserRegisterReqVO reqVO) {
+    public BaseResponse<String> saveUserAndSendEmail(UserRegisterReqVO reqVO) {
 
         String email = reqVO.getEmail();
-        String roleName=reqVO.getRoleName();
+        String roleName = reqVO.getRoleName();
 
-        //验证角色
-        RoleEntity role = iRoleRespository.findByDescription(roleName);
-        if (role==null){
-            return BaseResponse.errormsg("您选择的角色不存在，请重试！");
-        }
-
-        //检查该账户是否已存在
-        UserEntity checkUser = iUserRepository.findByEmail(email);
-
-        if (checkUser != null) {
-            return BaseResponse.errormsg(Contants.user.ACCOUNT_EXIST);
-        }
-
-        UserEntity user = new UserEntity();
-
-        user.setEmail(email);
-        user.setUsername(reqVO.getUsername());
-        user.setPlainPassword(reqVO.getPassword());
-        //生成盐和加盐密码
-        String salt = MD5Util.md5Encrypt32Lower(reqVO.getEmail());
-        String password = new SimpleHash("MD5", reqVO.getPassword(), salt, 1024).toHex(); // 使用SimpleHash类对原始密码进行加密
-
-        user.setPassword(password);
-        user.setSalt(salt);
-        //生成激活码
-        String validateCode = MD5Util.md5Encrypt32Upper(reqVO.getEmail());
-        user.setValidateCode(validateCode);
-        user.setEmailStatus(0);
-
-        //组装发送邮件参数
-        String title = "账户激活";
-        Context context = new Context();
-        context.setVariable("email", email);
-        context.setVariable("roleValue", role.getRoleValue());
-        context.setVariable("validateCode", validateCode);
-        String emailContent = templateEngine.process("email/email", context);
         try {
+            //验证角色
+            RoleEntity role = iRoleRespository.findByDescription(roleName);
+            if (role == null) {
+                return BaseResponse.error("您选择的角色不存在，请重试！");
+            }
+
+            //检查该账户是否已存在
+            UserEntity checkUser = iUserRepository.findByEmail(email);
+
+            if (checkUser != null) {
+                return BaseResponse.error(HisConstants.USER.ACCOUNT_EXIST);
+            }
+
+            UserEntity user = new UserEntity();
+
+            user.setEmail(email);
+            user.setUsername(reqVO.getUsername());
+            user.setPlainPassword(reqVO.getPassword());
+            //生成盐和加盐密码
+            String salt = MD5Util.md5Encrypt32Lower(reqVO.getEmail());
+            // 使用SimpleHash类对原始密码进行加密
+            String password = new SimpleHash("MD5", reqVO.getPassword(), salt, 1024).toHex();
+
+            user.setPassword(password);
+            user.setSalt(salt);
+            //生成激活码
+            String validateCode = MD5Util.md5Encrypt32Upper(reqVO.getEmail());
+            user.setValidateCode(validateCode);
+            user.setEmailStatus(0);
+
             iUserRepository.saveAndFlush(user);
 
             //保存用户与角色信息
             UserRoleEntity userRole = new UserRoleEntity();
             userRole.setuId(user.getId());
             userRole.setRoleId(role.getId());
-            String desciption = user.getEmail() + "#" + role.getRole();
-            userRole.setDesciption(desciption);
+            String description = user.getEmail() + "#" + role.getRole();
+            userRole.setDescription(description);
             userRole.setRoleStatus(0);
 
             iUserRoleRepository.saveAndFlush(userRole);
 
+            //组装发送邮件参数
+            String title = "账户激活";
+            Context context = new Context();
+
+            //组装激活地址
+            String url = serverConfig.getUrl().concat("/activation").concat("?email=")
+                    .concat(email).concat("&validateCode=").concat(validateCode);
+
+            context.setVariable("url", url);
+            String emailContent = templateEngine.process("email/email", context);
+
             //发送邮件
             iEmailService.sendMail(reqVO.getEmail(), title, emailContent);
-            return BaseResponse.success(Contants.user.SUCCESS);
+            return BaseResponse.success(HisConstants.USER.SUCCESS);
         } catch (Exception e) {
             e.printStackTrace();
-            return BaseResponse.errormsg("保存用户信息或邮件发送异常,请联系管理员处理!");
+            return BaseResponse.error("保存用户信息或邮件发送异常,请联系管理员处理!");
         }
 
     }
@@ -206,35 +211,37 @@ public class UserServiceImpl implements IUserService {
 
     @Transactional
     @Override
-    public BaseResponse<?> activation(String email, String validateCode) throws ParseException {
-        UserEntity userEntity = iUserRepository.findByEmail(email);
-        if (userEntity == null) {
-            return BaseResponse.errormsg("未查询到该邮箱，请核对信息！");
-        }
+    public BaseResponse<String> activation(String email, String validateCode) throws ParseException {
 
-        String nowDate = DateUtil.getCurrentDateToString();
-        String createDate = userEntity.getCreateDatetime();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d HH:mm:ss");
-        Date start = sdf.parse(createDate);
-        Date end = sdf.parse(nowDate);
-        long cha = end.getTime() - start.getTime();
-        double result = cha * 1.0 / (1000 * 60 * 60);
-        if (result > 48) {
-            return BaseResponse.errormsg("激活邮件已过期，请重试！");
-        }
-        if (!validateCode.equals(userEntity.getValidateCode())) {
-            return BaseResponse.errormsg("激活码错误，请联系管理员！");
-        }
-        if (userEntity.getEmailStatus() == 1) {
-            return BaseResponse.errormsg("账户已被激活，请勿重复操作！");
-        }
-        userEntity.setEmailStatus(1);
         try {
-            iUserRepository.saveAndFlush(userEntity);
+            UserEntity user = iUserRepository.findByEmail(email);
+            if (user == null) {
+                return BaseResponse.error("未查询到该邮箱，请核对信息！");
+            }
+
+            String nowDate = DateUtil.getCurrentDateToString();
+            String createDate = user.getCreateDatetime();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d HH:mm:ss");
+            Date start = sdf.parse(createDate);
+            Date end = sdf.parse(nowDate);
+            long cha = end.getTime() - start.getTime();
+            double result = cha * 1.0 / (1000 * 60 * 60);
+            if (result > 48) {
+                return BaseResponse.error("激活邮件已过期，请重试！");
+            }
+            if (!validateCode.equals(user.getValidateCode())) {
+                return BaseResponse.error("激活码错误，请联系管理员！");
+            }
+            if (user.getEmailStatus() == 1) {
+                return BaseResponse.error("账户已被激活，请勿重复操作！");
+            }
+            user.setEmailStatus(1);
+
+            iUserRepository.saveAndFlush(user);
             return BaseResponse.success();
         } catch (Exception e) {
             e.printStackTrace();
-            return BaseResponse.errormsg("激活账户异常，请稍后重试！");
+            return BaseResponse.error("激活账户异常，请稍后重试！");
         }
     }
 
@@ -249,46 +256,42 @@ public class UserServiceImpl implements IUserService {
     @Override
     public PageRspBO<LoginInforRspVO> getLoginfor(BasePageReqVO reqVO) {
 
-        UserEntity userEntity = (UserEntity) SecurityUtils.getSubject().getPrincipal();
-        if (StringUtils.isEmpty(userEntity)) {
+        UserEntity userTemp = (UserEntity) SecurityUtils.getSubject().getPrincipal();
+        if (StringUtils.isEmpty(userTemp)) {
             return null;
         }
-        Page<LoginInforEntity> page = iLoginInforRepository.findAll(new Specification<LoginInforEntity>() {
-            @Override
-            public Predicate toPredicate(Root<LoginInforEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+        Page<LoginInforEntity> page = iLoginInforRepository.findAll((Specification<LoginInforEntity>) (root, query, criteriaBuilder) -> {
 
-                List<Predicate> predicateList = new ArrayList<>();
+            List<Predicate> predicateList = new ArrayList<>();
 
-                Predicate logininfor = criteriaBuilder.equal(root.get("user"), userEntity);
-                predicateList.add(logininfor);
-                query.where(predicateList.toArray(new Predicate[predicateList.size()]));
-                return null;
-            }
+            predicateList.add(criteriaBuilder.equal(root.get("user"), userTemp));
+            query.where(predicateList.toArray(new Predicate[predicateList.size()]));
+            return null;
         }, PageRequest.of(reqVO.getPageNumber(), reqVO.getPageSize(), Sort.by(Sort.Direction.DESC, "createDatetime")));
         if (page == null) {
             return null;
         }
         List<LoginInforEntity> userList = page.getContent();
-        List<LoginInforRspVO> loginInforList = new ArrayList<>();
+        List<LoginInforRspVO> loginInfoList = new ArrayList<>();
         userList.forEach(user -> {
-            LoginInforRspVO loginInfor = new LoginInforRspVO();
-            loginInfor.setLoginIp(user.getLoginIp());
-            loginInfor.setLoginBroswer(user.getLoginBroswer());
-            loginInfor.setLoginAddress(user.getLoginAddress());
-            loginInfor.setCreateDatetime(user.getCreateDatetime());
-            loginInforList.add(loginInfor);
+            LoginInforRspVO loginInfo = new LoginInforRspVO();
+            loginInfo.setLoginIp(user.getLoginIp());
+            loginInfo.setLoginBroswer(user.getLoginBroswer());
+            loginInfo.setLoginAddress(user.getLoginAddress());
+            loginInfo.setCreateDatetime(user.getCreateDatetime());
+            loginInfoList.add(loginInfo);
         });
 
         PageRspBO pageRspBO = new PageRspBO();
         pageRspBO.setTotal(page.getTotalElements());
 
-        pageRspBO.setRows(loginInforList);
+        pageRspBO.setRows(loginInfoList);
 
         return pageRspBO;
     }
 
     @Override
-    public BaseResponse<?> changePassword(ChangePasswordReqVO reqVO) {
+    public BaseResponse<String> changePassword(ChangePasswordReqVO reqVO) {
 
         String oldPassword = reqVO.getOldPassword();
         String newPassword = reqVO.getNewPassword();
@@ -297,29 +300,30 @@ public class UserServiceImpl implements IUserService {
 
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
         if (StringUtils.isEmpty(user)) {
-            return null;
+            return BaseResponse.error("登录信息过期，请重新登录！");
         }
         if (!user.getPlainPassword().equals(oldPassword)) {
             logger.info("原始密码错误！");
-            return BaseResponse.errormsg(Contants.user.PLAIN_PASSWORD_ERROR);
+            return BaseResponse.error(HisConstants.USER.PLAIN_PASSWORD_ERROR);
         }
         if (!newPassword.equals(okPassword)) {
 
             logger.info("密码确认输入不一致！");
-            return BaseResponse.errormsg(Contants.user.OLD_NO_NEW);
+            return BaseResponse.error(HisConstants.USER.OLD_NO_NEW);
         }
         if (oldPassword.equals(newPassword)) {
-            return BaseResponse.errormsg(Contants.user.OLD_EQUALS_NEW_PASSWORD);
+            return BaseResponse.error(HisConstants.USER.OLD_EQUALS_NEW_PASSWORD);
         }
         String salt = MD5Util.md5Encrypt32Lower(user.getEmail());
-        String password = new SimpleHash("MD5", reqVO.getNewPassword(), salt, 1024).toHex(); // 使用SimpleHash类对原始密码进行加密
+        // 使用SimpleHash类对原始密码进行加密
+        String password = new SimpleHash("MD5", reqVO.getNewPassword(), salt, 1024).toHex();
 
         user.setPlainPassword(newPassword);
         user.setPassword(password);
 
         iUserRepository.saveAndFlush(user);
 
-        return BaseResponse.success(Contants.user.CHANGE_OK);
+        return BaseResponse.success(HisConstants.USER.CHANGE_OK);
     }
 
     /**
@@ -355,25 +359,25 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
-    public BaseResponse<?> changeUserInfo(UserInfoVO reqVO) {
-
-        UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
-        if (StringUtils.isEmpty(user)) {
-            return BaseResponse.errormsg("登录信息已过期，请重新登录！");
-        }
-        user.setUsername(reqVO.getUsername());
-        user.setSex(reqVO.getSex());
-        user.setBirthday(reqVO.getBirthday());
-        user.setPhone(reqVO.getPhone());
-        user.setPoliticalStatus(reqVO.getPoliticalStatus());
-        user.setAddress(reqVO.getAddress());
+    public BaseResponse<String> changeUserInfo(UserInfoVO reqVO) {
 
 
         try {
+            UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
+            if (StringUtils.isEmpty(user)) {
+                return BaseResponse.error("登录信息已过期，请重新登录！");
+            }
+            user.setUsername(reqVO.getUsername());
+            user.setSex(reqVO.getSex());
+            user.setBirthday(reqVO.getBirthday());
+            user.setPhone(reqVO.getPhone());
+            user.setPoliticalStatus(reqVO.getPoliticalStatus());
+            user.setAddress(reqVO.getAddress());
+
             iUserRepository.saveAndFlush(user);
-            return BaseResponse.success(Contants.user.CHANGE_OK);
+            return BaseResponse.success();
         } catch (Exception e) {
-            return BaseResponse.errormsg(Contants.user.FAIL);
+            return BaseResponse.error("修改信息异常，请稍后重试！");
         }
     }
 
@@ -405,11 +409,11 @@ public class UserServiceImpl implements IUserService {
         //取第一个主页显示
         if (StringUtils.isEmpty(id)) {
             List<AnnouncementEntity> announcementList = iAnnouncementRepository.findAll();
-            if (announcementList!=null&&announcementList.size()>0){
+            if (announcementList != null && announcementList.size() > 0) {
                 annRspVO.setTitle(announcementList.get(0).getTitle());
                 annRspVO.setContent(announcementList.get(0).getContents());
             }
-        }else {
+        } else {
             Optional<AnnouncementEntity> announcement = iAnnouncementRepository.findById(id);
             if (announcement.isPresent()) {
                 annRspVO.setTitle(announcement.get().getTitle());
@@ -444,11 +448,11 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
-    public BaseResponse<?> addAnotherRole(AccountRoleVO reqVO) {
+    public BaseResponse<String> addAnotherRole(AccountRoleVO reqVO) {
 
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
         if (StringUtils.isEmpty(user)) {
-            return BaseResponse.errormsg("登录信息已过期，请重新登录！");
+            return BaseResponse.error("登录信息已过期，请重新登录！");
         }
         List<UserRoleEntity> userRoleList = iUserRoleRepository.findByUId(user.getId());
 
@@ -457,14 +461,14 @@ public class UserServiceImpl implements IUserService {
         long statusNotPass = userRoleList.stream()
                 .filter(userRole -> userRole.getRoleStatus().equals(-1)).count();
         if (statusNotAudit >= 1 || statusNotPass >= 1) {
-            return BaseResponse.errormsg("存在未审核或未通过的角色，禁止再申请添加！");
+            return BaseResponse.error("存在未审核或未通过的角色，禁止再申请添加！");
         }
 
         for (RoleEntity role1 : user.getRoleList()) {
 
             if (role1.getRoleValue().toString().equals(reqVO.getRoleValue())) {
 
-                return BaseResponse.errormsg("该角色已存在，不需要重复添加！");
+                return BaseResponse.error("该角色已存在，不需要重复添加！");
             }
         }
 
@@ -473,33 +477,33 @@ public class UserServiceImpl implements IUserService {
         userRole.setuId(user.getId());
         userRole.setRoleId(role2.getId());
         String desciption = user.getEmail() + "#" + role2.getRole();
-        userRole.setDesciption(desciption);
+        userRole.setDescription(desciption);
         userRole.setRoleStatus(0);
 
         try {
             iUserRoleRepository.saveAndFlush(userRole);
-            return BaseResponse.success(Contants.user.SUCCESS);
+            return BaseResponse.success(HisConstants.USER.SUCCESS);
         } catch (Exception e) {
-            return BaseResponse.errormsg("角色添加异常，请稍后再试！");
+            return BaseResponse.error("角色添加异常，请稍后再试！");
         }
     }
 
     @Override
     public List<GetAllRoleRspVO> getAllRole() {
 
-        List<GetAllRoleRspVO> getAllRoleList=new ArrayList<>();
+        List<GetAllRoleRspVO> getAllRoleList = new ArrayList<>();
 
-        List<RoleEntity> roleList=iRoleRespository.findAll((Specification<RoleEntity>) (root, query, cb) -> {
+        List<RoleEntity> roleList = iRoleRespository.findAll((Specification<RoleEntity>) (root, query, cb) -> {
             List<Predicate> predicateList = new ArrayList<>();
             predicateList.add(cb.notEqual(root.get("role"), "admin"));
             query.where(predicateList.toArray(new Predicate[predicateList.size()]));
             return null;
         });
 
-        if (roleList!=null&&roleList.size()>0){
+        if (roleList != null && roleList.size() > 0) {
 
             getAllRoleList.addAll(roleList.stream().map(role -> {
-                GetAllRoleRspVO allRoleRspVO=new GetAllRoleRspVO();
+                GetAllRoleRspVO allRoleRspVO = new GetAllRoleRspVO();
                 allRoleRspVO.setRoleValue(role.getRoleValue());
                 allRoleRspVO.setDescription(role.getDescription());
                 return allRoleRspVO;

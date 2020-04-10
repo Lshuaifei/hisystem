@@ -1,6 +1,6 @@
 package com.xgs.hisystem.controller;
 
-import com.xgs.hisystem.pojo.vo.BaseResponse;
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.takingdrug.MedicalRecordRspVO;
 import com.xgs.hisystem.service.ITakingDrugService;
 import io.swagger.annotations.Api;
@@ -43,9 +43,8 @@ public class TakingDrugController {
      * @return
      */
     @PostMapping(value = "/saveTakingDrugInfo")
-    public String saveTakingDrugInfo(@RequestParam String prescriptionNum) {
+    public BaseResponse<String> saveTakingDrugInfo(@RequestParam String prescriptionNum) {
 
-        BaseResponse baseResponse = iTakingDrugService.saveTakingDrugInfo(prescriptionNum);
-        return baseResponse.getMessage();
+        return iTakingDrugService.saveTakingDrugInfo(prescriptionNum);
     }
 }

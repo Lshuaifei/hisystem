@@ -116,7 +116,7 @@ $a.each(function () {
             show();
         }
     })
-})
+});
 
 //改变底下按钮的背景色
 function show() {

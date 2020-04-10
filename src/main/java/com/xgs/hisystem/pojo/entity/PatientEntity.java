@@ -6,10 +6,10 @@ import java.util.List;
 /**
  * @author xgs
  * @date 2019/4/22
- * @description:
+ * @description: 患者信息表
  */
 @Entity
-@Table(name = "his_patient")
+@Table(name = "his_patient",indexes = {@Index(name = "his_patient_index",columnList = "cardId")})
 public class PatientEntity extends BaseEntity {
 
     @Column(name = "cardId", nullable = false, length = 20)

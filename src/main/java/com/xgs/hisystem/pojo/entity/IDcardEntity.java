@@ -8,7 +8,7 @@ import javax.persistence.Table;
 /**
  * @author xgs
  * @date 2019/4/26
- * @description:
+ * @description: 身份证信息表：将IC卡作为身份证使用
  */
 @Entity
 @Table(name = "his_idcard")

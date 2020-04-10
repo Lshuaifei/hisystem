@@ -15,8 +15,4 @@ public interface IRegisterRepository extends BaseRepository<RegisterEntity> {
 
     RegisterEntity findByRegisteredNum(String registerNum);
 
-    List<RegisterEntity> findByPatientIdAndChargeStatusAndRegisterStatusAndTreatmentStatus(String patientId,
-                                                                                           int chargeStatus,
-                                                                                           int registerStatus,
-                                                                                           int treatmentStatus);
 }

@@ -13,11 +13,11 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
-    show-sql: false
+    show-sql: true
   mail:
     default-encoding: UTF-8
     host: smtp.qq.com
-    password: ''
+    password:
     username: 1208585122@qq.com
   thymeleaf:
     cache: false
@@ -28,7 +28,7 @@ spring:
     servlet:
       content-type: text/html
     suffix: .html
-  #热部署
+  #热部署(若html或js有更改，要开启浏览器自动刷新功能，先禁用浏览器缓存，使用LiveReload插件)
   devtools:
     livereload:
       enabled: true

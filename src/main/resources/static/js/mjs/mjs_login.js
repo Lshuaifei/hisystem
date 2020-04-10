@@ -1,4 +1,3 @@
-
 /*初始化登录注册js*/
 Auth.init({});
 
@@ -10,8 +9,8 @@ function choseRole() {
         dataType: "json",
         success: function (data) {
             var optionHtml = '<li value=""></li>';
-            $.each(data, function (i,val) {
-                optionHtml += '<li value="' + val.roleValue+ '" >' + val.description + '</li>';
+            $.each(data, function (i, val) {
+                optionHtml += '<li value="' + val.roleValue + '" >' + val.description + '</li>';
             });
             $('#allRole').html(optionHtml)
         }
@@ -50,7 +49,7 @@ var ip = returnCitySN["cip"];
 
 /*点击Enter登录*/
 $(document).keypress(function (e) {
-    if ((e.keyCode || e.which) == 13) {
+    if ((e.keyCode || e.which) === 13) {
         $("#loginId").click(dologin());
     }
 });
@@ -73,11 +72,13 @@ function dologin() {
         data: JSON.stringify(user),
         success: function (data) {
 
-            if (data == "SUCCESS") {
+            data=JSON.parse(data);
+
+            if (data !== null && data.status === 1) {
                 window.location.href = "/main"
             } else {
 
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
 
         }
@@ -108,12 +109,14 @@ function register() {
 
         success: function (data) {
 
-            if (data == "SUCCESS") {
+            data=JSON.parse(data);
+
+            if (data !== null && data.status === 1) {
 
                 /*注册成功，页面跳转*/
                 window.location.href = "/fmail?email=" + email
             } else {
-                swal(data, "", "error")
+                swal(data.message, "", "error")
             }
         }
     })
@@ -147,11 +150,11 @@ function getCookie() {
 
     $("#LoginEmail").val(loginCode);
 
-    if (flag == "true") {
+    if (loginCode !== undefined && flag === "true") {
         $("#checkbox").prop("checked", true);
         $("#LoginPassword").val($.base64.decode(pwd));
 
-    } else if (flag == "false") {
+    } else {
         $("#checkbox").prop("checked", false);
         $("#LoginPassword").val();
     }

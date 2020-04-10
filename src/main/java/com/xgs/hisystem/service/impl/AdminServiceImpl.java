@@ -1,6 +1,7 @@
 package com.xgs.hisystem.service.impl;
 
-import com.xgs.hisystem.config.Contants;
+import com.xgs.hisystem.config.HisConstants;
+import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.bo.PageRspBO;
 import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.*;
@@ -9,7 +10,6 @@ import com.xgs.hisystem.service.IAdminService;
 import com.xgs.hisystem.util.ChineseCharacterUtil;
 import com.xgs.hisystem.util.DateUtil;
 import com.xgs.hisystem.util.MD5Util;
-import net.sourceforge.pinyin4j.PinyinHelper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.slf4j.Logger;
@@ -64,7 +64,7 @@ public class AdminServiceImpl implements IAdminService {
      * @return
      */
     @Override
-    public BaseResponse<?> createRole(RoleVO roleVO) {
+    public BaseResponse<String> createRole(RoleVO roleVO) {
 
         RoleEntity roleEntity = new RoleEntity();
         roleEntity.setRole(roleVO.getRolename());
@@ -75,7 +75,7 @@ public class AdminServiceImpl implements IAdminService {
             iRoleRespository.saveAndFlush(roleEntity);
             return BaseResponse.success();
         } catch (Exception e) {
-            return BaseResponse.errormsg(e.getMessage());
+            return BaseResponse.error(e.getMessage());
         }
 
     }
@@ -88,7 +88,7 @@ public class AdminServiceImpl implements IAdminService {
      */
     @Transactional
     @Override
-    public BaseResponse<?> addRole(AddRoleVO addRoleVO) {
+    public BaseResponse<String> addRole(AddRoleVO addRoleVO) {
 
         UserEntity user = iUserRepository.findByEmail(addRoleVO.getEmail());
 
@@ -108,12 +108,12 @@ public class AdminServiceImpl implements IAdminService {
                 userRoleEntity.setuId(uId);
                 userRoleEntity.setRoleId(roleId);
                 String desciption = user.getEmail() + "#" + roleEntity.getRole();
-                userRoleEntity.setDesciption(desciption);
+                userRoleEntity.setDescription(desciption);
                 iUserRoleRepository.saveAndFlush(userRoleEntity);
             });
             return BaseResponse.success();
         } catch (Exception e) {
-            return BaseResponse.errormsg(e.getMessage());
+            return BaseResponse.error(e.getMessage());
         }
 
     }
@@ -166,21 +166,21 @@ public class AdminServiceImpl implements IAdminService {
      * @return
      */
     @Override
-    public BaseResponse<?> saveUserAndSendEmailTemp(UserRegisterReqVO reqVO) {
+    public BaseResponse<String> saveUserAndSendEmailTemp(UserRegisterReqVO reqVO) {
         String email = reqVO.getEmail();
-        String roleName=reqVO.getRoleName();
+        String roleName = reqVO.getRoleName();
 
         //验证角色
         RoleEntity role = iRoleRespository.findByDescription(roleName);
-        if (role==null){
-            return BaseResponse.errormsg("您选择的角色不存在，请重试！");
+        if (role == null) {
+            return BaseResponse.error("您选择的角色不存在，请重试！");
         }
 
         UserEntity checkUser = iUserRepository.findByEmail(email);
 
         if (checkUser != null) {
 
-            return BaseResponse.errormsg(Contants.user.ACCOUNT_EXIST);
+            return BaseResponse.error(HisConstants.USER.ACCOUNT_EXIST);
         }
 
         UserEntity userEntity = new UserEntity();
@@ -209,14 +209,14 @@ public class AdminServiceImpl implements IAdminService {
             userRole.setuId(uId);
             userRole.setRoleId(role.getId());
             String desciption = user.getEmail() + "#" + role.getRole();
-            userRole.setDesciption(desciption);
+            userRole.setDescription(desciption);
             userRole.setRoleStatus(0);
 
             iUserRoleRepository.saveAndFlush(userRole);
-            return BaseResponse.success(Contants.user.SUCCESS);
+            return BaseResponse.success(HisConstants.USER.SUCCESS);
         } catch (Exception e) {
             e.printStackTrace();
-            return BaseResponse.errormsg("保存用户信息发送异常!");
+            return BaseResponse.error("保存用户信息发送异常!");
         }
 
 
@@ -250,7 +250,7 @@ public class AdminServiceImpl implements IAdminService {
                     applyRspVO applyRspVO = new applyRspVO();
                     applyRspVO.setDateTime(userRole.getCreateDatetime());
                     Optional<UserEntity> user = iUserRepository.findById(userRole.getuId());
-                    if (user.isPresent()){
+                    if (user.isPresent()) {
                         applyRspVO.setEmail(user.get().getEmail());
                         applyRspVO.setUsername(user.get().getUsername());
                     }
@@ -294,12 +294,12 @@ public class AdminServiceImpl implements IAdminService {
      */
 
     @Override
-    public BaseResponse<?> addAnnouncement(AnnouncementVO reqVO) {
+    public BaseResponse<String> addAnnouncement(AnnouncementVO reqVO) {
 
         AnnouncementEntity announcementTemp = iAnnouncementRepository.findByTitle(reqVO.getTitle());
         if (announcementTemp != null && reqVO.getContents().equals(announcementTemp.getContents())) {
 
-            return BaseResponse.errormsg(Contants.user.ANN_EQUALS);
+            return BaseResponse.error(HisConstants.USER.ANN_EQUALS);
         }
 
         AnnouncementEntity announcement = new AnnouncementEntity();
@@ -311,9 +311,9 @@ public class AdminServiceImpl implements IAdminService {
         try {
             iAnnouncementRepository.saveAndFlush(announcement);
 
-            return BaseResponse.success(Contants.user.SUCCESS);
+            return BaseResponse.success(HisConstants.USER.SUCCESS);
         } catch (Exception e) {
-            return BaseResponse.errormsg("系统异常，请稍后重试！");
+            return BaseResponse.error("系统异常，请稍后重试！");
         }
     }
 
@@ -352,7 +352,7 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public BaseResponse<?> changeAnnouncement(AnnouncementVO announcementVO) {
+    public BaseResponse<String> changeAnnouncement(AnnouncementVO announcementVO) {
 
 
         Optional<AnnouncementEntity> announcement = iAnnouncementRepository.findById(announcementVO.getId());
@@ -361,67 +361,69 @@ public class AdminServiceImpl implements IAdminService {
         announcement.get().setAnnDate(DateUtil.getCurrentDateSimpleToString());
         try {
             iAnnouncementRepository.saveAndFlush(announcement.get());
-            return BaseResponse.success(Contants.user.SUCCESS);
+            return BaseResponse.success(HisConstants.USER.SUCCESS);
         } catch (Exception e) {
-            return BaseResponse.errormsg(Contants.user.FAIL);
+            return BaseResponse.error(HisConstants.USER.FAIL);
         }
 
 
     }
 
     @Override
-    public BaseResponse<?> deleteAnnouncement(String id) {
+    public BaseResponse<String> deleteAnnouncement(String id) {
 
         try {
             iAnnouncementRepository.deleteById(id);
-            return BaseResponse.success(Contants.user.SUCCESS);
+            return BaseResponse.success(HisConstants.USER.SUCCESS);
         } catch (Exception e) {
-            return BaseResponse.errormsg(Contants.user.FAIL);
+            return BaseResponse.error(HisConstants.USER.FAIL);
         }
 
     }
 
     @Override
-    public BaseResponse<?> showAnnouncement(String id) {
+    public BaseResponse<String> showAnnouncement(String id) {
 
         Optional<AnnouncementEntity> announcement = iAnnouncementRepository.findById(id);
         announcement.get().setAnnStatus(1);
         try {
             iAnnouncementRepository.saveAndFlush(announcement.get());
-            return BaseResponse.success(Contants.user.SUCCESS);
+            return BaseResponse.success(HisConstants.USER.SUCCESS);
         } catch (Exception e) {
-            return BaseResponse.success(Contants.user.FAIL);
+            return BaseResponse.success(HisConstants.USER.FAIL);
         }
     }
 
     @Override
-    public BaseResponse<?> hiddenAnnouncement(String id) {
+    public BaseResponse<String> hiddenAnnouncement(String id) {
 
         Optional<AnnouncementEntity> announcement = iAnnouncementRepository.findById(id);
         announcement.get().setAnnStatus(0);
         try {
             iAnnouncementRepository.saveAndFlush(announcement.get());
-            return BaseResponse.success(Contants.user.SUCCESS);
+            return BaseResponse.success(HisConstants.USER.SUCCESS);
         } catch (Exception e) {
-            return BaseResponse.success(Contants.user.FAIL);
+            return BaseResponse.success(HisConstants.USER.FAIL);
         }
     }
 
     @Override
-    public BaseResponse<?> addDepartment(AddDepartmentReqVO reqVO) {
+    public BaseResponse<String> addDepartment(AddDepartmentReqVO reqVO) {
 
-        String name=reqVO.getDepartmentName();
-        String address=reqVO.getDepartmentAddress();
+        String name = reqVO.getName();
+        String address = reqVO.getAddress();
 
-        DepartmentEntity department=iDepartmentRepository.findByNameAndAddress(name,address );
+        DepartmentEntity department = iDepartmentRepository.findByNameAndAddress(name, address);
 
-        if (department!=null){
-            return BaseResponse.errormsg("该科室已存在！");
+        if (department != null) {
+            return BaseResponse.error("该科室已存在！");
         }
-        department =new DepartmentEntity();
-        department.setName(name);
-        department.setNameCode(ChineseCharacterUtil.getUpperCase(name, false));
-        department.setAddress(address);
+        department = new DepartmentEntity();
+        BeanUtils.copyProperties(reqVO, department);
+
+        String nameCode = ChineseCharacterUtil.getUpperCase(name, false)
+                .concat("-").concat(ChineseCharacterUtil.getUpperCase(address, false));
+        department.setNameCode(nameCode);
 
         iDepartmentRepository.saveAndFlush(department);
 
@@ -431,15 +433,15 @@ public class AdminServiceImpl implements IAdminService {
     @Override
     public List<GetDepartmentRspVO> getDepartment() {
 
-        List<GetDepartmentRspVO> rspVO=new ArrayList<>();
+        List<GetDepartmentRspVO> rspVO = new ArrayList<>();
 
-        List<DepartmentEntity> departmentList=iDepartmentRepository.findAll();
+        List<DepartmentEntity> departmentList = iDepartmentRepository.findAll();
 
-        if (departmentList!=null&&!departmentList.isEmpty()){
+        if (departmentList != null && !departmentList.isEmpty()) {
 
             rspVO.addAll(departmentList.stream().map(department -> {
-                GetDepartmentRspVO rsp=new GetDepartmentRspVO();
-                BeanUtils.copyProperties(department,rsp );
+                GetDepartmentRspVO rsp = new GetDepartmentRspVO();
+                BeanUtils.copyProperties(department, rsp);
                 return rsp;
             }).collect(Collectors.toList()));
         }
