@@ -54,6 +54,8 @@ public class RegisterServiceImpl implements IRegisterService {
     private IOutpatientQueueRepository iOutpatientQueueRepository;
     @Autowired
     private IGetPatientInfoService iGetPatientInfoService;
+    @Autowired
+    private IDepartmentRepository iDepartmentRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(RegisterServiceImpl.class);
 
@@ -402,7 +404,14 @@ public class RegisterServiceImpl implements IRegisterService {
         registerList.forEach(register -> {
             RegisterRecordRspVO registerRecord = new RegisterRecordRspVO();
             registerRecord.setCardId(register.getPatient().getCardId());
-            registerRecord.setDepartment(register.getDepartment());
+
+            String departmentName="";
+            DepartmentEntity department=iDepartmentRepository.findByCode(Integer.parseInt(register.getDepartment()));
+            if (department!=null){
+                departmentName=department.getName();
+            }
+            registerRecord.setDepartment(departmentName);
+
             registerRecord.setRegisterType(register.getRegisterType());
             registerRecord.setName(register.getPatient().getName());
             registerRecord.setDoctor(register.getDoctor());

@@ -10,4 +10,6 @@ import com.xgs.hisystem.pojo.entity.DepartmentEntity;
 public interface IDepartmentRepository extends BaseRepository<DepartmentEntity>{
 
     DepartmentEntity findByNameAndAddress(String name,String address);
+
+    DepartmentEntity findByCode(int code);
 }

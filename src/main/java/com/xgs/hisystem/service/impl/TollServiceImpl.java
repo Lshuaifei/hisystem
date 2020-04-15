@@ -48,6 +48,8 @@ public class TollServiceImpl implements ITollService {
     private ITollTakeDrugInfoRepository iTollTakeDrugInfoRepository;
     @Autowired
     private IGetPatientInfoService iGetPatientInfoService;
+    @Autowired
+    private IDepartmentRepository iDepartmentRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(TollServiceImpl.class);
 
@@ -121,7 +123,12 @@ public class TollServiceImpl implements ITollService {
             tollRspVO.setPrescriptionNum(medicalRecord.getPrescriptionNum());
             tollRspVO.setRegisterId(register.getId());
             tollRspVO.setRegisterType(register.getRegisterType());
-            tollRspVO.setDepartment(register.getDepartment());
+            String departmentName="";
+            DepartmentEntity department=iDepartmentRepository.findByCode(Integer.parseInt(register.getDepartment()));
+            if (department!=null){
+                departmentName=department.getName();
+            }
+            tollRspVO.setDepartment(departmentName);
             tollRspVO.setDoctorName(register.getDoctor());
             tollRspVO.setOutpatientDate(medicalRecord.getCreateDatetime());
             tollRspVOList.add(tollRspVO);

@@ -43,7 +43,7 @@ $(function () {
             }).change(function () {
 
                 //选择科室
-                department = $(".registerSearch_1 option:selected").text();
+                department = $(".registerSearch_1 option:selected").val();
             });
         }
     })
