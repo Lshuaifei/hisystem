@@ -31,14 +31,13 @@ function getDefaultGetCardId() {
         type: "post",
         success: function (data) {
 
-            if (data !== null && data.status === 1) {
-                $("#cardId_1").val(data.data)
-            }
-            if (data.message === "fail") {
+            if (data.data === "fail") {
                 swal("读卡失败！请刷新页面重试", "", "error")
 
-            } else if (data.message === "none") {
+            } else if (data.data === "none") {
                 swal("未识别到卡片！", "", "error")
+            }else {
+                $("#cardId_1").val(data.data)
             }
         }
     })
