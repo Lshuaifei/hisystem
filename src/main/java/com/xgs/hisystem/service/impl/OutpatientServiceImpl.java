@@ -89,7 +89,7 @@ public class OutpatientServiceImpl implements IOutpatientService {
         });
 
         if (outpatientQueues == null || outpatientQueues.isEmpty()) {
-            rspVO.setMessage("请先挂号预约！");
+            rspVO.setMessage("未查询到挂号信息，请与患者核对挂号就诊医生！");
             return rspVO;
         }
 
@@ -174,13 +174,13 @@ public class OutpatientServiceImpl implements IOutpatientService {
                 medicalRecord.setRegister(register);
                 medicalRecord.setPrescriptionNum(reqVO.getPrescriptionNum());
                 iMedicalRecordRepository.saveAndFlush(medicalRecord);
-            }else {
+            } else {
                 //检查是否已体检过
-               MedicalExaminationEntity medicalExamination= iMedicalExaminationRepository.findByPrescriptionNum(medicalRecord.getPrescriptionNum());
+                MedicalExaminationEntity medicalExamination = iMedicalExaminationRepository.findByPrescriptionNum(medicalRecord.getPrescriptionNum());
 
-               if (medicalExamination!=null){
-                   return BaseResponse.error("该患者已体检过，无需再稍后处理！");
-               }
+                if (medicalExamination != null) {
+                    return BaseResponse.error("该患者已体检过，无需再稍后处理！");
+                }
             }
             //更新为稍后处理状态
             outpatientQueue.setOutpatientQueueStatus(HisConstants.QUEUE.LATER);
@@ -211,6 +211,17 @@ public class OutpatientServiceImpl implements IOutpatientService {
                 rspVO.setMessage("就诊信息异常，请刷新页面或联系管理员后重试！");
                 return rspVO;
             }
+            //检查体检是否已收费
+            MedicalExaminationEntity medicalExamination = iMedicalExaminationRepository.findByPrescriptionNum(medicalRecord.getPrescriptionNum());
+            if (medicalExamination != null) {
+
+                Optional<RegisterEntity> register = iRegisterRepository.findById(medicalExamination.getRegister().getId());
+                if (register.isPresent() && register.get().getChargeStatus() == 0) {
+
+                    rspVO.setMessage("该就诊所关联的体检项目未收费，请收费后再继续就诊！");
+                    return rspVO;
+                }
+            }
 
             outpatientQueue.setOutpatientQueueStatus(1);
             iOutpatientQueueRepository.saveAndFlush(outpatientQueue);
@@ -226,7 +237,6 @@ public class OutpatientServiceImpl implements IOutpatientService {
 
         } catch (Exception e) {
             rspVO.setMessage("系统异常，请稍后重试！");
-            return rspVO;
         }
         return rspVO;
     }
@@ -273,11 +283,11 @@ public class OutpatientServiceImpl implements IOutpatientService {
             //门诊队列
             Optional<OutpatientQueueEntity> outpatientQueueTemp = iOutpatientQueueRepository.findById(reqVO.getQueueId());
 
-            if (!outpatientQueueTemp.isPresent()){
+            if (!outpatientQueueTemp.isPresent()) {
 
                 return BaseResponse.error("门诊队列信息异常！");
             }
-            OutpatientQueueEntity outpatientQueue=outpatientQueueTemp.get();
+            OutpatientQueueEntity outpatientQueue = outpatientQueueTemp.get();
 
             RegisterEntity register = outpatientQueue.getRegister();
 

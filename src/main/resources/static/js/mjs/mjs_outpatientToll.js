@@ -180,7 +180,7 @@ window.operateEvents = {
                     $("#prescription").html(data.prescription);
                     $("#examinationCost").val(data.examinationCost);
                     $("#nowDate").html(data.nowDate);
-                    $("#total").val(data.drugCost + data.examinationCost)
+                    $("#total").val(data.drugCost)
                 }
             }
         })

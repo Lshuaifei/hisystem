@@ -22,13 +22,13 @@ public class PatientInforReqVO {
     private String nationality;
 
     @NotBlank(message = "请读取二代身份证！")
-    private String idcard;
+    private String idCard;
 
     @NotBlank(message = "请读取二代身份证！")
     private String sex;
 
     @NotBlank(message = "请读取二代身份证！")
-    private String birth;
+    private String birthday;
 
     private String telphone;
 
@@ -64,12 +64,12 @@ public class PatientInforReqVO {
         this.nationality = nationality;
     }
 
-    public String getIdcard() {
-        return idcard;
+    public String getIdCard() {
+        return idCard;
     }
 
-    public void setIdcard(String idcard) {
-        this.idcard = idcard;
+    public void setIdCard(String idCard) {
+        this.idCard = idCard;
     }
 
     public String getSex() {
@@ -80,12 +80,12 @@ public class PatientInforReqVO {
         this.sex = sex;
     }
 
-    public String getBirth() {
-        return birth;
+    public String getBirthday() {
+        return birthday;
     }
 
-    public void setBirth(String birth) {
-        this.birth = birth;
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 
     public String getTelphone() {

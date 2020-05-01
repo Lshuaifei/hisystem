@@ -26,6 +26,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,63 +70,68 @@ public class RegisterServiceImpl implements IRegisterService {
 
         PatientInforRspVO rspVO = new PatientInforRspVO();
 
-        //获取患者信息
-        BaseResponse<PatientEntity> baseResponse = iGetPatientInfoService.getPatientInfo(reqVO);
+        try {
+            //获取患者信息
+            BaseResponse<PatientEntity> baseResponse = iGetPatientInfoService.getPatientInfo(reqVO);
 
-        if (BaseResponse.RESPONSE_FAIL.equals(baseResponse.getStatus())) {
-            rspVO.setMessage(baseResponse.getMessage());
-            return rspVO;
-        }
-        PatientEntity patientInfor = baseResponse.getData();
+            if (BaseResponse.RESPONSE_FAIL.equals(baseResponse.getStatus())) {
+                rspVO.setMessage(baseResponse.getMessage());
+                return rspVO;
+            }
+            PatientEntity patientInfor = baseResponse.getData();
 
-        String patientId = patientInfor.getId();
+            String patientId = patientInfor.getId();
 
-        List<RegisterEntity> registerList = iRegisterRepository.findByPatientId(patientId);
+            List<RegisterEntity> registerList = iRegisterRepository.findByPatientId(patientId);
 
-        if (registerList != null && !registerList.isEmpty()) {
-            //过期的挂号
-            List<RegisterEntity> expiredList = new ArrayList<>();
+            if (registerList != null && !registerList.isEmpty()) {
+                //过期的挂号
+                List<RegisterEntity> expiredList = new ArrayList<>();
 
-            for (RegisterEntity register : registerList) {
+                for (RegisterEntity register : registerList) {
 
-                int registerStatus = register.getRegisterStatus();
-                int treatmentStatus = register.getTreatmentStatus();
-                int chargeStatus = register.getChargeStatus();
-                //已挂号
-                if (registerStatus == 1) {
-                    //未就诊情况下
-                    if (treatmentStatus == 0) {
+                    int registerStatus = register.getRegisterStatus();
+                    int treatmentStatus = register.getTreatmentStatus();
+                    int chargeStatus = register.getChargeStatus();
+                    //已挂号
+                    if (registerStatus == 1) {
+                        //未就诊情况下
+                        if (treatmentStatus == 0) {
 
-                        String createDate = DateUtil.DateTimeToDate(register.getCreateDatetime());
-                        String nowDate = DateUtil.getCurrentDateSimpleToString();
-                        //当天情况下
-                        if (nowDate.equals(createDate)) {
+                            String createDate = DateUtil.DateTimeToDate(register.getCreateDatetime());
+                            String nowDate = DateUtil.getCurrentDateSimpleToString();
+                            //当天情况下
+                            if (nowDate.equals(createDate)) {
 
-                            //检查门诊队列是否待处理状态
-                            OutpatientQueueEntity outpatientQueue = iOutpatientQueueRepository.findByRegisterId(register.getId());
-                            if (outpatientQueue == null || outpatientQueue.getOutpatientQueueStatus() != HisConstants.QUEUE.LATER) {
-                                rspVO.setMessage("当日有未完成的就诊，请完成就诊！");
-                                return rspVO;
+                                //检查门诊队列是否待处理状态
+                                OutpatientQueueEntity outpatientQueue = iOutpatientQueueRepository.findByRegisterId(register.getId());
+                                if (outpatientQueue != null && outpatientQueue.getOutpatientQueueStatus() == HisConstants.QUEUE.NORMAL) {
+                                    String doctorName = Arrays.asList(outpatientQueue.getDescription().split("#")).get(1);
+                                    rspVO.setMessage("当日有未完成的就诊，请完成就诊！门诊医生：" + doctorName);
+                                    return rspVO;
+                                }
+                            }
+                            //不是当天则修改挂号状态为：-1 （过期）
+                            else {
+                                register.setRegisterStatus(-1);
+                                expiredList.add(register);
                             }
                         }
-                        //不是当天则修改挂号状态为：-1 （过期）
-                        else {
-                            register.setRegisterStatus(-1);
-                            expiredList.add(register);
+                        //已就诊未缴费
+                        if (treatmentStatus == 1 && chargeStatus == 0) {
+                            rspVO.setMessage("存在已就诊未收费的记录，请及时缴费！");
+                            return rspVO;
                         }
                     }
-
-                    //未收费的体检，不能再挂号
-                    if ("12".equals(register.getDepartment()) && treatmentStatus == 1 && chargeStatus == 0) {
-                        rspVO.setMessage("未收费的体检，不能再挂号！");
-                        return rspVO;
-                    }
                 }
+                iRegisterRepository.saveAll(expiredList);
             }
-            iRegisterRepository.saveAll(expiredList);
+            rspVO.setAge(DateUtil.getAge(patientInfor.getBirthday()));
+            BeanUtils.copyProperties(patientInfor, rspVO);
+        } catch (Exception e) {
+            rspVO.setMessage("查询就诊卡信息失败，请检查添加就诊卡时输入信息是否规范！");
+            e.printStackTrace();
         }
-        rspVO.setAge(DateUtil.getAge(patientInfor.getBirthday()));
-        BeanUtils.copyProperties(patientInfor, rspVO);
         return rspVO;
     }
 
@@ -188,7 +194,7 @@ public class RegisterServiceImpl implements IRegisterService {
                 return BaseResponse.error(HisConstants.REGISTER.ACTIVATED);
             }
             //验证患者已注册过就诊卡
-            PatientEntity patientEntity2 = iPatientRepository.findByIdCard(reqVO.getIdcard());
+            PatientEntity patientEntity2 = iPatientRepository.findByIdCard(reqVO.getIdCard());
             if (!StringUtils.isEmpty(patientEntity2)) {
                 return BaseResponse.error(HisConstants.REGISTER.COVER);
             }
@@ -212,7 +218,7 @@ public class RegisterServiceImpl implements IRegisterService {
     @Override
     public BaseResponse<String> coverCardId(PatientInforReqVO reqVO) {
 
-        PatientEntity patientInfor = iPatientRepository.findByIdCard(reqVO.getIdcard());
+        PatientEntity patientInfor = iPatientRepository.findByIdCard(reqVO.getIdCard());
         if (StringUtils.isEmpty(patientInfor)) {
             return BaseResponse.error(HisConstants.USER.FAIL);
         }
@@ -294,10 +300,10 @@ public class RegisterServiceImpl implements IRegisterService {
             PatientEntity patient = iPatientRepository.findByCardId(reqVO.getCardId());
 
             //患者当前门诊队列状态是待处理，验证第二次挂的是否为体检号
-            List<RegisterEntity> registerTemp=iRegisterRepository.findAll(new Specification<RegisterEntity>() {
+            List<RegisterEntity> registerTemp = iRegisterRepository.findAll(new Specification<RegisterEntity>() {
                 @Override
                 public Predicate toPredicate(Root<RegisterEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                    List<Predicate> filter=new ArrayList<>();
+                    List<Predicate> filter = new ArrayList<>();
 
                     filter.add(cb.equal(root.get("patient"), patient));
                     filter.add(cb.equal(root.get("registerStatus"), 1));
@@ -309,12 +315,12 @@ public class RegisterServiceImpl implements IRegisterService {
                     return query.where(filter.toArray(new Predicate[filter.size()])).getRestriction();
                 }
             });
-            if (registerTemp!=null&&!registerTemp.isEmpty()){
+            if (registerTemp != null && !registerTemp.isEmpty()) {
 
-                if (registerTemp.size()!=1){
+                if (registerTemp.size() != 1) {
                     return BaseResponse.error("挂号记录异常，请联系管理员！");
                 }
-                if (!"12".equals(reqVO.getDepartment())){
+                if (!"12".equals(reqVO.getDepartment())) {
                     return BaseResponse.error("门诊待处理状态，只允许再挂体检号！");
                 }
             }
@@ -405,10 +411,10 @@ public class RegisterServiceImpl implements IRegisterService {
             RegisterRecordRspVO registerRecord = new RegisterRecordRspVO();
             registerRecord.setCardId(register.getPatient().getCardId());
 
-            String departmentName="";
-            DepartmentEntity department=iDepartmentRepository.findByCode(Integer.parseInt(register.getDepartment()));
-            if (department!=null){
-                departmentName=department.getName();
+            String departmentName = "";
+            DepartmentEntity department = iDepartmentRepository.findByCode(Integer.parseInt(register.getDepartment()));
+            if (department != null) {
+                departmentName = department.getName();
             }
             registerRecord.setDepartment(departmentName);
 

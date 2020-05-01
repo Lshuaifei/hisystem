@@ -74,7 +74,7 @@ public class MedicalExaminationServiceImpl implements IMedicalExaminationService
         });
 
         if (outpatientQueues == null || outpatientQueues.isEmpty()) {
-            rspVO.setMessage("请先预约挂号！");
+            rspVO.setMessage("未查询到挂号信息，请与患者核对挂号就诊医生！");
             return rspVO;
         }
 

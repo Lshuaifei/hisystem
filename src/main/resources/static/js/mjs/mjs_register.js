@@ -80,10 +80,10 @@ function addPatientInfor() {
 
     var PatientInforReqVO = {
         name: $("#IDname").val(),
-        idcard: $("#IDcard").val(),
+        idCard: $("#IDcard").val(),
         sex: $("#IDsex").val(),
         nationality: $("#IDnationality").val(),
-        birth: $("#IDbirthday").val(),
+        birthday: $("#IDbirthday").val(),
         address: $("#IDaddress").val(),
         cardId: $("#cardId_1").val(),
         telphone: $("#IDtelphone").val()
