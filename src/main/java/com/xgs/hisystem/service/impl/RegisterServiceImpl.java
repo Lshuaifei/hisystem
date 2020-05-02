@@ -9,6 +9,7 @@ import com.xgs.hisystem.repository.*;
 import com.xgs.hisystem.service.IGetPatientInfoService;
 import com.xgs.hisystem.service.IRegisterService;
 import com.xgs.hisystem.util.DateUtil;
+import com.xgs.hisystem.util.IdCardValidUtil;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,6 +187,11 @@ public class RegisterServiceImpl implements IRegisterService {
      */
     @Override
     public BaseResponse<String> addPatientInfor(PatientInforReqVO reqVO) throws Exception {
+
+        boolean bool = IdCardValidUtil.validateIdCard(reqVO.getIdCard());
+        if (!bool) {
+            return BaseResponse.error("身份证号码格式有误！");
+        }
 
         try {
             //验证该就诊卡是否已被使用
