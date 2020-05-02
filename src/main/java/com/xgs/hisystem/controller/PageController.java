@@ -82,7 +82,7 @@ public class PageController {
 
         model.addAttribute("url", serverConfig.getUrl());
 
-        if (HisConstants.COMMON_STATUS_ONE.equals(baseResponse.getStatus())) {
+        if (baseResponse.getStatus() == 1) {
             return "email/dmail";
         } else {
             return "error";

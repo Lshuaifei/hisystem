@@ -109,8 +109,6 @@ function register() {
 
         success: function (data) {
 
-            data=JSON.parse(data);
-
             if (data !== null && data.status === 1) {
 
                 /*注册成功，页面跳转*/
