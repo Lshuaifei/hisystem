@@ -34,7 +34,7 @@ public class GlobalDefaultExceptionHandler {
     /**
      * 捕获系统未知异常
      */
-    @ExceptionHandler(value = Exception.class)
+/*    @ExceptionHandler(value = Exception.class)
     public ModelAndView handleException(HttpServletRequest req, Exception ex) {
         logger.error("系统错误！uri:{},错误信息:{}", req.getRequestURI(), ex);
 
@@ -43,7 +43,7 @@ public class GlobalDefaultExceptionHandler {
         mv.setViewName("error");
 
         return mv;
-    }
+    }*/
 
     /**
      * 捕获参数校验失败异常
