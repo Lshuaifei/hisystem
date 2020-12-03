@@ -1,8 +1,8 @@
 package com.xgs.hisystem.service.impl;
 
-import com.xgs.hisystem.config.HisConstants;
+import com.xgs.hisystem.common.constant.HisConstants;
 import com.xgs.hisystem.pojo.bo.BaseResponse;
-import com.xgs.hisystem.pojo.bo.PageRspBO;
+import com.xgs.hisystem.pojo.vo.PageRspVO;
 import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.*;
 import com.xgs.hisystem.repository.*;
@@ -120,7 +120,7 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public PageRspBO<applyRspVO> getRoleApply(BasePageReqVO reqVO) {
+    public PageRspVO<applyRspVO> getRoleApply(BasePageReqVO reqVO) {
 
         Page<UserRoleEntity> page = iUserRoleRepository.findAll(new Specification<UserRoleEntity>() {
             @Override
@@ -154,10 +154,10 @@ public class AdminServiceImpl implements IAdminService {
             applyRspVOList.add(applyRspVO);
         });
 
-        PageRspBO pageRspBO = new PageRspBO();
-        pageRspBO.setRows(applyRspVOList);
-        pageRspBO.setTotal(page.getTotalElements());
-        return pageRspBO;
+        PageRspVO pageRspVO = new PageRspVO();
+        pageRspVO.setRows(applyRspVOList);
+        pageRspVO.setTotal(page.getTotalElements());
+        return pageRspVO;
     }
 
     /**
@@ -219,8 +219,6 @@ public class AdminServiceImpl implements IAdminService {
             e.printStackTrace();
             return BaseResponse.error("保存用户信息发送异常!");
         }
-
-
     }
 
     /**
@@ -319,7 +317,7 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public PageRspBO<AnnouncementVO> getAnnouncement(BasePageReqVO reqVO) {
+    public PageRspVO<AnnouncementVO> getAnnouncement(BasePageReqVO reqVO) {
         Page<AnnouncementEntity> page = iAnnouncementRepository.findAll(new Specification<AnnouncementEntity>() {
             @Override
             public Predicate toPredicate(Root<AnnouncementEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -346,10 +344,10 @@ public class AdminServiceImpl implements IAdminService {
             announcementVOList.add(announcementVO);
         });
 
-        PageRspBO pageRspBO = new PageRspBO();
-        pageRspBO.setTotal(page.getTotalElements());
-        pageRspBO.setRows(announcementVOList);
-        return pageRspBO;
+        PageRspVO pageRspVO = new PageRspVO();
+        pageRspVO.setTotal(page.getTotalElements());
+        pageRspVO.setRows(announcementVOList);
+        return pageRspVO;
     }
 
     @Override

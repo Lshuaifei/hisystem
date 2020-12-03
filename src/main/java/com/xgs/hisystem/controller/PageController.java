@@ -1,12 +1,10 @@
 package com.xgs.hisystem.controller;
 
-import com.xgs.hisystem.config.HisConstants;
 import com.xgs.hisystem.config.ServerConfig;
 import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.vo.AnnouncementVO;
 import com.xgs.hisystem.pojo.vo.applyRspVO;
 import com.xgs.hisystem.service.IAdminService;
-import com.xgs.hisystem.service.IOutpatientService;
 import com.xgs.hisystem.service.IUserService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;

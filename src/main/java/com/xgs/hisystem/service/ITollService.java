@@ -15,7 +15,7 @@ public interface ITollService {
 
     cardRspVO getCardIdInfor();
 
-    List<TollRspVO> getAllMedicalRecord(String cardId, String tollStatus);
+    BaseResponse<List<TollRspVO>> getAllMedicalRecord(String cardId, String tollStatus);
 
     TollMedicalRecordRspVO getMedicalRecord(String cardId, String registerId) throws Exception;
 

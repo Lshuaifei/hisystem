@@ -1,6 +1,6 @@
 package com.xgs.hisystem.service.impl;
 
-import com.xgs.hisystem.config.HisConstants;
+import com.xgs.hisystem.common.constant.HisConstants;
 import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.medicalExamination.medicalExaminationInfoReqVO;

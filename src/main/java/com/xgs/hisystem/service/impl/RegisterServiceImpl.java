@@ -1,8 +1,8 @@
 package com.xgs.hisystem.service.impl;
 
-import com.xgs.hisystem.config.HisConstants;
+import com.xgs.hisystem.common.constant.HisConstants;
 import com.xgs.hisystem.pojo.bo.BaseResponse;
-import com.xgs.hisystem.pojo.bo.PageRspBO;
+import com.xgs.hisystem.pojo.vo.PageRspVO;
 import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.register.*;
 import com.xgs.hisystem.repository.*;
@@ -379,7 +379,7 @@ public class RegisterServiceImpl implements IRegisterService {
      * @return
      */
     @Override
-    public PageRspBO<RegisterRecordRspVO> getRegisterRecord(RegisterRecordSearchReqVO reqVO) {
+    public PageRspVO<RegisterRecordRspVO> getRegisterRecord(RegisterRecordSearchReqVO reqVO) {
         Page<RegisterEntity> page = iRegisterRepository.findAll(new Specification<RegisterEntity>() {
             @Override
             public Predicate toPredicate(Root<RegisterEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -432,10 +432,10 @@ public class RegisterServiceImpl implements IRegisterService {
             registerRecord.setCreatePersonEmail(register.getOperatorEmail());
             registerRecordList.add(registerRecord);
         });
-        PageRspBO pageRspBO = new PageRspBO();
-        pageRspBO.setTotal(page.getTotalElements());
-        pageRspBO.setRows(registerRecordList);
-        return pageRspBO;
+        PageRspVO pageRspVO = new PageRspVO();
+        pageRspVO.setTotal(page.getTotalElements());
+        pageRspVO.setRows(registerRecordList);
+        return pageRspVO;
     }
 
 }

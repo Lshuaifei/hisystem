@@ -1,6 +1,6 @@
 package com.xgs.hisystem.task;
 
-import com.xgs.hisystem.config.HisConstants;
+import com.xgs.hisystem.common.constant.HisConstants;
 import com.xgs.hisystem.pojo.entity.LoginInforEntity;
 import com.xgs.hisystem.pojo.entity.UserEntity;
 import com.xgs.hisystem.repository.ILoginInforRepository;

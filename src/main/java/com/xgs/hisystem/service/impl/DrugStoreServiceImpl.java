@@ -1,8 +1,8 @@
 package com.xgs.hisystem.service.impl;
 
-import com.xgs.hisystem.config.HisConstants;
+import com.xgs.hisystem.common.constant.HisConstants;
 import com.xgs.hisystem.pojo.bo.BaseResponse;
-import com.xgs.hisystem.pojo.bo.PageRspBO;
+import com.xgs.hisystem.pojo.vo.PageRspVO;
 import com.xgs.hisystem.pojo.entity.DrugEntity;
 import com.xgs.hisystem.pojo.entity.DrugTypeEntity;
 import com.xgs.hisystem.pojo.entity.EfficacyClassificationEntity;
@@ -211,7 +211,7 @@ public class DrugStoreServiceImpl implements IDrugStoreService {
     }
 
     @Override
-    public PageRspBO<DrugRspVO> getAllDrug(DrugSearchReqVO reqVO) {
+    public PageRspVO<DrugRspVO> getAllDrug(DrugSearchReqVO reqVO) {
 
         Page<DrugEntity> page = iDrugRepository.findAll(new Specification<DrugEntity>() {
             @Override
@@ -267,12 +267,12 @@ public class DrugStoreServiceImpl implements IDrugStoreService {
             drugRspVO.setQualityDate(drugEntity.getQualityDate());
             drugRspVOList.add(drugRspVO);
         });
-        PageRspBO pageRspBO = new PageRspBO();
-        pageRspBO.setTotal(page.getTotalElements());
-        pageRspBO.setRows(drugRspVOList);
+        PageRspVO pageRspVO = new PageRspVO();
+        pageRspVO.setTotal(page.getTotalElements());
+        pageRspVO.setRows(drugRspVOList);
 
 
-        return pageRspBO;
+        return pageRspVO;
     }
 
     @Override

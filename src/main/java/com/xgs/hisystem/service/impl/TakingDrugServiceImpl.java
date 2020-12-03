@@ -1,6 +1,5 @@
 package com.xgs.hisystem.service.impl;
 
-import com.xgs.hisystem.config.HisConstants;
 import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.takingdrug.MedicalRecordRspVO;
@@ -43,10 +42,14 @@ public class TakingDrugServiceImpl implements ITakingDrugService {
             recordRspVO.setMessage("该处方号未查询到任何信息！");
             return recordRspVO;
         }
-        TollTakeDrugInfoEntity tollTakeDrugInfo = iTollTakeDrugInfoRepository.findByPrescriptionNumAndTakingDrugStatus(medicalRecord.getPrescriptionNum(), 0);
+        TollTakeDrugInfoEntity tollTakeDrugInfo = iTollTakeDrugInfoRepository.findByPrescriptionNum(medicalRecord.getPrescriptionNum());
 
         if (tollTakeDrugInfo == null) {
             recordRspVO.setMessage("该处方未查询到最新划价收费信息！");
+            return recordRspVO;
+        }
+        if (tollTakeDrugInfo.getTakingDrugStatus() == 1) {
+            recordRspVO.setMessage("该处方已取药！");
             return recordRspVO;
         }
         RegisterEntity register = medicalRecord.getRegister();

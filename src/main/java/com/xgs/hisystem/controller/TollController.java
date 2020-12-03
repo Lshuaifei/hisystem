@@ -40,7 +40,7 @@ public class TollController {
      * @return
      */
     @GetMapping(value = "/getAllMedicalRecord")
-    public List<TollRspVO> getAllMedicalRecord(@RequestParam String cardId,
+    public BaseResponse<List<TollRspVO>> getAllMedicalRecord(@RequestParam String cardId,
                                                @RequestParam String tollStatus) {
 
         return iTollService.getAllMedicalRecord(cardId, tollStatus);

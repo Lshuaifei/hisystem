@@ -1,7 +1,7 @@
 package com.xgs.hisystem.service;
 
 import com.xgs.hisystem.pojo.bo.BaseResponse;
-import com.xgs.hisystem.pojo.bo.PageRspBO;
+import com.xgs.hisystem.pojo.vo.PageRspVO;
 import com.xgs.hisystem.pojo.vo.register.*;
 
 import java.util.List;
@@ -29,5 +29,5 @@ public interface IRegisterService {
 
     BaseResponse<String> addRegisterInfor(RegisterInforReqVO reqVO);
 
-    PageRspBO<RegisterRecordRspVO> getRegisterRecord(RegisterRecordSearchReqVO reqVO);
+    PageRspVO<RegisterRecordRspVO> getRegisterRecord(RegisterRecordSearchReqVO reqVO);
 }

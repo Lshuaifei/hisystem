@@ -1,7 +1,3 @@
-/**
- * hxgy Inc.
- * Copyright (c) 2004-2018 All Rights Reserved.
- */
 package com.xgs.hisystem.config;
 
 import org.springframework.context.annotation.Bean;

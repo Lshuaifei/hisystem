@@ -1,7 +1,7 @@
 package com.xgs.hisystem.controller;
 
 import com.xgs.hisystem.pojo.bo.BaseResponse;
-import com.xgs.hisystem.pojo.bo.PageRspBO;
+import com.xgs.hisystem.pojo.vo.PageRspVO;
 import com.xgs.hisystem.pojo.vo.register.*;
 import com.xgs.hisystem.service.IRegisterService;
 import io.swagger.annotations.Api;
@@ -114,7 +114,7 @@ public class RegisterController {
      * @return
      */
     @GetMapping(value = "/getRegisterRecord")
-    public PageRspBO<RegisterRecordRspVO> getRegisterRecord(RegisterRecordSearchReqVO reqVO) {
+    public PageRspVO<RegisterRecordRspVO> getRegisterRecord(RegisterRecordSearchReqVO reqVO) {
 
         return iRegisterService.getRegisterRecord(reqVO);
     }

@@ -1,4 +1,4 @@
-package com.xgs.hisystem.pojo.bo;
+package com.xgs.hisystem.pojo.vo;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import java.util.List;
  * @date 2019/4/2
  * @description:
  */
-public class PageRspBO<T> {
+public class PageRspVO<T> {
 
     private long total;
 

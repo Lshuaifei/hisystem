@@ -67,6 +67,15 @@ var TableInit = function () {
             showToggle: false,                    //是否显示详细视图和列表视图的切换按钮
             cardView: false,                    //是否显示详细视图
             detailView: false,                   //是否显示父子表
+            responseHandler: function (res) {
+                if (res.status === 1) {
+                    return res.data;
+                }
+                if (res.status === 0) {
+                    swal(res.message, "", "error");
+                    return "";
+                }
+            },
             columns: [{
                 field: 'no',
                 title: '序号',
@@ -147,6 +156,7 @@ function addFunctionAlty() {
         '<button id="btn_toll" class="btn btn-outline-primary" >选择</button>  '
     ].join('');
 }
+
 var registerId = '';
 var prescriptionNum = '';
 window.operateEvents = {
@@ -262,13 +272,13 @@ function saveTollInfo() {
         swal("请选择收费的处方笺！", "", "error");
         return false;
     }
-    if (payType == null||payType==='') {
+    if (payType == null || payType === '') {
         swal("请先付款，再提交！", "", "error");
         return false;
     }
     if (payType === "现金") {
-        var change=$("#Change").val();
-        if (change==null||change==='') {
+        var change = $("#Change").val();
+        if (change == null || change === '') {
             swal("请先付款，再提交！", "", "error");
             return false;
         }

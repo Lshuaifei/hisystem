@@ -1,7 +1,7 @@
 package com.xgs.hisystem.service;
 
 import com.xgs.hisystem.pojo.bo.BaseResponse;
-import com.xgs.hisystem.pojo.bo.PageRspBO;
+import com.xgs.hisystem.pojo.vo.PageRspVO;
 import com.xgs.hisystem.pojo.vo.*;
 
 import java.text.ParseException;
@@ -15,7 +15,7 @@ public interface IUserService {
 
     BaseResponse<String> activation(String email, String validateCode) throws ParseException;
 
-    PageRspBO<LoginInforRspVO> getLoginfor(BasePageReqVO reqVO);
+    PageRspVO<LoginInforRspVO> getLoginfor(BasePageReqVO reqVO);
 
     BaseResponse<String> changePassword(ChangePasswordReqVO reqVO);
 

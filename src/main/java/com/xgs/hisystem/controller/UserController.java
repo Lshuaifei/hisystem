@@ -1,7 +1,7 @@
 package com.xgs.hisystem.controller;
 
 import com.xgs.hisystem.pojo.bo.BaseResponse;
-import com.xgs.hisystem.pojo.bo.PageRspBO;
+import com.xgs.hisystem.pojo.vo.PageRspVO;
 import com.xgs.hisystem.pojo.vo.*;
 import com.xgs.hisystem.service.IUserService;
 import io.swagger.annotations.Api;
@@ -54,7 +54,7 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/getLoginfor",method = RequestMethod.GET)
-    public PageRspBO<LoginInforRspVO> getLoginfor(BasePageReqVO reqVO) {
+    public PageRspVO<LoginInforRspVO> getLoginfor(BasePageReqVO reqVO) {
 
         return iUserService.getLoginfor(reqVO);
     }

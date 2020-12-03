@@ -1,7 +1,8 @@
 package com.xgs.hisystem.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.xgs.hisystem.config.HisConstants;
+import com.xgs.hisystem.common.constant.HisConstants;
+import com.xgs.hisystem.common.exception.BusinessException;
 import com.xgs.hisystem.pojo.bo.BaseResponse;
 import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.register.GetCardIdInforReqVO;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.Predicate;
@@ -79,7 +81,7 @@ public class TollServiceImpl implements ITollService {
     }
 
     @Override
-    public List<TollRspVO> getAllMedicalRecord(String cardId, String tollStatus) {
+    public BaseResponse<List<TollRspVO>> getAllMedicalRecord(String cardId, String tollStatus) {
 
 
         if (StringUtils.isEmpty(cardId) || StringUtils.isEmpty(tollStatus)) {
@@ -90,9 +92,9 @@ public class TollServiceImpl implements ITollService {
         Optional<PatientEntity> patient = iPatientRepository.findById(patientId);
 
         //患者处方存在已划价收费未取药，禁止划价
-        TollTakeDrugInfoEntity tollTakeDrugInfo = iTollTakeDrugInfoRepository.findByPatientIdAndTakingDrugStatus(patientId, 0);
-        if (tollTakeDrugInfo != null) {
-            return null;
+        List<TollTakeDrugInfoEntity> tollTakeDrugInfos = iTollTakeDrugInfoRepository.findByPatientIdAndTakingDrugStatus(patientId, 0);
+        if (!CollectionUtils.isEmpty(tollTakeDrugInfos)) {
+            return BaseResponse.error("该卡号存在已收费未取药的处方，请取药后再试！");
         }
 
         int chargeStatus = Integer.parseInt(tollStatus);
@@ -112,12 +114,12 @@ public class TollServiceImpl implements ITollService {
         if (registerList == null || registerList.size() <= 0) {
             return null;
         }
-        List<TollRspVO> tollRspVOList = new ArrayList<>();
+        List<TollRspVO> tollMedicals = new ArrayList<>();
 
         for (RegisterEntity register : registerList) {
             TollRspVO tollRspVO = new TollRspVO();
             MedicalRecordEntity medicalRecord = iMedicalRecordRepository.findByRegisterId(register.getId());
-            if (StringUtils.isEmpty(medicalRecord)) {
+            if (medicalRecord==null) {
                 continue;
             }
             tollRspVO.setPrescriptionNum(medicalRecord.getPrescriptionNum());
@@ -131,10 +133,10 @@ public class TollServiceImpl implements ITollService {
             tollRspVO.setDepartment(departmentName);
             tollRspVO.setDoctorName(register.getDoctor());
             tollRspVO.setOutpatientDate(medicalRecord.getCreateDatetime());
-            tollRspVOList.add(tollRspVO);
+            tollMedicals.add(tollRspVO);
 
         }
-        return tollRspVOList;
+        return BaseResponse.success(tollMedicals);
     }
 
     @Override

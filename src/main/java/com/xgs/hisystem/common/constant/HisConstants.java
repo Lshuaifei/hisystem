@@ -1,4 +1,4 @@
-package com.xgs.hisystem.config;
+package com.xgs.hisystem.common.constant;
 
 /**
  * @author xgs

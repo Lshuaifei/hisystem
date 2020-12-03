@@ -1,7 +1,7 @@
 package com.xgs.hisystem.service;
 
 import com.xgs.hisystem.pojo.bo.BaseResponse;
-import com.xgs.hisystem.pojo.bo.PageRspBO;
+import com.xgs.hisystem.pojo.vo.PageRspVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugReqVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugRspVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugSearchReqVO;
@@ -29,7 +29,7 @@ public interface IDrugStoreService {
 
     BaseResponse<String> addStorageQuantity(String drug, String addStorageQuantity);
 
-    PageRspBO<DrugRspVO> getAllDrug(DrugSearchReqVO reqVO);
+    PageRspVO<DrugRspVO> getAllDrug(DrugSearchReqVO reqVO);
 
     BaseResponse<String> updateDrug(DrugReqVO reqVO);
 

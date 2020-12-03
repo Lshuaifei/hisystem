@@ -1,7 +1,7 @@
 package com.xgs.hisystem.controller;
 
 import com.xgs.hisystem.pojo.bo.BaseResponse;
-import com.xgs.hisystem.pojo.bo.PageRspBO;
+import com.xgs.hisystem.pojo.vo.PageRspVO;
 import com.xgs.hisystem.pojo.vo.*;
 import com.xgs.hisystem.service.IAdminService;
 import io.swagger.annotations.Api;
@@ -71,7 +71,7 @@ public class AdminController {
      * @return
      */
     @GetMapping(value = "/getRoleApply")
-    public PageRspBO<applyRspVO> getRoleApply(BasePageReqVO reqVO) {
+    public PageRspVO<applyRspVO> getRoleApply(BasePageReqVO reqVO) {
 
         return iadminService.getRoleApply(reqVO);
 
@@ -103,7 +103,7 @@ public class AdminController {
     }
 
     @GetMapping(value = "/getAnnouncement")
-    public PageRspBO<AnnouncementVO> getAnnouncement(BasePageReqVO reqVO) {
+    public PageRspVO<AnnouncementVO> getAnnouncement(BasePageReqVO reqVO) {
 
         return iadminService.getAnnouncement(reqVO);
     }

@@ -1,7 +1,7 @@
 package com.xgs.hisystem.controller;
 
 import com.xgs.hisystem.pojo.bo.BaseResponse;
-import com.xgs.hisystem.pojo.bo.PageRspBO;
+import com.xgs.hisystem.pojo.vo.PageRspVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugReqVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugRspVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugSearchReqVO;
@@ -112,7 +112,7 @@ public class DrugStoreController {
      * @return
      */
     @GetMapping(value = "/getAllDrug")
-    public PageRspBO<DrugRspVO> getAllDrug(DrugSearchReqVO reqVO) {
+    public PageRspVO<DrugRspVO> getAllDrug(DrugSearchReqVO reqVO) {
 
         return iDrugStoreService.getAllDrug(reqVO);
     }

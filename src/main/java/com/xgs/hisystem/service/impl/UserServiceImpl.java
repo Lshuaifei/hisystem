@@ -1,9 +1,9 @@
 package com.xgs.hisystem.service.impl;
 
-import com.xgs.hisystem.config.HisConstants;
+import com.xgs.hisystem.common.constant.HisConstants;
 import com.xgs.hisystem.config.ServerConfig;
 import com.xgs.hisystem.pojo.bo.BaseResponse;
-import com.xgs.hisystem.pojo.bo.PageRspBO;
+import com.xgs.hisystem.pojo.vo.PageRspVO;
 import com.xgs.hisystem.pojo.entity.*;
 import com.xgs.hisystem.pojo.vo.*;
 import com.xgs.hisystem.repository.*;
@@ -254,7 +254,7 @@ public class UserServiceImpl implements IUserService {
      */
 
     @Override
-    public PageRspBO<LoginInforRspVO> getLoginfor(BasePageReqVO reqVO) {
+    public PageRspVO<LoginInforRspVO> getLoginfor(BasePageReqVO reqVO) {
 
         UserEntity userTemp = (UserEntity) SecurityUtils.getSubject().getPrincipal();
         if (StringUtils.isEmpty(userTemp)) {
@@ -282,12 +282,12 @@ public class UserServiceImpl implements IUserService {
             loginInfoList.add(loginInfo);
         });
 
-        PageRspBO pageRspBO = new PageRspBO();
-        pageRspBO.setTotal(page.getTotalElements());
+        PageRspVO pageRspVO = new PageRspVO();
+        pageRspVO.setTotal(page.getTotalElements());
 
-        pageRspBO.setRows(loginInfoList);
+        pageRspVO.setRows(loginInfoList);
 
-        return pageRspBO;
+        return pageRspVO;
     }
 
     @Override
