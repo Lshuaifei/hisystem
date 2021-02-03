@@ -252,7 +252,6 @@ public class RegisterServiceImpl implements IRegisterService {
         List<UserEntity> userList = iUserRepository.findByDepartmentAndDepartmentType(reqVO.getDepartment(), reqVO.getRegisterType());
 
         if (userList != null && userList.size() > 0) {
-            RegisterDoctorRspVO registerDoctorRspVO = new RegisterDoctorRspVO();
             userList.forEach(user -> {
                 //更新已挂号数
                 if (!DateUtil.getCurrentDateSimpleToString().equals(user.getUpdateTime())) {
@@ -260,6 +259,7 @@ public class RegisterServiceImpl implements IRegisterService {
                     user.setUpdateTime(DateUtil.getCurrentDateSimpleToString());
                     iUserRepository.saveAndFlush(user);
                 }
+                RegisterDoctorRspVO registerDoctorRspVO = new RegisterDoctorRspVO();
                 registerDoctorRspVO.setDoctorName(user.getUsername());
                 registerDoctorRspVO.setAllowNum(user.getAllowNum());
                 registerDoctorRspVO.setNowNum(user.getNowNum());
