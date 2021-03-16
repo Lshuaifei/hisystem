@@ -9,6 +9,7 @@ import com.xgs.hisystem.pojo.entity.EfficacyClassificationEntity;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugReqVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugRspVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugSearchReqVO;
+import com.xgs.hisystem.pojo.vo.drugStorage.UpdateDrugReqVO;
 import com.xgs.hisystem.repository.IDrugRepository;
 import com.xgs.hisystem.repository.IDrugTypeRepository;
 import com.xgs.hisystem.repository.IEfficacyClassificationRepository;
@@ -276,7 +277,7 @@ public class DrugStoreServiceImpl implements IDrugStoreService {
     }
 
     @Override
-    public BaseResponse<String> updateDrug(DrugReqVO reqVO) {
+    public BaseResponse<String> updateDrug(UpdateDrugReqVO reqVO) {
 
         try {
             DrugEntity drug = iDrugRepository.findByName(reqVO.getName());

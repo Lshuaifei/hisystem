@@ -5,6 +5,7 @@ import com.xgs.hisystem.pojo.vo.PageRspVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugReqVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugRspVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugSearchReqVO;
+import com.xgs.hisystem.pojo.vo.drugStorage.UpdateDrugReqVO;
 import com.xgs.hisystem.service.IDrugStoreService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,7 +125,7 @@ public class DrugStoreController {
      * @return
      */
     @PostMapping(value = "/updateDrug")
-    public BaseResponse<String> updateDrug(@RequestBody @Validated DrugReqVO reqVO) {
+    public BaseResponse<String> updateDrug(@RequestBody @Validated UpdateDrugReqVO reqVO) {
 
         return iDrugStoreService.updateDrug(reqVO);
     }

@@ -5,6 +5,7 @@ import com.xgs.hisystem.pojo.vo.PageRspVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugReqVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugRspVO;
 import com.xgs.hisystem.pojo.vo.drugStorage.DrugSearchReqVO;
+import com.xgs.hisystem.pojo.vo.drugStorage.UpdateDrugReqVO;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public interface IDrugStoreService {
 
     PageRspVO<DrugRspVO> getAllDrug(DrugSearchReqVO reqVO);
 
-    BaseResponse<String> updateDrug(DrugReqVO reqVO);
+    BaseResponse<String> updateDrug(UpdateDrugReqVO reqVO);
 
     BaseResponse<String> deleteDrug(String drugName);
 }

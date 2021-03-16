@@ -390,14 +390,14 @@ $(".qualityDate").flatpickr({
 function updateDrug() {
 
 
-    var DrugReqVO = {
+    var UpdateDrugReqVO = {
 
         name: $("#name").val(),
-        drugType: drugType,
+        drugType: $(".drugTypeSelect option:selected").val(),
         specification: $("#specification").val(),
         unit: $("#unit").val(),
-        limitStatus: limitStatus,
-        efficacyClassification: efficacyClassification,
+        limitStatus: $(".limitStatusSelect option:selected").val(),
+        efficacyClassification: $(".efficacyClassificationSelect option:selected").val(),
         wholesalePrice: $("#wholesalePrice").val(),
         price: $("#price").val(),
         manufacturer: $("#manufacturer").val(),
@@ -408,7 +408,7 @@ function updateDrug() {
         url: "/drugstore/updateDrug",
         type: "post",
         contentType: "application/json",
-        data: JSON.stringify(DrugReqVO),
+        data: JSON.stringify(UpdateDrugReqVO),
         success: function (data) {
 
             if (data !== null && data.status === 1) {
