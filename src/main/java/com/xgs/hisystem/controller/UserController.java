@@ -88,6 +88,11 @@ public class UserController {
         return  iUserService.changeUserInfo(reqVO);
     }
 
+    /**
+     * 获取公告
+     *
+     * @return
+     */
     @PostMapping(value = "/getAnnContent")
     public AnnRspVO getAnnContent(@RequestParam String id) {
 

@@ -36,6 +36,7 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
+        //我们平时使用就是anno，任何人都可以访问
         filterChainDefinitionMap.put("/css/**", "anon"); // 静态资源匿名访问
         filterChainDefinitionMap.put("/images/*", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
@@ -46,7 +47,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/user/dologin", "anon");
         filterChainDefinitionMap.put("/user/doregister", "anon");
         filterChainDefinitionMap.put("/activation", "anon");
-        filterChainDefinitionMap.put("/logout", "logout"); // 用户退出
+        filterChainDefinitionMap.put("/logout", "logout"); // 用户退出org.apache.shiro.web.filter.authc.LogoutFilter
         filterChainDefinitionMap.put("/fmail", "anon");
         filterChainDefinitionMap.put("/user/getAllRole", "anon");
 

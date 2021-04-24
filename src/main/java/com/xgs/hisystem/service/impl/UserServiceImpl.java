@@ -14,6 +14,7 @@ import com.xgs.hisystem.util.DateUtil;
 import com.xgs.hisystem.util.MD5Util;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
@@ -29,7 +30,9 @@ import org.springframework.util.StringUtils;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -85,8 +88,10 @@ public class UserServiceImpl implements IUserService {
         //登录验证
         UsernamePasswordToken token = new UsernamePasswordToken(email, password);
         Subject subject = SecurityUtils.getSubject();
+         /*项目中我们习惯直接使用SecurityUtils.getSubject() 获取当前登录用户的信息
+        也就是一个http请求一个subject,并绑定到当前线程。 */
         try {
-            subject.login(token);
+            subject.login(token);//登陆认证
         } catch (AuthenticationException e) {
             return BaseResponse.error(HisConstants.USER.PASSWORD_ERROR);
         }
@@ -187,7 +192,7 @@ public class UserServiceImpl implements IUserService {
                     .concat(email).concat("&validateCode=").concat(validateCode);
 
             context.setVariable("url", url);
-            String emailContent = templateEngine.process("email/email", context);
+            String emailContent = templateEngine.process("email/email", context);//通过TemplateEngine 和Context 的配合，我们可以使用thymeleaf模版来生产html文件。
 
             //发送邮件
             iEmailService.sendMail(reqVO.getEmail(), title, emailContent);
@@ -237,7 +242,7 @@ public class UserServiceImpl implements IUserService {
             }
             user.setEmailStatus(1);
 
-            iUserRepository.saveAndFlush(user);
+            iUserRepository.saveAndFlush(user);//save不会立刻提交到数据库，flush则立刻提交生效，save可能只是修改在内存中的
             return BaseResponse.success();
         } catch (Exception e) {
             e.printStackTrace();
@@ -256,6 +261,8 @@ public class UserServiceImpl implements IUserService {
     @Override
     public PageRspVO<LoginInforRspVO> getLoginfor(BasePageReqVO reqVO) {
 
+        /*获取当前登录用户信息.获取的用户信息是在哪里设置的？
+        自定义realm--》doGetAuthenticationInfo--》SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(user, user.getPassword(), byteSourceSalt, getName());*/
         UserEntity userTemp = (UserEntity) SecurityUtils.getSubject().getPrincipal();
         if (StringUtils.isEmpty(userTemp)) {
             return null;
@@ -264,15 +271,19 @@ public class UserServiceImpl implements IUserService {
 
             List<Predicate> predicateList = new ArrayList<>();
 
+            //CriteriaBuilder动态构造查询
             predicateList.add(criteriaBuilder.equal(root.get("user"), userTemp));
             query.where(predicateList.toArray(new Predicate[predicateList.size()]));
             return null;
         }, PageRequest.of(reqVO.getPageNumber(), reqVO.getPageSize(), Sort.by(Sort.Direction.DESC, "createDatetime")));
+        //PageRequest构造器中的参数最多是4个参数,其中必填的是2个参数(page,rows)
+        //另外2个参数是选填direction(正序倒序),properties(排序字段)
         if (page == null) {
             return null;
         }
         List<LoginInforEntity> userList = page.getContent();
         List<LoginInforRspVO> loginInfoList = new ArrayList<>();
+        //遍历user对象
         userList.forEach(user -> {
             LoginInforRspVO loginInfo = new LoginInforRspVO();
             loginInfo.setLoginIp(user.getLoginIp());
@@ -290,6 +301,11 @@ public class UserServiceImpl implements IUserService {
         return pageRspVO;
     }
 
+    /**
+     * 修改密码
+     *
+     * @return
+     */
     @Override
     public BaseResponse<String> changePassword(ChangePasswordReqVO reqVO) {
 
@@ -401,6 +417,9 @@ public class UserServiceImpl implements IUserService {
         return announcementVOList;
     }
 
+    /**
+     * 获取选中在主页的公告
+     */
     @Override
     public AnnRspVO getAnnContent(String id) {
 
@@ -492,6 +511,11 @@ public class UserServiceImpl implements IUserService {
     public List<GetAllRoleRspVO> getAllRole() {
 
         List<GetAllRoleRspVO> getAllRoleList = new ArrayList<>();
+
+        /*Root：查询哪个表
+        CriteriaQuery：查询哪些字段，排序是什么
+        CriteriaBuilder：字段之间是什么关系，如何生成一个查询条件，每一个查询条件都是什么方式
+        Predicate（Expression）：单独每一条查询条件的详细描述*/
 
         List<RoleEntity> roleList = iRoleRespository.findAll((Specification<RoleEntity>) (root, query, cb) -> {
             List<Predicate> predicateList = new ArrayList<>();

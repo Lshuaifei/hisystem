@@ -87,13 +87,23 @@ public class PageController {
         }
     }
 
-
+    /**
+     * 账号设置
+     * @param
+     * @return
+     */
     @GetMapping(value = "/accountset")
     public String accountSet() {
         return "accountset";
     }
 
 
+    /**
+     * 管理员点击查看所有申请角色
+     *
+     * @param
+     * @return
+     */
     @GetMapping("/toApply")
     public String toApply() {
         return "/admin/roleApply";
